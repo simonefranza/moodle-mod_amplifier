@@ -149,8 +149,8 @@ $string["amplifier_reminder_settings_month11_label"] = "November";
 $string["amplifier_reminder_settings_month12_label"] = "December";
 
 $string['amplifier_setup_participantcode_headline'] = 'Participant Code';
-$string['amplifier_setup_participantcode_description'] = 'Der Teilnehmercode besteht aus: dem Anfangsbuchstaben deines Geburtsortes,<br>deinem Geburtstag (zweistellig, wenn kleiner 10 dann mit führender Null),<br>dem Anfangsbuchstaben des Vornamens deines Vaters,<br>dem Anfangsbuchstaben des Vornamens deiner Mutter.<br><br>Ein Beispiel:<br>Der Teilnehmercode einer Person, geboren in Graz am zweiten Feber, deren Eltern Johann und Susanne heißen, ist:<br>"G" (für Graz) an erster Stelle,<br>"02" (für den zweiten Feber) an zweiter Stelle,<br>"J" (für Johann) an dritter Stelle,<br>"S" (für Susanne) an vierter Stelle.<br><br>Der Teilnehmercode der Person wäre: G02JS<br>';
-$string['amplifier_setup_participantcode_input_label'] = 'Bitte hier deinen Participant Code eingeben';
+$string['amplifier_setup_participantcode_description'] = 'The participant code consists of: the first letter of your place of birth,<br/>your birthday (two digits, if less than 10 then with a leading zero),<br/>the first letter of your father\'s first name,<br/>the first letter of your mother\'s first name.<br/><br/>An example:<br/>The participant code of a person born in Graz on the second of February, whose parents\' names are Johann and Susanne, is: <br/>"G" (for Graz) in the first place,<br/>"02" (for the second of February) in the second place,<br/>"J" (for Johann) in the third place,<br/>"S" (for Susanne) in the fourth place.<br/><br/>The participant code of the person would be: G02JS<br/>';
+$string['amplifier_setup_participantcode_input_label'] = 'Please, enter the participant code here';
 
 $string['amplifier_check_scheduled_reminders'] = 'Lookup user set reminders and send reflection notification message';
 
