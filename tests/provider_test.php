@@ -110,7 +110,7 @@ class provider_test extends provider_testcase {
         $reflectionrecord->course = $course1->id;
         $reflectionrecord->coursemodule = $cm->id;
         $reflectionrecord->instance = $widgetinstance->id;
-        $reflectionrecord->user = $user1->id;
+        $reflectionrecord->amp_user = $user1->id;
         $reflectionrecord->reflectedat = 123;
         $reflectionrecord->response = "reflection text";
         $reflectionrecord->id = $DB->insert_record('amplifier_reflection', $reflectionrecord);

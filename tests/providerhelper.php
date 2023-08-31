@@ -50,69 +50,69 @@ class providerhelper {
 
         // Create topic.
         $topicreflection = new stdClass;
-        $topicreflection->title = "QUESTIONS_INITIAL";
-        $topicreflection->shortname = "short";
-        $topicreflection->url = "invalidurl";
+        $topicreflection->lgw_title = "QUESTIONS_INITIAL";
+        $topicreflection->lgw_shortname = "short";
+        $topicreflection->lgw_url = "invalidurl";
         $topicreflection->id = $DB->insert_record('learninggoalwidget_topic', $topicreflection);
         $reflectioninitial = new stdClass;
-        $reflectioninitial->title = "Goal Title Reflection";
-        $reflectioninitial->shortname = "goal shortname";
-        $reflectioninitial->url = "invalidurl";
-        $reflectioninitial->topic = $topicreflection->id;
+        $reflectioninitial->lgw_title = "Goal Title Reflection";
+        $reflectioninitial->lgw_shortname = "goal shortname";
+        $reflectioninitial->lgw_url = "invalidurl";
+        $reflectioninitial->lgw_topic = $topicreflection->id;
         $reflectioninitial->id = $DB->insert_record('learninggoalwidget_goal', $reflectioninitial);
         $goalirecord = new stdClass;
-        $goalirecord->course = $courseid;
-        $goalirecord->coursemodule = $coursemoduleid;
-        $goalirecord->instance = $instanceid;
-        $goalirecord->topic = $topicreflection->id;
-        $goalirecord->goal = $reflectioninitial->id;
-        $goalirecord->rank = 2;
+        $goalirecord->lgw_course = $courseid;
+        $goalirecord->lgw_coursemodule = $coursemoduleid;
+        $goalirecord->lgw_instance = $instanceid;
+        $goalirecord->lgw_topic = $topicreflection->id;
+        $goalirecord->lgw_goal = $reflectioninitial->id;
+        $goalirecord->lgw_rank = 2;
         $goalirecord->id = $DB->insert_record('learninggoalwidget_i_goals', $goalirecord);
 
         // Create topic.
         $topicreflectiongoals = new stdClass;
-        $topicreflectiongoals->title = "QUESTIONS_GOALS";
-        $topicreflectiongoals->shortname = "short";
-        $topicreflectiongoals->url = "invalidurl";
+        $topicreflectiongoals->lgw_title = "QUESTIONS_GOALS";
+        $topicreflectiongoals->lgw_shortname = "short";
+        $topicreflectiongoals->lgw_url = "invalidurl";
         $topicreflectiongoals->id = $DB->insert_record('learninggoalwidget_topic', $topicreflectiongoals);
         $reflectiongoal = new stdClass;
-        $reflectiongoal->title = "Goal Title Reflection";
-        $reflectiongoal->shortname = "goal shortname";
-        $reflectiongoal->url = "invalidurl";
-        $reflectiongoal->topic = $topicreflectiongoals->id;
+        $reflectiongoal->lgw_title = "Goal Title Reflection";
+        $reflectiongoal->lgw_shortname = "goal shortname";
+        $reflectiongoal->lgw_url = "invalidurl";
+        $reflectiongoal->lgw_topic = $topicreflectiongoals->id;
         $reflectiongoal->id = $DB->insert_record('learninggoalwidget_goal', $reflectiongoal);
         $goalirecord = new stdClass;
-        $goalirecord->course = $courseid;
-        $goalirecord->coursemodule = $coursemoduleid;
-        $goalirecord->instance = $instanceid;
-        $goalirecord->topic = $topicreflectiongoals->id;
-        $goalirecord->goal = $reflectiongoal->id;
-        $goalirecord->rank = 3;
+        $goalirecord->lgw_course = $courseid;
+        $goalirecord->lgw_coursemodule = $coursemoduleid;
+        $goalirecord->lgw_instance = $instanceid;
+        $goalirecord->lgw_topic = $topicreflectiongoals->id;
+        $goalirecord->lgw_goal = $reflectiongoal->id;
+        $goalirecord->lgw_rank = 3;
         $goalirecord->id = $DB->insert_record('learninggoalwidget_i_goals', $goalirecord);
 
         // Create topic.
         $topicrecord = new stdClass;
-        $topicrecord->title = "Test Title";
-        $topicrecord->shortname = "short";
-        $topicrecord->url = "invalidurl";
+        $topicrecord->lgw_title = "Test Title";
+        $topicrecord->lgw_shortname = "short";
+        $topicrecord->lgw_url = "invalidurl";
         $topicrecord->id = $DB->insert_record('learninggoalwidget_topic', $topicrecord);
 
         // Create goal.
         $goalrecord = new stdClass;
-        $goalrecord->title = "Goal Title";
-        $goalrecord->shortname = "goal shortname";
-        $goalrecord->url = "invalidurl";
-        $goalrecord->topic = $topicrecord->id;
+        $goalrecord->lgw_title = "Goal Title";
+        $goalrecord->lgw_shortname = "goal shortname";
+        $goalrecord->lgw_url = "invalidurl";
+        $goalrecord->lgw_topic = $topicrecord->id;
         $goalrecord->id = $DB->insert_record('learninggoalwidget_goal', $goalrecord);
 
         // Create goal.
         $goalirecord = new stdClass;
-        $goalirecord->course = $courseid;
-        $goalirecord->coursemodule = $coursemoduleid;
-        $goalirecord->instance = $instanceid;
-        $goalirecord->topic = $topicrecord->id;
-        $goalirecord->goal = $goalrecord->id;
-        $goalirecord->rank = 1;
+        $goalirecord->lgw_course = $courseid;
+        $goalirecord->lgw_coursemodule = $coursemoduleid;
+        $goalirecord->lgw_instance = $instanceid;
+        $goalirecord->lgw_topic = $topicrecord->id;
+        $goalirecord->lgw_goal = $goalrecord->id;
+        $goalirecord->lgw_rank = 1;
         $goalirecord->id = $DB->insert_record('learninggoalwidget_i_goals', $goalirecord);
 
         $reflection = new stdClass();

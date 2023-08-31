@@ -144,7 +144,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {amplifier_setup} amp ON amp.instance = cm.instance
-                 WHERE amp.user = :userid AND amp.finished = 1";
+                 WHERE amp.amp_user = :userid AND amp.finished = 1";
         $params = ['contextlevel' => CONTEXT_MODULE, 'modname' => 'amplifier', 'userid' => $userid];
         $resultset->add_from_sql($sql, $params);
 
@@ -169,11 +169,11 @@ class provider implements
         ];
 
         // Users who reflected on learning goals.
-        $sql = "SELECT amp.user as userid
+        $sql = "SELECT amp.amp_user as userid
                   FROM {course_modules} cm
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN {amplifier_setup} amp ON amp.instance = cm.instance
-                  JOIN {amplifier_reflection} ampref ON ampref.user = amp.user
+                  JOIN {amplifier_reflection} ampref ON ampref.amp_user = amp.amp_user
                  WHERE cm.id = :cmid AND amp.finished = 1";
         $userlist->add_from_sql('userid', $sql, $params);
 
@@ -207,10 +207,10 @@ class provider implements
         $sql = "SELECT
         ampset.course AS course,
         ampset.instance AS instance,
-        ampset.user AS user,
+        ampset.amp_user AS user,
         ampset.participantcode AS participantcode,
-        lgwtopic.title AS topictitle,
-        lgwgoal.title AS goaltitle,
+        lgwtopic.lgw_title AS topictitle,
+        lgwgoal.lgw_title AS goaltitle,
         c.id AS contextid,
         cm.id AS cmid
         FROM {context} c
@@ -219,7 +219,7 @@ class provider implements
         INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
         JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
         JOIN {learninggoalwidget_topic} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topic
+        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.lgw_topic
         WHERE c.id {$contextsql}";
 
         // Export user selected goals
@@ -244,10 +244,10 @@ class provider implements
         $sql = "SELECT
         ampset.course AS course,
         ampset.instance AS instance,
-        ampset.user AS user,
+        ampset.amp_user AS user,
         ampset.participantcode AS participantcode,
-        lgwtopic.title AS topictitle,
-        lgwgoal.title AS goaltitle,
+        lgwtopic.lgw_title AS topictitle,
+        lgwgoal.lgw_title AS goaltitle,
         from_unixtime(ampremind.startdate/1000) as startdate,
         from_unixtime(ampremind.enddate/1000) as enddate,
         ampremind.reminderhour,
@@ -263,7 +263,7 @@ class provider implements
         JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
         JOIN {amplifier_reminder} ampremind ON ampgoals.goal = ampremind.goal
         JOIN {learninggoalwidget_topic} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topic
+        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.lgw_topic
         WHERE c.id {$contextsql}";
 
         $reminders = $DB->get_recordset_sql($sql, $params);
@@ -293,10 +293,10 @@ class provider implements
         $sql = "SELECT
         ampset.course AS course,
         ampset.instance AS instance,
-        ampset.user AS user,
+        ampset.amp_user AS user,
         ampset.participantcode AS participantcode,
-        lgwtopic.title AS topictitle,
-        lgwgoal.title AS goaltitle,
+        lgwtopic.lgw_title AS topictitle,
+        lgwgoal.lgw_title AS goaltitle,
         from_unixtime(ampref.reflectedat/1000) as reflectiondate,
         ampref.response,
         c.id AS contextid,
@@ -308,7 +308,7 @@ class provider implements
         JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
         JOIN {amplifier_reflection} ampref ON ampgoals.goal = ampref.goal
         JOIN {learninggoalwidget_topic} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topic
+        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.lgw_topic
         WHERE c.id {$contextsql}";
 
         $reflections = $DB->get_recordset_sql($sql, $params);

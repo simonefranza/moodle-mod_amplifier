@@ -117,7 +117,7 @@ class amplifier_controller {
         WHERE course = ?
         AND coursemodule = ?
         AND instance = ?
-        AND user = ?";
+        AND amp_user = ?";
         $params = [$this->courseid, $this->coursemoduleid, $this->instanceid, $this->userid];
         $amplifierusersetup = $DB->get_record_sql($sqlstmt, $params);
 
@@ -127,7 +127,7 @@ class amplifier_controller {
             $this->setupid = $amplifierusersetup->id;
         } else {
             $amplifierusersetup = new stdClass;
-            $amplifierusersetup->user = $this->userid;
+            $amplifierusersetup->amp_user = $this->userid;
             $amplifierusersetup->course = $this->courseid;
             $amplifierusersetup->coursemodule = $this->coursemoduleid;
             $amplifierusersetup->instance = $this->instanceid;
@@ -142,9 +142,9 @@ class amplifier_controller {
         if ($this->finished) {
 
             $renderedrq = "";
-            $sqlstmt = "SELECT goal.id as goalid, goal.title as reflectionquestion, topic.id as topicid
+            $sqlstmt = "SELECT goal.id as goalid, goal.lgw_title as reflectionquestion, topic.id as topicid
                 FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
-                WHERE goals.course = ? AND goals.topic = topic.id AND topic.title = ? AND goals.goal = goal.id";
+                WHERE goals.lgw_course = ? AND goals.lgw_topic = topic.id AND topic.lgw_title = ? AND goals.lgw_goal = goal.id";
             $params = [$this->courseid, self::$goalstopicshortname];
             $rqrecords = $DB->get_records_sql($sqlstmt, $params);
             foreach ($rqrecords as $rqrecord) {
@@ -163,9 +163,9 @@ class amplifier_controller {
             }
 
             $sqlstmt = "SELECT goal.id as goalid,
-            goal.title as goaltitle,
+            goal.lgw_title as goaltitle,
             topic.id as topicid,
-            topic.title as topictitle,
+            topic.lgw_title as topictitle,
             goals.goal as amplifiergoalid
             FROM {amplifier_setup_goals} goals,
             {learninggoalwidget_topic} topic,
@@ -173,7 +173,7 @@ class amplifier_controller {
             WHERE goals.course = ?
             AND goals.coursemodule = ?
             AND goals.instance = ?
-            AND goals.user = ?
+            AND goals.amp_user = ?
             AND goals.topic = topic.id
             AND goals.goal = goal.id";
             $params = [$this->courseid, $this->coursemoduleid, $this->instanceid, $this->userid];
@@ -188,7 +188,7 @@ class amplifier_controller {
                 AND course = ?
                 AND coursemodule = ?
                 AND instance = ?
-                AND user = ?";
+                AND amp_user = ?";
                 $params = [$usergoal->amplifiergoalid, $this->courseid, $this->coursemoduleid, $this->instanceid, $this->userid];
                 $ampreminderrecord = $DB->get_record_sql($sqlstmt, $params);
                 if ($ampreminderrecord) {
@@ -280,9 +280,9 @@ class amplifier_controller {
         global $DB, $OUTPUT;
 
         $renderedrq = "";
-        $sqlstmt = "SELECT goal.id as goalid, goal.title as reflectionquestion, topic.id as topicid
+        $sqlstmt = "SELECT goal.id as goalid, goal.lgw_title as reflectionquestion, topic.id as topicid
             FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
-            WHERE goals.course = ? AND goals.topic = topic.id AND topic.title = ? AND goals.goal = goal.id";
+            WHERE goals.lgw_course = ? AND goals.lgw_topic = topic.id AND topic.lgw_title = ? AND goals.lgw_goal = goal.id";
         $params = [$this->courseid, self::$topicshortname];
         $rqrecords = $DB->get_records_sql($sqlstmt, $params);
         foreach ($rqrecords as $rqrecord) {
@@ -305,10 +305,10 @@ class amplifier_controller {
 
         $renderedsellgs = "";
         $topicid = 0;
-        $sqlstmt = "SELECT goal.id as goalid, goal.title as goaltitle, topic.id as topicid, topic.title as topictitle
+        $sqlstmt = "SELECT goal.id as goalid, goal.lgw_title as goaltitle, topic.id as topicid, topic.lgw_title as topictitle
             FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
-            WHERE goals.course = ? AND goals.topic = topic.id AND topic.title != ? AND topic.title != ?
-            AND goals.goal = goal.id ORDER BY topic.title";
+            WHERE goals.lgw_course = ? AND goals.lgw_topic = topic.id AND topic.lgw_title != ? AND topic.lgw_title != ?
+            AND goals.lgw_goal = goal.id ORDER BY topic.lgw_title";
         $params = [$this->courseid, self::$goalstopicshortname, self::$topicshortname];
         $predefinedlgsrecords = $DB->get_records_sql($sqlstmt, $params);
         foreach ($predefinedlgsrecords as $predefinedlgrecord) {

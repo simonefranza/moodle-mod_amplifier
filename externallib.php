@@ -96,7 +96,7 @@ class mod_amplifier_external extends external_api {
 
         $setupid = 0;
         $sqlstmt = "SELECT id, finished FROM {amplifier_setup}
-            WHERE course = ? AND coursemodule = ? AND instance = ? AND user = ?";
+            WHERE course = ? AND coursemodule = ? AND instance = ? AND amp_user = ?";
         $params = [$courseid, $coursemoduleid, $instanceid, $userid];
         $amplifiersetuprecord = $DB->get_record_sql($sqlstmt, $params);
         if ($amplifiersetuprecord) {
@@ -108,7 +108,7 @@ class mod_amplifier_external extends external_api {
             $DB->update_record('amplifier_setup', $amplifierusersetup);
         } else {
             $amplifierusersetup = new stdClass;
-            $amplifierusersetup->user = $userid;
+            $amplifierusersetup->amp_user = $userid;
             $amplifierusersetup->course = $courseid;
             $amplifierusersetup->coursemodule = $coursemoduleid;
             $amplifierusersetup->instance = $instanceid;
@@ -124,7 +124,7 @@ class mod_amplifier_external extends external_api {
 
         foreach ($reflections as $reflection) {
             $userreflection = new stdClass;
-            $userreflection->user = $userid;
+            $userreflection->amp_user = $userid;
             $userreflection->course = $courseid;
             $userreflection->coursemodule = $coursemoduleid;
             $userreflection->instance = $instanceid;
@@ -138,7 +138,7 @@ class mod_amplifier_external extends external_api {
 
         foreach ($learninggoals as $learninggoal) {
             $usergoal = new stdClass;
-            $usergoal->user = $userid;
+            $usergoal->amp_user = $userid;
             $usergoal->course = $courseid;
             $usergoal->coursemodule = $coursemoduleid;
             $usergoal->instance = $instanceid;
@@ -241,7 +241,7 @@ class mod_amplifier_external extends external_api {
 
         $sqlstmt = "SELECT id
         FROM {amplifier_reminder}
-        WHERE user = ? and course = ? and coursemodule = ? and instance = ? and goal = ?";
+        WHERE amp_user = ? and course = ? and coursemodule = ? and instance = ? and goal = ?";
         $params = [$user, $course, $coursemodule, $instance, $goal];
         $ampeminderrecord = $DB->get_record_sql($sqlstmt, $params);
         if ($ampeminderrecord) {
@@ -253,7 +253,7 @@ class mod_amplifier_external extends external_api {
             $ampuserreminder->reminderminute = $reminderminute;
             $ampuserreminder->frequency = $frequency;
             $ampuserreminder->lastnotificationdate = $lastnotificationdate;
-            $ampuserreminder->user = $user;
+            $ampuserreminder->amp_user = $user;
             $ampuserreminder->course = $course;
             $ampuserreminder->coursemodule = $coursemodule;
             $ampuserreminder->instance = $instance;
@@ -268,7 +268,7 @@ class mod_amplifier_external extends external_api {
             $ampuserreminder->frequency = $frequency;
             $ampuserreminder->lastnotificationdate = $lastnotificationdate;
             $ampuserreminder->goal = $goal;
-            $ampuserreminder->user = $user;
+            $ampuserreminder->amp_user = $user;
             $ampuserreminder->course = $course;
             $ampuserreminder->coursemodule = $coursemodule;
             $ampuserreminder->instance = $instance;
@@ -358,7 +358,7 @@ class mod_amplifier_external extends external_api {
             $userreflection->reflectedat = $reflectiondate;
             $userreflection->response = $reflection;
             $userreflection->goal = $goal;
-            $userreflection->user = $user;
+            $userreflection->amp_user = $user;
             $userreflection->course = $course;
             $userreflection->coursemodule = $coursemodule;
             $userreflection->instance = $instance;
