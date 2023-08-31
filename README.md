@@ -1,5 +1,27 @@
 # Training Amplifier
 
+<table>
+  <tr>
+    <td colspan="2">Training Amplifier</td>
+  </tr>
+  <tr>
+    <td>Type</td>
+    <td>Activity Module</td>
+  </tr>
+  <tr>
+    <td>Plugins directory entry</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>Discussion</td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>Maintainer(s)</td>
+    <td>Alfred Wertner</td>
+  </tr>
+</table>
+
 Training Amplifier supports people in applying recently acquired knowledge into their daily routines.
 First, people think about the most important aspects out of the recently heard for them personally. Then they make a decision and choose which of these aspects they want to achieve. The Training Amplifier limits the set of aspects to five to avoid getting overwhelmed by too much of them at once.
 Second, people need to set a reminder for each of the aspects. People can choose to get notified via mail and/or the Moodle web interface.The Training Amplifier reminds them as long as they have not reflected at least once about an aspect. Reminding them should engage people to reflect about their efforts, if and how applied changes in behaviour belonging to an aspect impacts personal life.
