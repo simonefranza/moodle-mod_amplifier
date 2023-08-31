@@ -55,6 +55,12 @@ Alternatively, you can run
 
 to complete the installation from the command line.
 
+## How to Report a Bug
+
+Please, create an issue on the 
+[Github repository](https://github.com/simonefranza/moodle-mod_amplifier/issues) 
+of the plugin.
+
 ## License ##
 
 This program is free software: you can redistribute it and/or modify
