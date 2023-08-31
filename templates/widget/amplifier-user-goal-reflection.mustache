@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_amplifier/widget/amplifier-user-goal-reflection
+
+    Showing the reflective questions for a learning goal.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * reflectivequestions
+    * amplifier_submit_reflections_headline
+    * amplifier_submit_text_2
+    * amplifiergoalid
+    * amplifier_button_submit
+
+    Example context (json):
+    {
+        "reflectivequestions": "<fieldset> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline'></label> </div><div class='amplifier-questiontext'> <p>Würden Sie sagen, Sie haben das Lernziel erreicht? Wenn ja, was haben Sie gelernt? Wenn nein, was hat Sie daran gehindert?</p></div><div class='amplifier-user-response'> <textarea placeholder='My thoughts...' rows='5' data-topicid='3' data-goalid='7' class='col p-0 amplifier-user-response-input'></textarea> </div><input type='button' name='next' class='next action-button reflective-question' value='Next'></fieldset><fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline'></label> </div><div class='amplifier-questiontext'> <p>Konnten Sie eine Veränderung - im Positiven oder Negativen - in Ihrem beruflichen oder privaten Umfeld feststellen?</p></div><div class='amplifier-user-response'> <textarea placeholder='My thoughts...' rows='5' data-topicid='3' data-goalid='8' class='col p-0 amplifier-user-response-input'></textarea> </div><input type='button' name='next' class='next action-button reflective-question' value='Next'></fieldset><fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline'></label> </div><div class='amplifier-questiontext'> <p>Wie denken Sie jetzt über das Lernziel?</p></div><div class='amplifier-user-response'> <textarea placeholder='My thoughts...' rows='5' data-topicid='3' data-goalid='9' class='col p-0 amplifier-user-response-input'></textarea> </div><input type='button' name='next' class='next action-button reflective-question' value='Next'></fieldset><fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline '>Please click on 'Save' to finish your reflecion session.</label> </div><input data-data-goalid='3' type='submit' name='submit' class='submit action-button reflection-submit amplifier-submit-setup' value='Save'></fieldset>",
+        "amplifier_submit_reflections_headline": "Reflexion",
+        "amplifier_submit_text_2": "Bitte klicken Sie auf 'Speichern' um die Reflexion abzuschließen.",
+        "amplifiergoalid": "1",
+        "amplifier_button_submit": "Speichern"
+    }
+}}
+<div class="d-flex flex-column user-goal-reflection">
+
+    {{{reflectivequestions}}}
+
+    <fieldset class="d-none">
+        <h3 class="fs-subtitle">{{{amplifier_submit_reflections_headline}}}</h3>
+
+        <div class="form-group text-left">
+            <label class="col-form-label d-inline ">{{{amplifier_submit_text_2}}}</label>
+        </div>
+
+        <div class="d-flex flex-row mb-3">
+            <button data-goalid="{{{amplifiergoalid}}}" type="submit" name="submit" class="btn btn-primary submit action-button reflection-submit">{{{amplifier_button_submit}}}</button>
+        </div>
+
+    </fieldset>
+
+ </div>

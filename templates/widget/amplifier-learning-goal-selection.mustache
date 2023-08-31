@@ -1,0 +1,56 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_amplifier/widget/amplifier-learning-goal-selection
+
+    A list of learning goals and topics the user can select from
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * amplifier_learning_goal_selection_headline
+    * amplifier_learning_goal_selection_intro
+    * predefined_learning_goals
+    * amplifier_button_next
+
+    Example context (json):
+    {
+        "amplifier_learning_goal_selection_headline": "Lernziele Auswahl",
+        "amplifier_learning_goal_selection_intro": "Bitte wählen Sie Lernziele aus, die für Sie besonders wichtig sind. Es sollten nicht mehr als fünf Lernziele sein.",
+        "predefined_learning_goals": "<label class='text-left font-weight-bold mt-2'>Themenbereich 1</label><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='1' data-goalid='1'> <label class='form-check-label font-weight-bold'>Lernziel 1</label> </div></div><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='1' data-goalid='2'> <label class='form-check-label font-weight-bold'>Lernziel 2</label> </div></div><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='1' data-goalid='3'> <label class='form-check-label font-weight-bold'>Lernziel 3</label> </div></div><label class='text-left font-weight-bold mt-2'>Themenbereich 2</label><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='4' data-goalid='10'> <label class='form-check-label font-weight-bold'>Lernziel 1</label> </div></div><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='4' data-goalid='11'> <label class='form-check-label font-weight-bold'>Lernziel 2</label> </div></div><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='4' data-goalid='12'> <label class='form-check-label font-weight-bold'>Lernziel 3</label> </div></div><label class='text-left font-weight-bold mt-2'>Themenbereich 3</label><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='5' data-goalid='13'> <label class='form-check-label font-weight-bold'>Lernziel 1</label> </div></div><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='5' data-goalid='14'> <label class='form-check-label font-weight-bold'>Lernziel 2</label> </div></div><div class='form-group text-left'> <div class='form-check text-left'> <input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' data-topicid='5' data-goalid='15'> <label class='form-check-label font-weight-bold'>Lernziel 3</label> </div></div>",
+        "amplifier_button_next": "Weiter"
+    }
+}}
+<fieldset class="d-none">
+
+    <h3 class="fs-subtitle">{{{amplifier_learning_goal_selection_headline}}}</h3>
+
+    <div class="form-group text-left">
+        <label class="col-form-label d-inline ">{{{amplifier_learning_goal_selection_intro}}}</label>
+    </div>
+
+    {{{predefined_learning_goals}}}
+
+    <div class="d-flex flex-row mb-3">
+        <button type="button" class="btn btn-primary next action-button learning-goals" disabled style="opacity: .5">{{{amplifier_button_next}}}</button>
+    </div>
+
+</fieldset>

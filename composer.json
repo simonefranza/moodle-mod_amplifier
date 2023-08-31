@@ -1,0 +1,19 @@
+{
+	"name": "llt-plugindev/moodle-mod_amplifier",
+    "description": "Training Amplifier Widget ...",
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Alfred Wertner",
+            "email": "awertner@know-center.at",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "learninggoalscontent"
+    ],
+	"require": {
+		"moodle/moodle": "3.11 - 4.1",
+        "llt-plugindev/moodle-mod_learninggoalwidget": ">= 1.0.10"
+    }
+}

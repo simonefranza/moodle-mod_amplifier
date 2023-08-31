@@ -1,0 +1,81 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_amplifier/widget/amplifier-widget
+
+    Renders the Training Amplifier Widget.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * [data-course-id="1"] a course identifier
+    * [data-coursemodule-id="1"] a course module identifier
+    * [data-instance-id="1"] a course module instance identifier
+    * [data-user-id="1"] a user identifier
+
+    Context variables required for this template:
+    * usergoals
+    * courseId
+    * courseModuleId
+    * instanceId
+    * userId
+    * participantcode
+    * amplifier_setup_finished
+
+    Example context (json):
+    {
+        "usergoals": "<div id='amplifier-user-goal-3' class='topic-card'> <div id='heading-' class='topic-card-header'> <div class='mb-0' id='yui_3_17_2_1_1673865134093_81'> <div class='d-flex flex-column' id='yui_3_17_2_1_1673865134093_80'> <div id='yui_3_17_2_1_1673865134093_79' class='d-flex flex-row align-items-center ml-0 mb-2 flex-nowrap'> <div id='-sunburst' class='topic-thumbnail'> <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'> <path d='M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,10.84 21.79,9.69 21.39,8.61L19.79,10.21C19.93,10.8 20,11.4 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4C12.6,4 13.2,4.07 13.79,4.21L15.4,2.6C14.31,2.21 13.16,2 12,2M19,2L15,6V7.5L12.45,10.05C12.3,10 12.15,10 12,10A2,2 0 0,0 10,12A2,2 0 0,0 12,14A2,2 0 0,0 14,12C14,11.85 14,11.7 13.95,11.55L16.5,9H18L22,5H19V2M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12H16A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8V6Z'></path> </svg> </div><div class='d-flex flex-row flex-grow-1 ml-2 topic-data'> <span class='text-wrap topic-title'>Themenbereich 1 - Lernziel 3</span> </div><div class='topic-actions' id='yui_3_17_2_1_1673865134093_78'> <div class='d-flex flex-row align-items-center ml-0 mb-2 flex-nowrap' id='yui_3_17_2_1_1673865134093_77'> <div class='reminder-dropdown-toggle' data-target='user-goal-reminder-1-3' id='yui_3_17_2_1_1673865134093_76'> <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' id='yui_3_17_2_1_1673865134093_75'> <path d='M7 11H9V13H7V11M21 5V19C21 20.11 20.11 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H6V1H8V3H16V1H18V3H19C20.11 3 21 3.9 21 5M5 7H19V5H5V7M19 19V9H5V19H19M15 13V11H17V13H15M11 13V11H13V13H11M7 15H9V17H7V15M15 17V15H17V17H15M11 17V15H13V17H11Z'></path> </svg> </div><div class='reflection-dropdown-toggle' data-target='user-goal-reflection-1-3'> <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'> <path d='M13 3C16.9 3 20 6.1 20 10C20 12.8 18.4 15.2 16 16.3V21H9V18H8C6.9 18 6 17.1 6 16V13H4.5C4.1 13 3.8 12.5 4.1 12.2L6 9.7C6.2 5.9 9.2 3 13 3M13 1C8.4 1 4.6 4.4 4.1 8.9L2.5 11C1.9 11.8 1.9 12.8 2.3 13.6C2.7 14.3 3.3 14.8 4 14.9V16C4 17.9 5.3 19.4 7 19.9V23H18V17.5C20.5 15.8 22 13.1 22 10C22 5 18 1 13 1M10 10C9.4 10 9 9.6 9 9S9.4 8 10 8 11 8.4 11 9 10.6 10 10 10M13 10C12.4 10 12 9.6 12 9S12.4 8 13 8 14 8.4 14 9 13.6 10 13 10M16 10C15.5 10 15 9.6 15 9S15.5 8 16 8 17 8.4 17 9 16.5 10 16 10Z'></path> </svg> </div></div></div></div></div></div></div><div id='user-goal-reminder-1-3' class='d-none'> <div class='d-flex flex-column user-goal-reminder' data-reminderfrequency='0' data-startdate-day='10' data-startdate-month='01' data-startdate-year='2023' data-startdate-hour='08' data-startdate-minute='00' data-enddate-day='18' data-enddate-month='02' data-enddate-year='2023' data-enddate-hour='10' data-enddate-minute='00' data-reminder-hour='8' data-reminder-minute='5'> <div class='d-flex flex-row mb-3'> <div class='d-flex flex-row'> <span class='text-wrap topic-title'>Erinnerungseinstellungen</span> </div></div><div class='d-flex flex-row mb-3'> <div class='btn-group btn-group-toggle' data-toggle='buttons'> <label class='btn btn-secondary active'> <input type='radio' name='reminder-frequency-options' id='option_daily' value='daily' checked='checked'>Täglich </label> <label class='btn btn-secondary'> <input type='radio' name='reminder-frequency-options' id='option_weekly' value='weekly'>Wöchentlich </label> <label class='btn btn-secondary'> <input type='radio' name='reminder-frequency-options' id='option_monthly' value='monthly'>Monatlich </label> </div></div><div class='d-flex flex-row mb-3'> <div class='d-flex flex-row mr-3'> <span class='text-wrap topic-title'>Startdatum</span> </div><select class='form-select startdate-day'> <option value='01'>1</option> <option value='02'>2</option> <option value='03'>3</option> <option value='04'>4</option> <option value='05'>5</option> <option value='06'>6</option> <option value='07'>7</option> <option value='08'>8</option> <option value='09'>9</option> <option value='10' selected='selected'>10</option> <option value='11'>11</option> <option value='12'>12</option> <option value='13'>13</option> <option value='14'>14</option> <option value='15'>15</option> <option value='16'>16</option> <option value='17'>17</option> <option value='18'>18</option> <option value='19'>19</option> <option value='20'>20</option> <option value='21'>21</option> <option value='22'>22</option> <option value='23'>23</option> <option value='24'>24</option> <option value='25'>25</option> <option value='26'>26</option> <option value='27'>27</option> <option value='28'>28</option> <option value='29'>29</option> <option value='30'>30</option> <option value='31'>31</option> </select> <select class='form-select startdate-month'> <option value='01' selected='selected'>Jänner</option> <option value='02'>Februar</option> <option value='03'>März</option> <option value='04'>April</option> <option value='05'>Mai</option> <option value='06'>Juni</option> <option value='07'>Juli</option> <option value='08'>August</option> <option value='09'>September</option> <option value='10'>Oktober</option> <option value='11'>November</option> <option value='12'>Dezember</option> </select> <select class='form-select startdate-year mr-2'> <option value='2022'>2022</option> <option value='2023' selected='selected'>2023</option> <option value='2024'>2024</option> </select> <select class='form-select startdate-hour'> <option value='00'>00</option> <option value='01'>01</option> <option value='02'>02</option> <option value='03'>03</option> <option value='04'>04</option> <option value='05'>05</option> <option value='06'>06</option> <option value='07'>07</option> <option value='08' selected='selected'>08</option> <option value='09'>09</option> <option value='10'>10</option> <option value='11'>11</option> <option value='12'>12</option> <option value='13'>13</option> <option value='14'>14</option> <option value='15'>15</option> <option value='16'>16</option> <option value='17'>17</option> <option value='18'>18</option> <option value='19'>19</option> <option value='20'>20</option> <option value='21'>21</option> <option value='22'>22</option> <option value='23'>23</option> </select> <select class='form-select startdate-minute'> <option value='00' selected='selected'>00</option> <option value='05'>05</option> <option value='10'>10</option> <option value='15'>15</option> <option value='20'>20</option> <option value='25'>25</option> <option value='30'>30</option> <option value='35'>35</option> <option value='40'>40</option> <option value='45'>45</option> <option value='50'>50</option> <option value='55'>55</option> </select> </div><div class='d-flex flex-row mb-3'> <div class='d-flex flex-row mr-3'> <span class='text-wrap topic-title'>Enddatum</span> </div><select class='form-select enddate-day'> <option value='01'>1</option> <option value='02'>2</option> <option value='03'>3</option> <option value='04'>4</option> <option value='05'>5</option> <option value='06'>6</option> <option value='07'>7</option> <option value='08'>8</option> <option value='09'>9</option> <option value='10'>10</option> <option value='11'>11</option> <option value='12'>12</option> <option value='13'>13</option> <option value='14'>14</option> <option value='15'>15</option> <option value='16'>16</option> <option value='17'>17</option> <option value='18' selected='selected'>18</option> <option value='19'>19</option> <option value='20'>20</option> <option value='21'>21</option> <option value='22'>22</option> <option value='23'>23</option> <option value='24'>24</option> <option value='25'>25</option> <option value='26'>26</option> <option value='27'>27</option> <option value='28'>28</option> <option value='29'>29</option> <option value='30'>30</option> <option value='31'>31</option> </select> <select class='form-select enddate-month'> <option value='01'>Jänner</option> <option value='02' selected='selected'>Februar</option> <option value='03'>März</option> <option value='04'>April</option> <option value='05'>Mai</option> <option value='06'>Juni</option> <option value='07'>Juli</option> <option value='08'>August</option> <option value='09'>September</option> <option value='10'>Oktober</option> <option value='11'>November</option> <option value='12'>Dezember</option> </select> <select class='form-select enddate-year mr-2'> <option value='2022'>2022</option> <option value='2023' selected='selected'>2023</option> <option value='2024'>2024</option> </select> <select class='form-select enddate-hour'> <option value='00'>00</option> <option value='01'>01</option> <option value='02'>02</option> <option value='03'>03</option> <option value='04'>04</option> <option value='05'>05</option> <option value='06'>06</option> <option value='07'>07</option> <option value='08'>08</option> <option value='09'>09</option> <option value='10' selected='selected'>10</option> <option value='11'>11</option> <option value='12'>12</option> <option value='13'>13</option> <option value='14'>14</option> <option value='15'>15</option> <option value='16'>16</option> <option value='17'>17</option> <option value='18'>18</option> <option value='19'>19</option> <option value='20'>20</option> <option value='21'>21</option> <option value='22'>22</option> <option value='23'>23</option> </select> <select class='form-select enddate-minute'> <option value='00' selected='selected'>00</option> <option value='05'>05</option> <option value='10'>10</option> <option value='15'>15</option> <option value='20'>20</option> <option value='25'>25</option> <option value='30'>30</option> <option value='35'>35</option> <option value='40'>40</option> <option value='45'>45</option> <option value='50'>50</option> <option value='55'>55</option> </select> </div><div class='d-flex flex-row mb-3'> <div class='d-flex flex-row mr-3'> <span class='text-wrap topic-title'>Erinnerungszeit</span> </div><select class='form-select reminder-hour'> <option value='00'>00</option> <option value='01'>01</option> <option value='02'>02</option> <option value='03'>03</option> <option value='04'>04</option> <option value='05'>05</option> <option value='06'>06</option> <option value='07'>07</option> <option value='08' selected='selected'>08</option> <option value='09'>09</option> <option value='10'>10</option> <option value='11'>11</option> <option value='12'>12</option> <option value='13'>13</option> <option value='14'>14</option> <option value='15'>15</option> <option value='16'>16</option> <option value='17'>17</option> <option value='18'>18</option> <option value='19'>19</option> <option value='20'>20</option> <option value='21'>21</option> <option value='22'>22</option> <option value='23'>23</option> </select> <select class='form-select reminder-minute'> <option value='00'>00</option> <option value='05' selected='selected'>05</option> <option value='10'>10</option> <option value='15'>15</option> <option value='20'>20</option> <option value='25'>25</option> <option value='30'>30</option> <option value='35'>35</option> <option value='40'>40</option> <option value='45'>45</option> <option value='50'>50</option> <option value='55'>55</option> </select> </div><div class='d-flex flex-row mb-3'> <button type='button' data-goalid='3' class='btn btn-primary user-goal-reminder-save'>Speichern</button> </div></div></div><div id='user-goal-reflection-1-3' class='d-none'> <div class='d-flex flex-column user-goal-reflection'> <fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline'></label> </div><div class='amplifier-questiontext'> <p>Würden Sie sagen, Sie haben das Lernziel erreicht? Wenn ja, was haben Sie gelernt? Wenn nein, was hat Sie daran gehindert?</p></div><div class='amplifier-user-response'> <textarea placeholder='My thoughts...' rows='5' data-topicid='3' data-goalid='7' class='col p-0 amplifier-user-response-input'></textarea> </div><input type='button' name='next' class='next action-button reflective-question' value='Next'> </fieldset> <fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline'></label> </div><div class='amplifier-questiontext'> <p>Konnten Sie eine Veränderung - im Positiven oder Negativen - in Ihrem beruflichen oder privaten Umfeld feststellen?</p></div><div class='amplifier-user-response'> <textarea placeholder='My thoughts...' rows='5' data-topicid='3' data-goalid='8' class='col p-0 amplifier-user-response-input'></textarea> </div><input type='button' name='next' class='next action-button reflective-question' value='Next'> </fieldset> <fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline'></label> </div><div class='amplifier-questiontext'> <p>Wie denken Sie jetzt über das Lernziel?</p></div><div class='amplifier-user-response'> <textarea placeholder='My thoughts...' rows='5' data-topicid='3' data-goalid='9' class='col p-0 amplifier-user-response-input'></textarea> </div><input type='button' name='next' class='next action-button reflective-question' value='Next'> </fieldset> <fieldset class='d-none'> <h3 class='fs-subtitle'>Reflection</h3> <div class='form-group text-left'> <label class='col-form-label d-inline '>Please click on 'Save' to finish your reflecion session.</label> </div><input data-goalid='3' type='submit' name='submit' class='submit action-button reflection-submit' value='Save'> </fieldset> </div></div></div>",
+        "courseId": "1",
+        "courseModuleId": "1",
+        "instanceId": "1",
+        "userId": "1",
+        "participantcode": "A01AA",
+        "amplifier_setup_finished": "true"
+    }
+}}
+<div id="amplifier-widget-{{{courseId}}}-{{{courseModuleId}}}-{{{instanceId}}}"
+    data-course-id="{{courseId}}"
+    data-coursemodule-id="{{{courseModuleId}}}"
+    data-instance-id="{{{instanceId}}}"
+    data-user-id="{{userId}}">
+
+    {{> mod_amplifier/widget/amplifier-setup }}
+
+    {{{usergoals}}}
+
+</div>
+
+{{#js}}
+require(
+[
+    'jquery',
+    'mod_amplifier/amplifier-widget'
+],
+function(
+    $,
+    AmplifierWidget
+) {
+
+    $(document).ready(function() {
+
+        AmplifierWidget.init({{{userId}}}, {{{courseId}}}, {{{courseModuleId}}}, {{{instanceId}}}, "{{{participantcode}}}", {{amplifier_setup_finished}});
+
+    });
+
+});
+{{/js}}
