@@ -26,6 +26,8 @@ Training Amplifier supports people in applying recently acquired knowledge into 
 First, people think about the most important aspects out of the recently heard for them personally. Then they make a decision and choose which of these aspects they want to achieve. The Training Amplifier limits the set of aspects to five to avoid getting overwhelmed by too much of them at once.
 Second, people need to set a reminder for each of the aspects. People can choose to get notified via mail and/or the Moodle web interface.The Training Amplifier reminds them as long as they have not reflected at least once about an aspect. Reminding them should engage people to reflect about their efforts, if and how applied changes in behaviour belonging to an aspect impacts personal life.
 
+<img width="792" alt="Training Amplifier" src="https://github.com/simonefranza/moodle-mod_amplifier/assets/6499758/567d7cbe-8ada-4d43-8573-1161b4d1d74d">
+
 ## Prerequisites
 
 Training Amplifier makes use of the Learning Goal Widget plugin. With the Learning Goal Widget the lecturer defines the set of aspects which can be chosen from as well as the reflective questions presented for an aspect.
