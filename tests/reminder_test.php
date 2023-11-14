@@ -83,9 +83,9 @@ class reminder_test extends \advanced_testcase {
         $DB->delete_records('learninggoalwidget_topic');
         // Create topic.
         $topicrecord = new stdClass;
-        $topicrecord->lgw_title = "Topictitle";
-        $topicrecord->lgw_shortname = "short";
-        $topicrecord->lgw_url = "invalidurl";
+        $topicrecord->title = "Topictitle";
+        $topicrecord->shortname = "short";
+        $topicrecord->url = "invalidurl";
         $topicrecord->id = $DB->insert_record('learninggoalwidget_topic', $topicrecord);
         $recordexists = $DB->count_records('learninggoalwidget_topic');
         $this->assertEquals(1, $recordexists);
@@ -93,10 +93,10 @@ class reminder_test extends \advanced_testcase {
         $DB->delete_records('learninggoalwidget_goal');
         // Create topic.
         $goalrecord = new stdClass;
-        $goalrecord->lgw_title = "Goal Title";
-        $goalrecord->lgw_shortname = "goal shortname";
-        $goalrecord->lgw_url = "Invlaid url";
-        $goalrecord->lgw_topic = $topicrecord->id;
+        $goalrecord->title = "Goal Title";
+        $goalrecord->shortname = "goal shortname";
+        $goalrecord->url = "Invlaid url";
+        $goalrecord->topic = $topicrecord->id;
         $goalrecord->id = $DB->insert_record('learninggoalwidget_goal', $goalrecord);
         $recordexists = $DB->count_records('learninggoalwidget_goal');
         $this->assertEquals(1, $recordexists);

@@ -130,9 +130,9 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
         $params = [$courseid];
         $courserecord = $DB->get_record_sql($sqlstmt, $params);
 
-        $sqlstmt = "SELECT a.lgw_title as topic, b.lgw_title as goal
+        $sqlstmt = "SELECT a.title as topic, b.title as goal
         FROM {learninggoalwidget_goal} b, {learninggoalwidget_topic} a
-        WHERE b.id = ? and b.lgw_topic = a.id";
+        WHERE b.id = ? and b.topic = a.id";
         $params = [$goalid];
         $goalrecord = $DB->get_record_sql($sqlstmt, $params);
 
