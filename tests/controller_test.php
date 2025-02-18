@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/amplifier/externallib.php');
+//require_once($CFG->dirroot . '/mod/amplifier/externallib.php');
 require_once($CFG->dirroot . '/mod/amplifier/tests/providerhelper.php');
 
 use mod_amplifier\core\amplifier_controller;

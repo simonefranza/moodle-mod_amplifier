@@ -43,19 +43,17 @@
 }}
 <div class="d-flex flex-column user-goal-reflection">
 
+    <h3 class="fs-subtitle">{{{amplifier_submit_reflections_headline}}}</h3>
+
+    <div class="form-group text-left">
+      <label class="col-form-label d-inline ">{{{amplifier_reflection_text_1}}}</label>
+    </div>
+
+    <!-- This is the amplifier-reflective-question template-->
     {{{reflectivequestions}}}
 
-    <fieldset class="d-none">
-        <h3 class="fs-subtitle">{{{amplifier_submit_reflections_headline}}}</h3>
-
-        <div class="form-group text-left">
-            <label class="col-form-label d-inline ">{{{amplifier_submit_text_2}}}</label>
-        </div>
-
-        <div class="d-flex flex-row mb-3">
-            <button data-goalid="{{{amplifiergoalid}}}" type="submit" name="submit" class="btn btn-primary submit action-button reflection-submit">{{{amplifier_button_submit}}}</button>
-        </div>
-
-    </fieldset>
+    <div class="d-flex flex-row mb-3">
+        <button data-goalid="{{{amplifiergoalid}}}" disabled type="submit" name="submit" class="btn btn-primary submit action-button reflection-submit">{{{amplifier_button_submit}}}</button>
+    </div>
 
  </div>

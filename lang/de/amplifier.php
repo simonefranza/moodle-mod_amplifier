@@ -41,11 +41,8 @@ $string['noaccess'] = 'Dafür müssen sie angemeldet sein';
 
 $string['amplifier_welcome_headline'] = "Willkommen beim Training Amplifier";
 $string['amplifier_welcome_text_1'] = "Training Amplifier soll Sie unterstützen, neuerworbenes theoretisches Wissen in der Praxis anzuwenden.";
-$string['amplifier_welcome_text_2'] = "Im ersten Schritt denken Sie bitte über die für Sie wichtigsten Themen der gerade absolvierten Lehrveranstaltung nach.";
-$string['amplifier_welcome_text_3'] = "Im zweiten Schritt wählen Sie Lernziele aus, die Sie in den nächsten Tagen und Wochen umsetzen möchten. Wie und wie oft Sie an ein Lernziel erinnert werden möchten, können Sie selbst wählen. Der Training Amplifier hilft Ihnen so Ihre gewünschen Lernziele in der Praxis anzuwenden.";
+$string['amplifier_welcome_text_2'] = "Bitte wählen Sie bis zu 5 Ziele aus, die Sie in den kommenden Tagen oder Wochen verfolgen möchten. Für jedes Ihrer ausgewählten Ziele können Sie eine Erinnerung zur Reflexion setzen, die Sie daran erinnert, ob Sie das Ziel bereits in die Praxis umgesetzt haben.";
 
-$string['amplifier_username_invalid_feedback'] = 'Der Benutzername enthält ein oder mehrere ungültige Zeichen.';
-$string['amplifier_username_exists_feedback'] = 'Ein Benutzer mit dem Namen "{$a}" ist bereits registriert. Bitte wählen Sie einen anderen Namen.';
 $string['amplifier_password_invalid_feedback'] = 'Das Passwort entspricht nicht den Regeln. Bitte lesen Sie die Anleitung zum Erstellen des Passwortes noch einmal aufmerksam durch.';
 $string['amplifier_password_not_equal_feedback'] = 'Die Passwörter sind nicht identisch.';
 $string['amplifier_password_min_chars_feedback'] = 'Das Passwort muss mindestens 8 Zeichen lang sein. Bitte lesen Sie die Anleitung zum Erstellen des Passwortes noch einmal aufmerksam durch.';
@@ -53,8 +50,6 @@ $string['amplifier_email_invalid_feedback'] = 'Bitte geben Sie eine gültige E-M
 $string['amplifier_email_not_equal_feedback'] = 'Die E-Mail Adressen sind nicht identisch.';
 $string['amplifier_signup_modal_dialog_title'] = 'Benutzerprofil erstellen';
 $string['amplifier_signup_form_title'] = 'Benutzerkonto erstellen';
-$string['amplifier_username'] = 'Benutzername';
-$string['amplifier_username_rules'] = "Benutzername - Regeln: <br>erlaubt sind Kleinbuchstaben, Ziffern, Bindestrich '-', Unterstrich '_', Punkt '.' bzw das Klammeräffchen '@'";
 $string['amplifier_password'] = 'Kennwort';
 $string['amplifier_password_repeat'] = 'Kennwort (wiederholen)';
 $string['amplifier_password_rules'] = "Kennwortregeln: <br>mindestens 8 Zeichen, 1 Ziffer(n), 1 Kleinbuchstabe(n), 1 Großbuchstabe(n), 1 Sonderzeichen.<br>Erlaubte Sonderzeichen: _ ~ - ! @ # $ % ^ & * '";
@@ -66,40 +61,11 @@ $string['amplifier_more_details'] = 'Weitere Details';
 
 $string['amplifier'] = 'Benutzerregistrierung';
 
-$string['amplifier_preferred_language'] = 'Sprache';
-$string['amplifier_preferred_language_choose'] = 'Bitte wählen eine Sprache, mit der Sie DIGIVID benutzen wollen';
-$string['amplifier_preferred_language_german'] = 'German / Deutsch';
-$string['amplifier_preferred_language_english'] = 'English';
-$string['amplifier_preferred_language_norwegian'] = 'Norwegian / Norsk';
-
 $string['amplifier_user_role'] = 'Benutzerrolle';
 $string['amplifier_user_role_choose'] = 'Bitte wähle eine Benutzerrolle aus';
 $string['amplifier_user_role_student'] = 'Student*innen';
 $string['amplifier_user_role_teacher'] = 'Lehrpersonen';
 $string['amplifier_user_role_lecturer'] = 'Vortragende*r';
-
-$string['amplifier_consent'] = "Einverständiserklärung";
-$string['amplifier_consent_title'] = "DIGIVIDget Einverständiserklärung";
-$string['amplifier_consent_statement_1'] = "Sehr geehrte DIGIVIDget Benutzerinnen und Benutzer!
-
-Die DIGIVID Plattform namens DIGIVIDget wurde im Rahmen des DIGIVID Erasmus+ Projekts entwickelt. In diesem Forschungsprojekt werden folgende Informationen und Daten gesammelt, um einerseits Ihre Benutzeraccounts anzulegen und zu verwalten und andererseits das allgemeine Nutzungsverhalten zu Evaluations- und Verbesserungszwecken analysieren:
-";
-$string['amplifier_consent_statement_2'] = "
-Ihr Benutzername und Ihre E-Mailadresse werden AUSSCHLIEßLICH für die Registrierung bzw. für die Verwaltung Ihres Accounts auf der DIGIVID Plattform  verwendet.
-";
-$string['amplifier_consent_statement_3'] = "
-Alle weiteren Informationen, die im Rahmen der Evaluierung gesammelt werden, werden anonymisiert/pseudonymisiert und vertraulich behandelt. Eine nachträgliche Identifizierung von einzelnen Personen ist daher nicht möglich. Die von Ihnen zur Verfügung gestellten Informationen werden ausgewertet und in Projektberichten und Veröffentlichen zusammen mit den Informationen der anderen Teilnehmer*innen dargestellt. Die Rohdaten werden auf den internen Servern der TU Graz gespeichert und sind durch Passwörter geschützt, die nur den Wissenschaflter*innen dieses Projekts bekannt sind. Alle Rohdaten werden nach Abschluss des Projekts fünf Jahre lang gespeichert und dann gelöscht.
-";
-$string['amplifier_consent_statement_4'] = "
-Mit dem Ausfüllen dieses Formulars erklären Sie Folgendes:
-";
-$string['amplifier_consent_username_and_email'] = 'Ihr Benutzername und Ihre Emailadresse';
-$string['amplifier_consent_userbehaviour'] = 'Ihr Benutzerverhalten';
-$string['amplifier_consent_user_response'] = 'Ihre Antworten zu offenen, reflexiven Fragen';
-$string['amplifier_consent_user_ipadress'] = 'Ihre IP-Adresse.';
-$string['amplifier_consent_form_check_save'] = "Ich bin damit einverstanden, dass die oben genannten Informationen gespeichert werden.";
-$string['amplifier_consent_form_check_publish'] = "Ich bin damit einverstanden, dass die erhobenen Daten in anonymisierter Form in Vorträgen, Präsentationen, Büchern, Berichten oder Zeitschriften veröffentlicht werden.";
-$string['amplifier_consent_form_check_register'] = "Ich bin damit einverstanden, mich unter oben genannten Voraussetzungen auf der DIGIVID Plattform zu registrieren.";
 
 $string['amplifier_participation_info'] = 'Benutzerrichtlinien';
 $string['amplifier_participation_info_terms_of_service'] = 'Bitte lesen die Richtlinie für die Benutzung der DIGIVID Plattform aufmerksam durch';
@@ -123,18 +89,14 @@ $string['amplifier_account_setup_email_hint'] = '';
 $string['amplifier_button_submit_setup'] = 'Übernehmen';
 $string['amplifier_button_submit_reflection'] = 'Speichern';
 $string['amplifier_button_next'] = 'Weiter';
-$string['amplifier_button_previous'] = 'Zurück';
 
 $string['amplifier_reflective_question_headline'] = 'Reflexion';
 $string['amplifier_reflective_question_intro'] = 'Denken Sie an die Lehrveranstaltung "Selbstorganisation, Zeitmanagement und Arbeitstechniken" und beantworten Sie bitte die folgenden Fragen.';
 $string['amplifier_learning_goal_selection_headline'] = 'Lernziele Auswahl';
 $string['amplifier_learning_goal_selection_intro'] = 'Bitte wählen Sie Lernziele aus, die für Sie besonders wichtig sind. Es sollten nicht mehr als fünf Lernziele sein.';
 
-$string['amplifier_setup_submit_headline'] = "Training Amplifier Setup";
-$string['amplifier_setup_submit_text_1'] = 'Sie haben das Training Amplifier Setup erfolgreich abgeschlossen!';
-
 $string['amplifier_submit_reflections_headline'] = "Reflexion";
-$string['amplifier_setup_submit_text_2'] = 'Bitte klicken Sie auf "Speichern" um die Reflexion abzuschließen.';
+$string["amplifier_reflection_text_1"] = "Bitte reflektieren Sie über das folgende Lernziel.";
 $string["amplifier_reminder_settings_headline"] = "Erinnerungseinstellungen";
 $string["amplifier_reminder_frequency_daily"] = "Täglich";
 $string["amplifier_reminder_frequency_weekly"] = "Wöchentlich";
@@ -154,10 +116,6 @@ $string["amplifier_reminder_settings_month9_label"] = "September";
 $string["amplifier_reminder_settings_month10_label"] = "Oktober";
 $string["amplifier_reminder_settings_month11_label"] = "November";
 $string["amplifier_reminder_settings_month12_label"] = "Dezember";
-
-$string['amplifier_setup_participantcode_headline'] = 'Teilnehmercode';
-$string['amplifier_setup_participantcode_description'] = 'Der Teilnehmercode besteht aus: dem Anfangsbuchstaben deines Geburtsortes,<br>deinem Geburtstag (zweistellig, wenn kleiner 10 dann mit führender Null),<br>dem Anfangsbuchstaben des Vornamens deines Vaters,<br>dem Anfangsbuchstaben des Vornamens deiner Mutter.<br><br>Ein Beispiel:<br>Der Teilnehmercode einer Person, geboren in Graz am zweiten Feber, deren Eltern Johann und Susanne heißen, ist:<br>"G" (für Graz) an erster Stelle,<br>"02" (für den zweiten Feber) an zweiter Stelle,<br>"J" (für Johann) an dritter Stelle,<br>"S" (für Susanne) an vierter Stelle.<br><br>Der Teilnehmercode der Person wäre: G02JS<br>';
-$string['amplifier_setup_participantcode_input_label'] = 'Bitte hier den Teilnehmer Code eingeben';
 
 $string['amplifier_check_scheduled_reminders'] = 'Lookup user set reminders and send reflection notification message';
 
@@ -203,7 +161,6 @@ $string['privacy:metadata:amplifier_reflection:course'] = 'Kurs Identifizierer';
 $string['privacy:metadata:amplifier_reflection:coursemodule'] = 'Kurs Modul Identifizierer';
 $string['privacy:metadata:amplifier_reflection:instance'] = 'Kurs Modul Instanz Identifizierer';
 $string['privacy:metadata:amplifier_reflection:user'] = 'Benutzer Identifizierer';
-$string['privacy:metadata:amplifier_reflection:participantcode'] = 'Teilnehmercode';
 $string['privacy:metadata:amplifier_reflection:goal'] = 'Lernziel Identifizierer zur Reflexion';
 $string['privacy:metadata:amplifier_reflection:response'] = 'Reflexionstext';
 
@@ -212,7 +169,6 @@ $string['privacy:metadata:amplifier_reminder:course'] = 'Kurs Identifizierer';
 $string['privacy:metadata:amplifier_reminder:coursemodule'] = 'Kurs Modul Identifizierer';
 $string['privacy:metadata:amplifier_reminder:instance'] = 'Kurs Modul Instanz Identifizierer';
 $string['privacy:metadata:amplifier_reminder:user'] = 'Benutzer Identifizierer';
-$string['privacy:metadata:amplifier_reminder:participantcode'] = 'Teilnehmercode';
 $string['privacy:metadata:amplifier_reminder:goal'] = 'The ID of the goal related to the reminder setting.';
 
 $string['privacy:metadata:amplifier_setup_goals'] = 'Information zu einem gewählten Lernziel';
@@ -220,7 +176,6 @@ $string['privacy:metadata:amplifier_setup_goals:course'] = 'Kurs Identifizierer'
 $string['privacy:metadata:amplifier_setup_goals:coursemodule'] = 'Kurs Modul Identifizierer';
 $string['privacy:metadata:amplifier_setup_goals:instance'] = 'Kurs Modul Instanz Identifizierer';
 $string['privacy:metadata:amplifier_setup_goals:user'] = 'Benutzer Identifizierer';
-$string['privacy:metadata:amplifier_setup_goals:participantcode'] = 'Teilnehmercode';
 $string['privacy:metadata:amplifier_setup_goals:goal'] = 'Lernziel Identifizierer';
 
 $string['privacy:metadata:amplifier_setup_reflection'] = 'Informationen zu den Reflexionen am Ende einer Lehrveranstaltung';
@@ -228,7 +183,6 @@ $string['privacy:metadata:amplifier_setup_reflection:course'] = 'Kurs Identifizi
 $string['privacy:metadata:amplifier_setup_reflection:coursemodule'] = 'Kurs Modul Identifizierer';
 $string['privacy:metadata:amplifier_setup_reflection:instance'] = 'Kurs Modul Instanz Identifizierer';
 $string['privacy:metadata:amplifier_setup_reflection:user'] = 'Benutzer Identifizierer';
-$string['privacy:metadata:amplifier_setup_reflection:participantcode'] = 'Teilnehmercode';
 $string['privacy:metadata:amplifier_setup_reflection:goal'] = 'Lernziel Identifizierer zur Reflexion';
 $string['privacy:metadata:amplifier_setup_reflection:response'] = 'Reflexionstext';
 
@@ -237,4 +191,3 @@ $string['privacy:metadata:amplifier_setup:course'] = 'Kurs Identifizierer';
 $string['privacy:metadata:amplifier_setup:coursemodule'] = 'Kurs Modul Identifizierer';
 $string['privacy:metadata:amplifier_setup:instance'] = 'Kurs Modul Instanz Identifizierer';
 $string['privacy:metadata:amplifier_setup:user'] = 'Benutzer Identifizierer';
-$string['privacy:metadata:amplifier_setup:participantcode'] = 'Teilnehmercode';

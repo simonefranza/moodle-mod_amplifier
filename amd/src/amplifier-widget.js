@@ -25,13 +25,13 @@
 /* eslint no-bitwise: 0 */
 
 define(
-    [
-        "jquery",
-        "mod_amplifier/controller"
-    ], function(
-        $,
-        Controller
-    ) {
+  [
+    "jquery",
+    "mod_amplifier/controller"
+  ], function(
+    $,
+    Controller
+  ) {
 
     /**
      * Amplifier Root Html Element
@@ -59,246 +59,343 @@ define(
     var instanceid;
 
     /**
-     * The users participant code
-     */
-    var participantcode;
-
-    /**
-     * Reference to current fieldset
-     */
-    var currentFieldset;
-
-    /**
-     * Reference to next fieldset
-     */
-    var nextFieldset;
-
-    /**
      * Intialise the content widget
      *
      * @param {object} userId The user identifier
      * @param {object} courseId The course identifier
      * @param {object} courseModuleId The course module identifier
      * @param {object} instanceId The course module instance identifier
-     * @param {object} participantCode The participant code
      */
-    var init = function(userId, courseId, courseModuleId, instanceId, participantCode) {
+    var init = function(userId, courseId, courseModuleId, instanceId) {
+      amplifier = document.querySelector(`#amplifier-widget-${courseId}-${courseModuleId}-${instanceId}`);
+      userid = userId;
+      courseid = courseId;
+      coursemoduleid = courseModuleId;
+      instanceid = instanceId;
 
-        let amplifierRoot = $(`#amplifier-widget-${courseId}-${courseModuleId}-${instanceId}`);
+      amplifier.querySelectorAll(".topic-card").forEach((el) => {
+        const reminderBtn = el.querySelector(".reminder-dropdown-toggle");
+        const reflectionBtn = el.querySelector(".reflection-dropdown-toggle");
+        reminderBtn.addEventListener("click", () => toggleView(reminderBtn, reflectionBtn));
+        reflectionBtn.addEventListener("click", () => toggleView(reflectionBtn, reminderBtn));
 
-        amplifier = amplifierRoot;
-        userid = userId;
-        courseid = courseId;
-        coursemoduleid = courseModuleId;
-        instanceid = instanceId;
-        participantcode = participantCode;
+        // Monitor input to enable/disable submit button
+        const reflectionSubmitBtn = el.querySelector(".submit.action-button.reflection-submit");
+        el.querySelector('textarea').addEventListener('input', (e) => checkInput(e, reflectionSubmitBtn));
+        const reflectionBlock = el.querySelector('.user-goal-reflection');
+        reflectionSubmitBtn.addEventListener('click', (e) => submitReflection(e, reflectionBlock));
 
-        $(amplifier).find(".topic-card .user-goal-reminder").each(function() {
-
-            if ($(this)[0].hasAttribute("data-reminderfrequency")) {
-                let frequency = $(this).attr("data-reminderfrequency");
-                if (frequency == 0) {
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_daily]`)
-                        .attr('checked', 'checked');
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_daily]`)
-                        .parent().addClass("active");
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_weekly]`)
-                        .parent().removeClass("active");
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_monthly]`)
-                        .parent().removeClass("active");
-                } else if (frequency == 1) {
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_weekly]`)
-                        .attr('checked', 'checked');
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_daily]`)
-                        .parent().removeClass("active");
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_weekly]`)
-                        .parent().addClass("active");
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_monthly]`)
-                        .parent().removeClass("active");
-                } else if (frequency == 2) {
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_monthly]`)
-                        .attr('checked', 'checked');
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_daily]`)
-                        .parent().removeClass("active");
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_weekly]`)
-                        .parent().removeClass("active");
-                    $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_monthly]`)
-                        .parent().addClass("active");
-                }
-            } else {
-                $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_daily]`)
-                    .attr('checked', 'checked');
-                $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_daily]`)
-                    .parent().addClass("active");
-                $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_weekly]`)
-                    .parent().removeClass("active");
-                $(this).find(`input[type=radio][name=reminder-frequency-options][id=option_monthly]`)
-                    .parent().removeClass("active");
-            }
-            if ($(this)[0].hasAttribute("data-startdate-day")) {
-                let startDateDay = $(this).attr("data-startdate-day");
-                let startDateMonth = $(this).attr("data-startdate-month");
-                let startDateYear = $(this).attr("data-startdate-year");
-                let startDateHour = $(this).attr("data-startdate-hour");
-                let startDateMinute = $(this).attr("data-startdate-minute");
-                let endDateDay = $(this).attr("data-enddate-day");
-                let endDateMonth = $(this).attr("data-enddate-month");
-                let endDateYear = $(this).attr("data-enddate-year");
-                let endDateHour = $(this).attr("data-enddate-hour");
-                let endDateMinute = $(this).attr("data-enddate-minute");
-                let reminderHour = $(this).attr("data-reminder-hour").toString().padStart(2, '0');
-                let reminderMinute = $(this).attr("data-reminder-minute").toString().padStart(2, '0');
-                $(this).find(`select.startdate-day option[value=${startDateDay}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-month option[value=${startDateMonth}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-year option[value=${startDateYear}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-hour option[value=${startDateHour}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-minute option[value=${startDateMinute}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-day option[value=${endDateDay}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-month option[value=${endDateMonth}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-year option[value=${endDateYear}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-hour option[value=${endDateHour}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-minute option[value=${endDateMinute}]`).attr('selected', 'selected');
-                $(this).find(`select.reminder-hour option[value=${reminderHour}]`).attr('selected', 'selected');
-                $(this).find(`select.reminder-minute option[value=${reminderMinute}]`).attr('selected', 'selected');
-            } else {
-                var currentdate = new Date();
-                $(this).find(`select.startdate-day option[value=${currentdate.getDate()}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-month option[value=${(currentdate.getMonth() + 1)}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-year option[value=${currentdate.getFullYear()}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-hour option[value=${currentdate.getHours()}]`).attr('selected', 'selected');
-                $(this).find(`select.startdate-minute option[value=${0}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-day option[value=${currentdate.getDate() + 7}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-month option[value=${(currentdate.getMonth() + 1)}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-year option[value=${currentdate.getFullYear()}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-hour option[value=${currentdate.getHours()}]`).attr('selected', 'selected');
-                $(this).find(`select.enddate-minute option[value=${0}]`).attr('selected', 'selected');
-                $(this).find(`select.reminder-hour option[value=${currentdate.getHours()}]`).attr('selected', 'selected');
-                $(this).find(`select.reminder-minute option[value=${0}]`).attr('selected', 'selected');
-            }
-        });
-
-        $(amplifier).find(".next.action-button.reflective-question").click(handleNextButtonClick);
-        $(amplifier).find(".submit.action-button.reflection-submit").click(handleReflectionSubmitButtonClick);
-        $(amplifier).find(".reminder-dropdown-toggle").on("click", function() {
-            $(`#${$(this).attr("data-target")}`).toggleClass("d-none");
-        });
-        $(amplifier).find(".reflection-dropdown-toggle").on("click", function() {
-            $(`#${$(this).attr("data-target")}`).toggleClass("d-none");
-            $(`#${$(this).attr("data-target")} .user-goal-reflection fieldset`).first().toggleClass("d-none");
-        });
-        $(amplifier).find(".user-goal-reminder-save").on("click", handleReminderSubmitButtonClick);
+        // Setup reminder view
+        const reminderBlock = el.querySelector('.user-goal-reminder');
+        setFrequency(reminderBlock);
+        setReminderDates(reminderBlock);
+        addDateChecker(reminderBlock);
+        // Handle submit button
+        el.querySelector(".user-goal-reminder-save")
+          .addEventListener("click", (e) => submitReminder(e, reminderBlock));
+      });
 
     };
 
     /**
-     * Next button handler
+     * Toggles one of the two views (reflection or reminder) and closes the other
+     * @param {HTMLElement} toToggle Element to toggle
+     * @param {HTMLElement} toClose Element to close
      */
-    var handleNextButtonClick = function() {
+    const toggleView = (toToggle, toClose) => {
+      document.querySelector('#' + toToggle.dataset.target).classList.toggle('d-none');
+      document.querySelector('#' + toClose.dataset.target).classList.add('d-none');
+    };
 
-        currentFieldset = $(this).parent().parent();
-        nextFieldset = $(this).parent().parent().next();
-
-        // Show the next fieldset
-        currentFieldset.addClass("d-none");
-        nextFieldset.removeClass("d-none");
+    /**
+     * Monitors the content of the reflection textarea and enables/disables the submit
+     * button if there is/isn't content
+     * @param {Event} e Input event
+     * @param {HTMLElement} btn Button to enable/disable
+     */
+    const checkInput = (e, btn) => {
+      // Submit is enabled if there is content
+      btn.disabled = e.target.value.trim() === '';
     };
 
     /**
      * Reminder submit button handler
+     * @param {Event} e Click event
+     * @param {HTMLElement} el Root reminder element
      */
-    var handleReminderSubmitButtonClick = function() {
+    const submitReminder = (e, el) => {
+      const amplifierGoalId = e.target.dataset.goalid;
 
-        currentFieldset = $(this).parent().parent();
-        currentFieldset.parent().addClass("d-none");
+      el.parentElement.classList.add('d-none');
 
-        let amplifiergoalid = $(this).attr("data-goalid");
-        let radioButton = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find("input[type=radio][name=reminder-frequency-options]:checked");
+      let radioButton = el.querySelector(`input[type=radio]` +
+        `[name=reminder-frequency-options-${amplifierGoalId}]:checked`);
+      if (!radioButton) {
+        return;
+      }
+      const checkedFrequency = radioButton.value;
 
-        let reminderFrequency = 0;
-        if (radioButton.val() !== undefined) {
-            if (radioButton.val() === "daily") {
-                reminderFrequency = 0;
-            } else if (radioButton.val() === "weekly") {
-                reminderFrequency = 1;
-            } else if (radioButton.val() === "monthly") {
-                reminderFrequency = 2;
-            }
-        }
+      let frequency = 0;
+      if (checkedFrequency === "weekly") {
+        frequency = 1;
+      } else if (checkedFrequency === "monthly") {
+        frequency = 2;
+      }
 
-        let startDateDay = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.startdate-day option:selected").val();
-        let startDateMonth = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.startdate-month option:selected").val();
-        let startDateYear = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.startdate-year option:selected").val();
-        let startDateHour = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.startdate-hour option:selected").val();
-        let startDateMinute = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.startdate-minute option:selected").val();
-        let endDateDay = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.enddate-day option:selected").val();
-        let endDateMonth = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.enddate-month option:selected").val();
-        let endDateYear = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.enddate-year option:selected").val();
-        let endDateHour = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.enddate-hour option:selected").val();
-        let endDateMinute = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.enddate-minute option:selected").val();
-        let reminderHour = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.reminder-hour option:selected").val();
-        let reminderMinute = $(`#amplifier-user-goal-${amplifiergoalid}`)
-            .find(".user-goal-reminder select.reminder-minute option:selected").val();
+      const postfix = 'option:checked';
+      let prefix = 'select.startdate-';
+      const startDate = parseDate(el, prefix, postfix);
 
-        let startdate = Date.parse(`${startDateYear}-${startDateMonth}-${startDateDay}T${startDateHour}:${startDateMinute}:00`);
-        let enddate = Date.parse(`${endDateYear}-${endDateMonth}-${endDateDay}T${endDateHour}:${endDateMinute}:00`);
+      prefix = 'select.enddate-';
+      const endDate = parseDate(el, prefix, postfix);
 
-        Controller.saveReminder({
-            startdate: startdate,
-            enddate: enddate,
-            reminderhour: parseInt(reminderHour),
-            reminderminute: parseInt(reminderMinute),
-            frequency: reminderFrequency,
-            lastnotificationdate: 0,
-            goal: amplifiergoalid,
-            user: userid,
-            course: courseid,
-            coursemodule: coursemoduleid,
-            instance: instanceid,
-            participantcode: participantcode
-        });
+      prefix = 'select.reminder-';
+      let reminderHour = parseInt(el.querySelector(`${prefix}hour ${postfix}`).value);
+      let reminderMinute = parseInt(el.querySelector(`${prefix}minute ${postfix}`).value);
 
+      Controller.saveReminder({
+        startdate: startDate.getTime(),
+        enddate: endDate.getTime(),
+        reminderhour: reminderHour,
+        reminderminute: reminderMinute,
+        frequency: frequency,
+        lastnotificationdate: 0,
+        goal: amplifierGoalId,
+        user: userid,
+        course: courseid,
+        coursemodule: coursemoduleid,
+        instance: instanceid,
+        participantcode: 'PARTICIPANTCODE'
+      });
     };
 
     /**
      * Reflection submit button handler
+     * @param {Event} e Click event
+     * @param {HTMLElement} el Root reflection element
      */
-    var handleReflectionSubmitButtonClick = function() {
+    const submitReflection = (e, el) => {
+      const textarea = el.querySelector('textarea');
+      const reflections = [textarea.value.trim()];
+      if (reflections[0] === '') {
+        return;
+      }
 
-        currentFieldset = $(this).parent().parent();
-        currentFieldset.addClass("d-none");
-        currentFieldset.parent().parent().addClass("d-none");
+      el.parentElement.classList.add('d-none');
 
-        let amplifiergoalid = $(this).attr("data-goalid");
-
-        let reflections = [];
-        $(`#amplifier-user-goal-${amplifiergoalid}`).find(".amplifier-user-response-input").each((idx, element) => {
-            reflections.push($(element).val());
-        });
-
-        Controller.submitReflections({
-            reflectiondate: Date.now(),
-            reflections: JSON.stringify(reflections),
-            goal: amplifiergoalid,
-            user: userid,
-            course: courseid,
-            coursemodule: coursemoduleid,
-            instance: instanceid,
-            participantcode: participantcode
-        });
+      // TODO remove reflection date and create it server side
+      Controller.submitReflections({
+        reflectiondate: Date.now(),
+        reflections: JSON.stringify(reflections),
+        goal: e.target.dataset.goalid,
+        user: userid,
+        course: courseid,
+        coursemodule: coursemoduleid,
+        instance: instanceid,
+        participantcode: "PARTICIPANTCODE"
+      });
 
     };
+
+    /**
+     * Sets the correct frequency
+     * @param {HTMLElement} el Element
+     */
+    const setFrequency = (el) => {
+      let frequency = 0;
+      if (el.hasAttribute('data-reminderfrequency')) {
+        frequency = parseInt(el.getAttribute("data-reminderfrequency"));
+      }
+      let targetStr = 'daily';
+      if (frequency === 1) {
+        targetStr = 'weekly';
+      } else if (frequency === 2) {
+        targetStr = 'monthly';
+      }
+      const saveReminderButton = el.querySelector('.user-goal-reminder-save');
+      const amplifierGoalId = saveReminderButton.dataset.goalid;
+
+      const inputEl = el.querySelector(`input[type=radio]` +
+        `[name=reminder-frequency-options-${amplifierGoalId}].option_${targetStr}`);
+      inputEl.checked = true;
+      inputEl.parentElement.classList.add("active");
+    };
+
+    /**
+     * Sets the desired start and end date in the time picker
+     * @param {HTMLElement} el Root element
+     */
+    const setReminderDates = (el) => {
+      const startDate = new Date();
+      const endDate = new Date();
+      const reminderDate = new Date();
+
+      if ('startdate' in el.dataset && 'enddate' in el.dataset) {
+        startDate.setTime(parseInt(el.dataset.startdate));
+        endDate.setTime(parseInt(el.dataset.enddate));
+        reminderDate.setHours(parseInt(el.dataset.reminderHour), parseInt(el.dataset.reminderMinute));
+      } else {
+        endDate.setDate(startDate.getDate() + 7);
+        reminderDate.setTime(endDate.getTime());
+      }
+      startDate.setMinutes(0);
+      endDate.setMinutes(0);
+      reminderDate.setMinutes(0);
+      setDate(el, 'select.startdate-', startDate);
+      setDate(el, 'select.enddate-', endDate);
+
+      // Set reminder time.
+      const reminderHour = reminderDate.getHours();
+      const reminderMinute = reminderDate.getMinutes();
+      el.querySelector(`select.reminder-hour option[value="${reminderHour}"]`)
+        .setAttribute('selected', 'selected');
+      el.querySelector(`select.reminder-minute option[value="${reminderMinute}"]`)
+        .setAttribute('selected', 'selected');
+    };
+
+    /**
+     * Sets the date in the select element
+     * @param {HTMLElement} el Root element
+     * @param {string} prefix Prefix of the class (startdate|enddate)
+     * @param {Date} date Date to set
+     */
+    const setDate = (el, prefix, date) => {
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      const hour = date.getHours();
+      const minute = date.getMinutes();
+      el.querySelector(`${prefix}day option[value="${day}"]`)
+        .setAttribute('selected', 'selected');
+      el.querySelector(`${prefix}month option[value="${month}"]`)
+        .setAttribute('selected', 'selected');
+      el.querySelector(`${prefix}year option[value="${year}"]`)
+        .setAttribute('selected', 'selected');
+      el.querySelector(`${prefix}hour option[value="${hour}"]`)
+        .setAttribute('selected', 'selected');
+      el.querySelector(`${prefix}minute option[value="${minute}"]`)
+        .setAttribute('selected', 'selected');
+    };
+
+    /**
+     * Updates the number of days in the picker
+     * @param {HTMLElement} selectElement Select element
+     * @param {number} month Current month
+     * @param {number} year Current year
+     */
+    function updateDays(selectElement, month, year) {
+        const daysInMonth = new Date(year, month, 0).getDate();
+        const currentValue = parseInt(selectElement.value);
+        selectElement.innerHTML = "";
+
+        for (let i = 1; i <= daysInMonth; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.textContent = i;
+            selectElement.appendChild(option);
+        }
+
+        if (currentValue <= daysInMonth) {
+            selectElement.value = currentValue;
+        } else {
+            selectElement.value = daysInMonth;
+        }
+    }
+
+    /**
+     * Checks that the dates are valid (i.e. start before end)
+     * @param {Object} start Object with day, month, year, hour and minute elements
+     * @param {Object} end Object with day, month, year, hour and minute elements
+     */
+    function validateDates(start, end) {
+      let {day: startDay, month: startMonth, year: startYear, hour: startHour, minute: startMinute} = start;
+      let {day: endDay, month: endMonth, year: endYear, hour: endHour, minute: endMinute} = end;
+      const startDate = new Date(
+        parseInt(startYear.value),
+        parseInt(startMonth.value) - 1,
+        parseInt(startDay.value),
+        parseInt(startHour.value),
+        parseInt(startMinute.value),
+      );
+
+      const endDate = new Date(
+        parseInt(endYear.value),
+        parseInt(endMonth.value) - 1,
+        parseInt(endDay.value),
+        parseInt(endHour.value),
+        parseInt(endMinute.value),
+      );
+
+      if (startDate > endDate) {
+        endYear.value = startYear.value;
+        endMonth.value = startMonth.value;
+        endDay.value = startDay.value;
+        endHour.value = startHour.value;
+        endMinute.value = startMinute.value;
+      }
+    }
+
+    /**
+     * Makes sure that only valid dates for start and end date are selectable
+     * @param {HTMLElement} el Root element
+     */
+    const addDateChecker = (el) => {
+      const start = {
+        day: el.querySelector(".startdate-day"),
+        month: el.querySelector(".startdate-month"),
+        year: el.querySelector(".startdate-year"),
+        hour: el.querySelector(".startdate-hour"),
+        minute : el.querySelector(".startdate-minute"),
+      };
+      const end = {
+        day: el.querySelector(".enddate-day"),
+        month: el.querySelector(".enddate-month"),
+        year: el.querySelector(".enddate-year"),
+        hour: el.querySelector(".enddate-hour"),
+        minute: el.querySelector(".enddate-minute"),
+      };
+
+      [start.month, start.year].forEach(el => el.addEventListener("change", () => {
+        updateDays(start.day, parseInt(start.month.value), parseInt(start.year.value));
+        validateDates(start, end);
+      }));
+
+      [end.month, end.year].forEach(el => el.addEventListener("change", () => {
+        updateDays(end.day, parseInt(end.month.value), parseInt(end.year.value));
+        validateDates(start, end);
+      }));
+
+      [start.day, start.hour, start.minute, end.day, end.hour, end.minute]
+        .forEach(el => el.addEventListener("change", () => {
+          validateDates(start, end);
+        }));
+
+      updateDays(start.day, parseInt(start.month.value), parseInt(start.year.value));
+      updateDays(end.day, parseInt(end.month.value), parseInt(end.year.value));
+      validateDates(start, end);
+    };
+
+    /**
+     * Parses a date from the select elements
+     * @param {HTMLElement} el Parent element of select
+     * @param {string} prefix Prefix of the class
+     * @param {string} postfix Postfix of the class
+     * @returns {Date} Parsed date
+     */
+    function parseDate(el, prefix, postfix) {
+      const date = new Date();
+      date.setFullYear(
+        parseInt(el.querySelector(`${prefix}year ${postfix}`).value),
+        parseInt(el.querySelector(`${prefix}month ${postfix}`).value) - 1,
+        parseInt(el.querySelector(`${prefix}day ${postfix}`).value)
+      );
+      date.setHours(
+        parseInt(el.querySelector(`${prefix}hour ${postfix}`).value),
+        parseInt(el.querySelector(`${prefix}minute ${postfix}`).value),
+        0
+      );
+      return date;
+    }
 
     return {
         init: init

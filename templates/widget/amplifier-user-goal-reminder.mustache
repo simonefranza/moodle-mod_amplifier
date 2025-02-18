@@ -38,16 +38,8 @@
     * [data-reminder-minute="15"] minute of reminder daytime
 
     Context variables required for this template:
-    * reminderstartdate-day
-    * reminderstartdate-month
-    * reminderstartdate-year
-    * reminderstartdate-hour
-    * reminderstartdate-minute
-    * reminderenddate-day
-    * reminderenddate-month
-    * reminderenddate-year
-    * reminderenddate-hour
-    * reminderenddate-minute
+    * reminderstartdate
+    * reminderenddate
     * reminderhour
     * reminderminute
     * amplifier_reminder_settings_headline
@@ -75,16 +67,8 @@
     Example context (json):
     {
         "reminderfrequency": "0",
-        "reminderstartdate-day": "10",
-        "reminderstartdate-month": "01",
-        "reminderstartdate-year": "2023",
-        "reminderstartdate-hour": "08",
-        "reminderstartdate-minute": "00",
-        "reminderenddate-day": "18",
-        "reminderenddate-month": "01",
-        "reminderenddate-year": "2023",
-        "reminderenddate-hour": "08",
-        "reminderenddate-minute": "00",
+        "reminderstartdate": "1739809653",
+        "reminderenddate": "1739809653",
         "reminderhour": "08",
         "reminderminute": "15",
         "amplifier_reminder_settings_headline": "Erinnerungseinstellungen",
@@ -110,257 +94,131 @@
         "amplifier_button_submit_reflection": "Speichern"
     }
 }}
-<div class="d-flex flex-column user-goal-reminder" {{#reminder}}data-reminderfrequency="{{{reminderfrequency}}}" data-startdate-day="{{{reminderstartdate-day}}}" data-startdate-month="{{{reminderstartdate-month}}}" data-startdate-year="{{{reminderstartdate-year}}}"  data-startdate-hour="{{{reminderstartdate-hour}}}" data-startdate-minute="{{{reminderstartdate-minute}}}" data-enddate-day="{{{reminderenddate-day}}}" data-enddate-month="{{{reminderenddate-month}}}" data-enddate-year="{{{reminderenddate-year}}}" data-enddate-hour="{{{reminderenddate-hour}}}" data-enddate-minute="{{{reminderenddate-minute}}}" data-reminder-hour="{{{reminderhour}}}" data-reminder-minute="{{{reminderminute}}}"{{/reminder}}>
-    <div class="d-flex flex-row mb-3">
-        <div class="d-flex flex-row">
-            <span class="text-wrap topic-title">{{{amplifier_reminder_settings_headline}}}</span>
-        </div>
+<div class="d-flex flex-column user-goal-reminder"
+  {{#reminder}}
+    data-reminderfrequency="{{{reminderfrequency}}}"
+    data-startdate="{{{reminderstartdate}}}"
+    data-enddate="{{{reminderenddate}}}"
+    data-reminder-hour="{{{reminderhour}}}"
+    data-reminder-minute="{{{reminderminute}}}"
+  {{/reminder}}
+>
+  <!-- Headline -->
+  <h3 class="fs-subtitle">{{{amplifier_reminder_settings_headline}}}</h3>
+
+  <!-- Frequency Options -->
+  <div class="d-flex flex-row mb-3">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-secondary">
+        <input type="radio" name="reminder-frequency-options-{{amplifiergoalid}}" class="option_daily" value="daily">
+        {{{amplifier_reminder_frequency_daily}}}
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="reminder-frequency-options-{{amplifiergoalid}}" class="option_weekly" value="weekly">
+        {{{amplifier_reminder_frequency_weekly}}}
+      </label>
+      <label class="btn btn-secondary">
+        <input type="radio" name="reminder-frequency-options-{{amplifiergoalid}}" class="option_monthly" value="monthly">
+        {{{amplifier_reminder_frequency_monthly}}}
+      </label>
     </div>
-    <div class="d-flex flex-row mb-3">
+  </div>
 
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-secondary active">
-            <input type="radio" name="reminder-frequency-options" id="option_daily" value="daily">{{{amplifier_reminder_frequency_daily}}}</label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="reminder-frequency-options" id="option_weekly" value="weekly">{{{amplifier_reminder_frequency_weekly}}}</label>
-        <label class="btn btn-secondary">
-            <input type="radio" name="reminder-frequency-options" id="option_monthly" value="monthly">{{{amplifier_reminder_frequency_monthly}}}</label>
-        </div>
+  <!-- Start Date -->
+  <div class="d-flex flex-row mb-3">
+    <div class="d-flex flex-row mr-3">
+      <span class="text-wrap topic-title">{{{amplifier_reminder_settings_startdate_label}}}</span>
     </div>
+    <select class="form-select startdate-day">
+      {{#dayOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/dayOptions}}
+    </select>
 
-    <div class="d-flex flex-row mb-3">
-        <div class="d-flex flex-row mr-3">
-            <span class="text-wrap topic-title">{{{amplifier_reminder_settings_startdate_label}}}</span>
-        </div>
+    <select class="form-select startdate-month">
+      {{#monthOptions}}
+        <option value="{{value}}">{{{label}}}</option>
+      {{/monthOptions}}
+    </select>
 
-        <select class="form-select startdate-day">
-            <option value="01">1</option>
-            <option value="02">2</option>
-            <option value="03">3</option>
-            <option value="04">4</option>
-            <option value="05">5</option>
-            <option value="06">6</option>
-            <option value="07">7</option>
-            <option value="08">8</option>
-            <option value="09">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-        </select>
+    <select class="form-select startdate-year mr-2">
+      {{#yearOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/yearOptions}}
+    </select>
 
-        <select class="form-select startdate-month">
-            <option value="01">{{{amplifier_reminder_settings_month1_label}}}</option>
-            <option value="02">{{{amplifier_reminder_settings_month2_label}}}</option>
-            <option value="03">{{{amplifier_reminder_settings_month3_label}}}</option>
-            <option value="04">{{{amplifier_reminder_settings_month4_label}}}</option>
-            <option value="05">{{{amplifier_reminder_settings_month5_label}}}</option>
-            <option value="06">{{{amplifier_reminder_settings_month6_label}}}</option>
-            <option value="07">{{{amplifier_reminder_settings_month7_label}}}</option>
-            <option value="08">{{{amplifier_reminder_settings_month8_label}}}</option>
-            <option value="09">{{{amplifier_reminder_settings_month9_label}}}</option>
-            <option value="10">{{{amplifier_reminder_settings_month10_label}}}</option>
-            <option value="11">{{{amplifier_reminder_settings_month11_label}}}</option>
-            <option value="12">{{{amplifier_reminder_settings_month12_label}}}</option>
-        </select>
+    <select class="form-select startdate-hour">
+      {{#hourOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/hourOptions}}
+    </select>
 
-        <select class="form-select startdate-year mr-2">
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-        </select>
+    <select class="form-select startdate-minute">
+      {{#minuteOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/minuteOptions}}
+    </select>
+  </div>
 
-        <select class="form-select startdate-hour">
-            <option value="00">00</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-        </select>
-
-        <select class="form-select startdate-minute">
-            <option value="00">00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
-        </select>
+  <!-- End Date -->
+  <div class="d-flex flex-row mb-3">
+    <div class="d-flex flex-row mr-3">
+      <span class="text-wrap topic-title">{{{amplifier_reminder_settings_enddate_label}}}</span>
     </div>
+    <select class="form-select enddate-day">
+      {{#dayOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/dayOptions}}
+    </select>
 
-    <div class="d-flex flex-row mb-3">
-        <div class="d-flex flex-row mr-3">
-            <span class="text-wrap topic-title">{{{amplifier_reminder_settings_enddate_label}}}</span>
-        </div>
+    <select class="form-select enddate-month">
+      {{#monthOptions}}
+        <option value="{{value}}">{{{label}}}</option>
+      {{/monthOptions}}
+    </select>
 
-        <select class="form-select enddate-day">
-            <option value="01">1</option>
-            <option value="02">2</option>
-            <option value="03">3</option>
-            <option value="04">4</option>
-            <option value="05">5</option>
-            <option value="06">6</option>
-            <option value="07">7</option>
-            <option value="08">8</option>
-            <option value="09">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-        </select>
+    <select class="form-select enddate-year mr-2">
+      {{#yearOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/yearOptions}}
+    </select>
 
-        <select class="form-select enddate-month">
-            <option value="01">{{{amplifier_reminder_settings_month1_label}}}</option>
-            <option value="02">{{{amplifier_reminder_settings_month2_label}}}</option>
-            <option value="03">{{{amplifier_reminder_settings_month3_label}}}</option>
-            <option value="04">{{{amplifier_reminder_settings_month4_label}}}</option>
-            <option value="05">{{{amplifier_reminder_settings_month5_label}}}</option>
-            <option value="06">{{{amplifier_reminder_settings_month6_label}}}</option>
-            <option value="07">{{{amplifier_reminder_settings_month7_label}}}</option>
-            <option value="08">{{{amplifier_reminder_settings_month8_label}}}</option>
-            <option value="09">{{{amplifier_reminder_settings_month9_label}}}</option>
-            <option value="10">{{{amplifier_reminder_settings_month10_label}}}</option>
-            <option value="11">{{{amplifier_reminder_settings_month11_label}}}</option>
-            <option value="12">{{{amplifier_reminder_settings_month12_label}}}</option>
-        </select>
+    <select class="form-select enddate-hour">
+      {{#hourOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/hourOptions}}
+    </select>
 
-        <select class="form-select enddate-year mr-2">
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-        </select>
+    <select class="form-select enddate-minute">
+      {{#minuteOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/minuteOptions}}
+    </select>
+  </div>
 
-        <select class="form-select enddate-hour">
-            <option value="00">00</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-        </select>
-
-        <select class="form-select enddate-minute">
-            <option value="00">00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
-        </select>
+  <!-- Reminder Time -->
+  <div class="d-flex flex-row mb-3">
+    <div class="d-flex flex-row mr-3">
+      <span class="text-wrap topic-title">{{{amplifier_reminder_settings_time_label}}}</span>
     </div>
+    <select class="form-select reminder-hour">
+      {{#hourOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/hourOptions}}
+    </select>
 
-    <div class="d-flex flex-row mb-3">
-        <div class="d-flex flex-row mr-3">
-            <span class="text-wrap topic-title">{{{amplifier_reminder_settings_time_label}}}</span>
-        </div>
+    <select class="form-select reminder-minute">
+      {{#minuteOptions}}
+        <option value="{{value}}">{{display}}</option>
+      {{/minuteOptions}}
+    </select>
+  </div>
 
-        <select class="form-select reminder-hour">
-            <option value="00">00</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-        </select>
+  <!-- Submit Button -->
+  <div class="d-flex flex-row mb-3">
+    <button type="button" data-goalid="{{{amplifiergoalid}}}" class="btn btn-primary user-goal-reminder-save">
+      {{{amplifier_button_submit_reflection}}}
+    </button>
+  </div>
+</div>
 
-        <select class="form-select reminder-minute">
-            <option value="00">00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
-        </select>
-    </div>
-
-    <div class="d-flex flex-row mb-3">
-        <button type="button" data-goalid="{{{amplifiergoalid}}}" class="btn btn-primary user-goal-reminder-save">{{{amplifier_button_submit_reflection}}}</button>
-    </div>
-
-
- </div>

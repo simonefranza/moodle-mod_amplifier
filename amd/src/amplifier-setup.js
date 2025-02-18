@@ -23,32 +23,35 @@
 
 define(['jquery', 'mod_amplifier/controller'], function($, Controller) {
 
-    /**
+  /**
      * Course, Course module, course module instance and user identifiers
      */
-    var courseId, courseModuleId, instanceId, userId;
+  let courseId, courseModuleId, instanceId, userId;
 
-    /**
-     * References to the currcent, previous and next fieldsets within the amplifier setup
+  /**
+     * The root element
      */
-    var currentFieldset, nextFieldset, previousFieldset;
+  let rootElement;
 
-    /**
-     * The users participant code
+  /**
+     * The submit button
      */
-    var participantCode = "TODO insert participant code here";
-
-    /**
-     * The user reflections
+  let submitButton;
+  /**
+     * Wheter the submission is valid
      */
-    var reflections = [];
+  let submitEnabled = false;
 
-    /**
-     * The user selected learning goals
+  /**
+     * All chekboxes in the widget
      */
-    var learningGoals = [];
+  let checkboxes;
+  /**
+     * Number of checked checkboxes
+     */
+  let checkedCount = 0;
 
-    /**
+  /**
      * Initialising the setup of the amplifier widget
      *
      * @param {object} paramCourseId The course identifier
@@ -56,142 +59,91 @@ define(['jquery', 'mod_amplifier/controller'], function($, Controller) {
      * @param {object} paramInstanceId The course module instance identifier
      * @param {object} paramUserId The user identifier
      */
-    const init = (paramCourseId, paramCourseModuleId, paramInstanceId, paramUserId) => {
+  const init = (paramCourseId, paramCourseModuleId, paramInstanceId, paramUserId) => {
+    courseId = paramCourseId;
+    courseModuleId = paramCourseModuleId;
+    instanceId = paramInstanceId;
+    userId = paramUserId;
 
-        courseId = paramCourseId;
-        courseModuleId = paramCourseModuleId;
-        instanceId = paramInstanceId;
-        userId = paramUserId;
+    rootElement = document.querySelector(`#amplifier-widget-${courseId}-${courseModuleId}-${instanceId}`);
 
-        let $amplifierSetupRoot = $(`#amplifier-widget-${courseId}-${courseModuleId}-${instanceId}`);
+    submitButton = rootElement.querySelector(".amplifier-setup .amplifier-submit-setup");
+    submitButton.addEventListener('click', handleSubmitButtonClick);
 
-        $amplifierSetupRoot.find(".amplifier-setup .next").click(handleNextButtonClick);
+    checkboxes = rootElement.querySelectorAll(".amplifier-setup .predefined-learning-goal-check");
+    checkboxes.forEach((el) => el.addEventListener('change', handleLearningGoalClick));
+  };
 
-        $amplifierSetupRoot.find(".amplifier-setup .previous").click(handlePreviousButtonClick);
-
-        $amplifierSetupRoot.find(".amplifier-setup .amplifier-submit-setup").click(handleSubmitButtonClick);
-
-        $amplifierSetupRoot.find(".amplifier-setup .predefined-learning-goal-check").click(handleLearningGoalClick);
-
-        $amplifierSetupRoot.find(".amplifier-setup .participantcode-input").change(handleParticipantCodeChange);
-
-    };
-
-    /**
-     * Next button click handler
-     */
-    var handleNextButtonClick = function() {
-
-        currentFieldset = $(this).parent().parent();
-        nextFieldset = $(this).parent().parent().next();
-
-        if ($(this).hasClass('participantcode')) {
-            participantCode = $(this).parent().parent().find(".participantcode-input").val();
-        }
-        if ($(this).hasClass('reflective-question')) {
-            let userResponse = $(this).parent().parent().find(".amplifier-user-response-input").val();
-            let topicId = $(this).parent().parent().find(".amplifier-user-response-input").attr("data-topicid");
-            let goalId = $(this).parent().parent().find(".amplifier-user-response-input").attr("data-goalid");
-            reflections.push({userResponse: userResponse, topicid: topicId, goalid: goalId});
-        }
-        if ($(this).hasClass('learning-goals')) {
-            $(".predefined-learning-goal-check").each((idx, element) => {
-                if ($(element).is(':checked')) {
-                    let topicId = $(element).attr("data-topicid");
-                    let goalId = $(element).attr("data-goalid");
-                    learningGoals.push({topicid: topicId, goalid: goalId});
-                }
-            });
-
-        }
-
-        // Show the next fieldset
-        currentFieldset.addClass("d-none");
-        nextFieldset.removeClass("d-none");
-        nextFieldset.show();
-        currentFieldset.hide();
-    };
-
-    /**
-     * Previous button click handler
-     */
-    var handlePreviousButtonClick = function() {
-        currentFieldset = $(this).parent().parent();
-        previousFieldset = $(this).parent().parent().prev();
-
-        // Show the previous fieldset
-        currentFieldset.addClass("d-none");
-        previousFieldset.removeClass("d-none");
-        previousFieldset.show();
-        currentFieldset.hide();
-    };
-
-    /**
+  /**
      * Amplifier setup submit button handler
      */
-    var handleSubmitButtonClick = function() {
+  var handleSubmitButtonClick = function() {
+    let learningGoals = [];
+    checkboxes.forEach((checkbox) => {
+      if (!checkbox.checked) {
+        return;
+      }
+      learningGoals.push({
+        topicid: parseInt(checkbox.dataset.topicid),
+        goalid: parseInt(checkbox.dataset.goalid),
+      });
+    });
+    handleNewCount(learningGoals.length);
+    if (!submitEnabled) {
+      return;
+    }
 
-        // Submit the settings and trigger loading landing page of amplifier widget
-        Controller.submitSetup({
-            courseid: courseId,
-            userid: userId,
-            coursemoduleid: courseModuleId,
-            instanceid: instanceId,
-            participantcode: participantCode,
-            reflections: JSON.stringify(reflections),
-            learninggoals: JSON.stringify(learningGoals)
-        })
-            .then(
-                function() {
-                    // Reload document to show amplifier widget
-                    location.reload();
-                    return;
-                }
-            )
-            .catch(function(error) {
-                throw new Error(error);
-            });
-    };
+    // Submit the settings and trigger loading landing page of amplifier widget
+    Controller.submitSetup({
+      courseid: courseId,
+      userid: userId,
+      coursemoduleid: courseModuleId,
+      instanceid: instanceId,
+      participantcode: "PARTICIPANT CODE",
+      reflections: JSON.stringify([]),
+      learninggoals: JSON.stringify(learningGoals)
+    })
+      .then(
+        function() {
+          // Reload document to show amplifier widget
+          location.reload();
+          return;
+        }
+      )
+      .catch(function(error) {
+        throw new Error(error);
+      });
+  };
 
-    /**
+  /**
      * Learning goal check box selection handler
+     * @param {*} e Changed event
      */
-    var handleLearningGoalClick = function() {
-        let checkedCount = 0;
-        $(".predefined-learning-goal-check").each((idx, element) => {
-            if ($(element).is(':checked')) {
-                checkedCount++;
-            }
-        });
-        if (checkedCount > 0 && checkedCount <= 5) {
-            $(this).closest('fieldset').find('button.next.action-button').prop('disabled', false);
-            $(this).closest('fieldset').find('button.next.action-button').css('opacity', '1');
-        } else {
-            $(this).closest('fieldset').find('button.next.action-button').prop('disabled', true);
-            $(this).closest('fieldset').find('button.next.action-button').css('opacity', '.5');
-        }
-    };
+  var handleLearningGoalClick = function(e) {
+    //eslint-disable-next-line
+    console.log(checkedCount + (e.target.checked ? 1 : -1));
+    handleNewCount(checkedCount + (e.target.checked ? 1 : -1));
+  };
 
-
-    /**
-     * Participant code next button handler
+  /**
+     * Handle a new count of checked checkboxes
+     * @param {Int} newCount New count
      */
-    var handleParticipantCodeChange = function() {
+  const handleNewCount = (newCount) => {
+    //eslint-disable-next-line
+    console.log(newCount);
+    checkedCount = newCount;
+    submitEnabled = checkedCount > 0 && checkedCount <= 5;
+    if (submitEnabled) {
+      submitButton.removeAttribute('disabled');
+    } else {
+      submitButton.setAttribute('disabled', true);
+    }
+  };
 
-        let participantCode = $(this).val();
-        if (participantCode.length == 5) {
-            $(this).closest('fieldset').find('button.next.action-button').prop('disabled', false);
-            $(this).closest('fieldset').find('button.next.action-button').css('opacity', '1');
-        } else {
-            $(this).closest('fieldset').find('button.next.action-button').prop('disabled', true);
-            $(this).closest('fieldset').find('button.next.action-button').css('opacity', '.5');
-        }
-
-    };
-
-    return {
-        init: init
-    };
+  return {
+    init: init
+  };
 });
 
 

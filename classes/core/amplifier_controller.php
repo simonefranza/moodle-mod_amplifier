@@ -16,8 +16,6 @@
 
 namespace mod_amplifier\core;
 
-use stdClass;
-
 /**
  * Training Amplifier Controller
  *
@@ -56,13 +54,6 @@ class amplifier_controller {
      * @var int
      */
     private $instanceid;
-
-    /**
-     * participant code
-     *
-     * @var
-     */
-    private $participantcode;
 
     /**
      * @var
@@ -109,29 +100,27 @@ class amplifier_controller {
         $this->userid = $userid;
         $this->coursemoduleid = $coursemoduleid;
         $this->instanceid = $instanceid;
-        $this->participantcode = "undefined";
 
         // Amplifier setup for this user exists?
-        $sqlstmt = "SELECT id, participantcode, finished
-        FROM {amplifier_setup}
-        WHERE course = ?
-        AND coursemodule = ?
-        AND instance = ?
-        AND amp_user = ?";
-        $params = [$this->courseid, $this->coursemoduleid, $this->instanceid, $this->userid];
-        $amplifierusersetup = $DB->get_record_sql($sqlstmt, $params);
+        $params = [
+            'course' => $this->courseid,
+            'coursemodule' => $this->coursemoduleid,
+            'instance' => $this->instanceid,
+            'amp_user' => $this->userid
+        ];
+        $amplifierusersetup = $DB->get_record('amplifier_setup', $params);
 
         if ($amplifierusersetup !== false) {
-            $this->participantcode = $amplifierusersetup->participantcode;
             $this->finished = $amplifierusersetup->finished;
             $this->setupid = $amplifierusersetup->id;
+            self::$topicshortname = $amplifierusersetup->reflectiontopicshortname;
+            self::$goalstopicshortname = $amplifierusersetup->goalstopicshortname;
         } else {
-            $amplifierusersetup = new stdClass;
+            $amplifierusersetup = new \stdClass;
             $amplifierusersetup->amp_user = $this->userid;
             $amplifierusersetup->course = $this->courseid;
             $amplifierusersetup->coursemodule = $this->coursemoduleid;
             $amplifierusersetup->instance = $this->instanceid;
-            $amplifierusersetup->participantcode = "undefined";
             $amplifierusersetup->reflectiontopicshortname = self::$topicshortname;
             $amplifierusersetup->goalstopicshortname = self::$goalstopicshortname;
             $amplifierusersetup->finished = 0;
@@ -140,69 +129,40 @@ class amplifier_controller {
         }
 
         if ($this->finished) {
-
-            $renderedrq = "";
-            $sqlstmt = "SELECT goal.id as goalid, goal.title as reflectionquestion, topic.id as topicid
-                FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
-                WHERE goals.course = ? AND goals.topic = topic.id AND topic.title = ? AND goals.goal = goal.id";
-            $params = [$this->courseid, self::$goalstopicshortname];
-            $rqrecords = $DB->get_records_sql($sqlstmt, $params);
-            foreach ($rqrecords as $rqrecord) {
-                $renderedrq .= $OUTPUT->render_from_template(
-                    'mod_amplifier/widget/amplifier-reflective-question',
-                    [
-                        'amplifier_reflective_question_headline' => "",
-                        'amplifier_reflective_question_intro' => "",
-                        'amplifier_reflective_question_topicid' => $rqrecord->topicid,
-                        'amplifier_reflective_question_goalid' => $rqrecord->goalid,
-                        'amplifier_reflective_question_questiontext' => $rqrecord->reflectionquestion,
-                        'amplifier_button_next' => get_string('amplifier_button_next', 'mod_amplifier'),
-                        'amplifier_placeholder_thoughts' => get_string('amplifier_placeholder_thoughts', 'mod_amplifier'),
-                    ]
-                );
-            }
-
-            $sqlstmt = "SELECT goal.id as goalid,
-            goal.title as goaltitle,
-            topic.id as topicid,
-            topic.title as topictitle,
-            goals.goal as amplifiergoalid
-            FROM {amplifier_setup_goals} goals,
-            {learninggoalwidget_topic} topic,
-            {learninggoalwidget_goal} goal
-            WHERE goals.course = ?
-            AND goals.coursemodule = ?
-            AND goals.instance = ?
-            AND goals.amp_user = ?
-            AND goals.topic = topic.id
-            AND goals.goal = goal.id";
-            $params = [$this->courseid, $this->coursemoduleid, $this->instanceid, $this->userid];
+            $sqlstmt = "SELECT lgwgoals.id as goalid,
+                               lgwgoals.title as goaltitle,
+                               lgwtopics.id as topicid,
+                               lgwtopics.title as topictitle
+                          FROM {amplifier_setup_goals} ampgoals
+                     LEFT JOIN {learninggoalwidget_goals} lgwgoals ON ampgoals.goal = lgwgoals.id
+                     LEFT JOIN {learninggoalwidget_topics} lgwtopics ON ampgoals.topic = lgwtopics.id
+                         WHERE ampgoals.course = :courseid
+                           AND ampgoals.coursemodule = :coursemodule
+                           AND ampgoals.instance = :instance
+                           AND ampgoals.amp_user = :userid";
+            $params = [
+                "courseid" => $this->courseid,
+                "coursemodule" => $this->coursemoduleid,
+                "instance" => $this->instanceid,
+                "userid" => $this->userid,
+            ];
             $usergoalrecords = $DB->get_records_sql($sqlstmt, $params);
             foreach ($usergoalrecords as $usergoal) {
 
+                $renderedrq = "";
                 $templatecontext = [];
-
-                $sqlstmt = "SELECT startdate, enddate, reminderhour, reminderminute, frequency
-                FROM {amplifier_reminder}
-                WHERE goal = ?
-                AND course = ?
-                AND coursemodule = ?
-                AND instance = ?
-                AND amp_user = ?";
-                $params = [$usergoal->amplifiergoalid, $this->courseid, $this->coursemoduleid, $this->instanceid, $this->userid];
-                $ampreminderrecord = $DB->get_record_sql($sqlstmt, $params);
+                $params = [
+                    "goal" => $usergoal->goalid,
+                    "course" => $this->courseid,
+                    "coursemodule" => $this->coursemoduleid,
+                    "instance" => $this->instanceid,
+                    "amp_user" => $this->userid,
+                ];
+                $ampreminderrecord = $DB->get_record('amplifier_reminder', $params);
                 if ($ampreminderrecord) {
                     $templatecontext['reminder'] = true;
-                    $templatecontext['reminderstartdate-day'] = date("d", $ampreminderrecord->startdate / 1000);
-                    $templatecontext['reminderstartdate-month'] = date("m", $ampreminderrecord->startdate / 1000);
-                    $templatecontext['reminderstartdate-year'] = date("Y", $ampreminderrecord->startdate / 1000);
-                    $templatecontext['reminderstartdate-hour'] = date("H", $ampreminderrecord->startdate / 1000);
-                    $templatecontext['reminderstartdate-minute'] = date("i", $ampreminderrecord->startdate / 1000);
-                    $templatecontext['reminderenddate-day'] = date("d", $ampreminderrecord->enddate / 1000);
-                    $templatecontext['reminderenddate-month'] = date("m", $ampreminderrecord->enddate / 1000);
-                    $templatecontext['reminderenddate-year'] = date("Y", $ampreminderrecord->enddate / 1000);
-                    $templatecontext['reminderenddate-hour'] = date("H", $ampreminderrecord->enddate / 1000);
-                    $templatecontext['reminderenddate-minute'] = date("i", $ampreminderrecord->enddate / 1000);
+                    $templatecontext['reminderstartdate'] = $ampreminderrecord->startdate;
+                    $templatecontext['reminderenddate'] = $ampreminderrecord->enddate;
                     $templatecontext['reminderstartdate'] = $ampreminderrecord->startdate;
                     $templatecontext['reminderenddate'] = $ampreminderrecord->enddate;
                     $templatecontext['reminderhour'] = $ampreminderrecord->reminderhour;
@@ -214,13 +174,29 @@ class amplifier_controller {
                 $templatecontext['goaltitle'] = $usergoal->goaltitle;
                 $templatecontext['topicid'] = $usergoal->topicid;
                 $templatecontext['goalid'] = $usergoal->goalid;
-                $templatecontext['amplifiergoalid'] = $usergoal->amplifiergoalid;
+                $templatecontext['amplifiergoalid'] = $usergoal->goalid;
                 $templatecontext['amplifier_calendar'] = $OUTPUT->image_url('amplifier_calendar', 'amplifier');
+
+                $renderedrq .= $OUTPUT->render_from_template(
+                    'mod_amplifier/widget/amplifier-reflective-question',
+                    [
+                        'amplifier_reflective_question_headline' => "",
+                        'amplifier_reflective_question_intro' => "",
+                        'amplifier_reflective_question_topicid' => $usergoal->topicid,
+                        'amplifier_reflective_question_goalid' => $usergoal->goalid,
+                        'amplifier_reflective_question_questiontext' => $usergoal->goaltitle,
+                        'amplifier_button_next' => get_string('amplifier_button_next', 'mod_amplifier'),
+                        'amplifier_placeholder_thoughts' => get_string('amplifier_placeholder_thoughts', 'mod_amplifier'),
+                    ]
+                );
+                // This is presented before "Please click on "Save" to finish your reflecion session."
+                // when clicking on the reflection of a goal.
+                // Component amplifier-reflective-question.
                 $templatecontext['reflectivequestions'] = $renderedrq;
                 $templatecontext['amplifier_submit_reflections_headline'] =
                 get_string('amplifier_submit_reflections_headline', 'mod_amplifier');
-                $templatecontext['amplifier_submit_text_2'] =
-                get_string('amplifier_setup_submit_text_2', 'mod_amplifier');
+                $templatecontext['amplifier_reflection_text_1'] =
+                get_string('amplifier_reflection_text_1', 'mod_amplifier');
                 $templatecontext['amplifier_button_submit'] =
                 get_string('amplifier_button_submit_reflection', 'mod_amplifier');
                 $templatecontext['amplifier_reminder_settings_headline'] =
@@ -237,32 +213,37 @@ class amplifier_controller {
                 get_string('amplifier_reminder_settings_enddate_label', 'mod_amplifier');
                 $templatecontext['amplifier_reminder_settings_time_label'] =
                 get_string('amplifier_reminder_settings_time_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month1_label'] =
-                get_string('amplifier_reminder_settings_month1_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month2_label'] =
-                get_string('amplifier_reminder_settings_month2_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month3_label'] =
-                get_string('amplifier_reminder_settings_month3_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month4_label'] =
-                get_string('amplifier_reminder_settings_month4_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month5_label'] =
-                get_string('amplifier_reminder_settings_month5_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month6_label'] =
-                get_string('amplifier_reminder_settings_month6_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month7_label'] =
-                get_string('amplifier_reminder_settings_month7_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month8_label'] =
-                get_string('amplifier_reminder_settings_month8_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month9_label'] =
-                get_string('amplifier_reminder_settings_month9_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month10_label'] =
-                get_string('amplifier_reminder_settings_month10_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month11_label'] =
-                get_string('amplifier_reminder_settings_month11_label', 'mod_amplifier');
-                $templatecontext['amplifier_reminder_settings_month12_label'] =
-                get_string('amplifier_reminder_settings_month12_label', 'mod_amplifier');
                 $templatecontext['amplifier_button_submit_reflection'] =
                 get_string('amplifier_button_submit_reflection', 'mod_amplifier');
+
+                $templatecontext['dayOptions'] = [];
+                for ($i = 1; $i <= 31; $i++) {
+                    $templatecontext['dayOptions'][] = ['value' => $i, 'display' => $i];
+                }
+                $templatecontext['monthOptions'] = [];
+                for ($i = 1; $i <= 12; $i++) {
+                    $monthstrname = "amplifier_reminder_settings_month" . $i . "_label";
+                    $templatecontext['monthOptions'][] = [
+                        "value" => $i,
+                        "label" => get_string($monthstrname, 'mod_amplifier'),
+                    ];
+                }
+                $templatecontext['yearOptions'] = [];
+                $currentYear = (int) date("Y");
+                for ($i = 0; $i < 4; $i++) {
+                  $templatecontext['yearOptions'][] = ['value' => $currentYear + $i, 'display' => $currentYear + $i];
+                }
+                $templatecontext['hourOptions'] = [];
+                for ($i = 0; $i < 24; $i++) {
+                    $templatecontext['hourOptions'][] = ['value' => $i, 'display' => $i];
+                }
+                $templatecontext['minuteOptions'] = [];
+                for ($i = 0; $i < 4; $i++) {
+                    $templatecontext['minuteOptions'][] = [
+                        'value' => $i * 15,
+                        'display' => sprintf('%02d', $i * 15),
+                    ];
+                }
 
                 $this->usergoals .= $OUTPUT->render_from_template(
                     'mod_amplifier/widget/amplifier-user-goal',
@@ -278,38 +259,32 @@ class amplifier_controller {
      */
     public function render($templatecontext) {
         global $DB, $OUTPUT;
-
-        $renderedrq = "";
-        $sqlstmt = "SELECT goal.id as goalid, goal.title as reflectionquestion, topic.id as topicid
-            FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
-            WHERE goals.course = ? AND goals.topic = topic.id AND topic.title = ? AND goals.goal = goal.id";
-        $params = [$this->courseid, self::$topicshortname];
-        $rqrecords = $DB->get_records_sql($sqlstmt, $params);
-        foreach ($rqrecords as $rqrecord) {
-            $renderedrq .= $OUTPUT->render_from_template(
-                'mod_amplifier/widget/amplifier-reflective-question',
-                [
-                    'amplifier_reflective_question_headline' => get_string('amplifier_reflective_question_headline',
-                    'mod_amplifier'),
-                    'amplifier_reflective_question_intro' => get_string('amplifier_reflective_question_intro', 'mod_amplifier'),
-                    'amplifier_reflective_question_topicid' => $rqrecord->topicid,
-                    'amplifier_reflective_question_goalid' => $rqrecord->goalid,
-                    'amplifier_reflective_question_questiontext' => $rqrecord->reflectionquestion,
-                    'amplifier_button_next' => get_string('amplifier_button_next', 'mod_amplifier'),
-                    'amplifier_placeholder_thoughts' => get_string('amplifier_placeholder_thoughts', 'mod_amplifier'),
-                ]
-            );
-        }
+        $lgwid = $this->get_lgwid_from_course();
 
         $renderedlgselection = "";
 
         $renderedsellgs = "";
         $topicid = 0;
-        $sqlstmt = "SELECT goal.id as goalid, goal.title as goaltitle, topic.id as topicid, topic.title as topictitle
-            FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
-            WHERE goals.course = ? AND goals.topic = topic.id AND topic.title != ? AND topic.title != ?
-            AND goals.goal = goal.id ORDER BY topic.title";
-        $params = [$this->courseid, self::$goalstopicshortname, self::$topicshortname];
+//        $sqlstmt = "SELECT goal.id as goalid, goal.title as goaltitle, topic.id as topicid, topic.title as topictitle
+//                      FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
+//                     WHERE goals.course = :goalscourse
+//                       AND goals.topic = topic.id
+//                       AND topic.title != :goalstopicshortname
+//                       AND topic.title != :topicshortname
+//                       AND goals.goal = goal.id
+//                  ORDER BY topic.title";
+        $sqlstmt = "SELECT goals.id as goalid, goals.title as goaltitle, goals.topicid, topics.title as topictitle
+                      FROM {learninggoalwidget_goals} goals
+                 LEFT JOIN {learninggoalwidget_topics} topics ON goals.topicid = topics.id
+                     WHERE goals.learninggoalwidgetid = :lgwid
+                       AND topics.title != :goalstopicshortname
+                       AND topics.title != :topicshortname
+                  ORDER BY topics.title";
+        $params = [
+            'lgwid' => $lgwid,
+            'goalstopicshortname' => self::$goalstopicshortname,
+            'topicshortname' => self::$topicshortname,
+        ];
         $predefinedlgsrecords = $DB->get_records_sql($sqlstmt, $params);
         foreach ($predefinedlgsrecords as $predefinedlgrecord) {
 
@@ -350,33 +325,25 @@ class amplifier_controller {
             ]
         );
 
-        $templatecontext['participantcode'] = $this->participantcode;
-        $templatecontext['reflective_question_fieldsets'] = $renderedrq;
-
+        // Component to select goals during setup.
         $templatecontext['learning_goal_selection_fieldset'] = $renderedlgselection;
+        $templatecontext['predefined_learning_goals'] = $renderedsellgs;
 
         $templatecontext['amplifier_welcome_headline'] = get_string('amplifier_welcome_headline', 'mod_amplifier');
         $templatecontext['amplifier_welcome_text_1'] = get_string('amplifier_welcome_text_1', 'mod_amplifier');
         $templatecontext['amplifier_welcome_text_2'] = get_string('amplifier_welcome_text_2', 'mod_amplifier');
-        $templatecontext['amplifier_welcome_text_3'] = get_string('amplifier_welcome_text_3', 'mod_amplifier');
-        $templatecontext['amplifier_setup_submit_headline'] = get_string('amplifier_setup_submit_headline', 'mod_amplifier');
         $templatecontext['amplifier_setup_submit_text_1'] = get_string('amplifier_setup_submit_text_1', 'mod_amplifier');
-
-        $templatecontext['amplifier_setup_participantcode_headline'] = get_string('amplifier_setup_participantcode_headline',
-        'mod_amplifier');
-        $templatecontext['amplifier_setup_participantcode_description'] = get_string('amplifier_setup_participantcode_description',
-        'mod_amplifier');
-        $templatecontext['amplifier_setup_participantcode_input_label'] = get_string('amplifier_setup_participantcode_input_label',
-        'mod_amplifier');
 
         $templatecontext['amplifier'] = get_string('amplifier', 'mod_amplifier');
 
         $templatecontext['amplifier_button_submit'] = get_string('amplifier_button_submit_setup', 'mod_amplifier');
         $templatecontext['amplifier_button_next'] = get_string('amplifier_button_next', 'mod_amplifier');
-        $templatecontext['amplifier_button_previous'] = get_string('amplifier_button_previous', 'mod_amplifier');
 
         $templatecontext['amplifier_setup_finished'] = $this->finished;
 
+        // Component shown once the setup is done (list of goals with possibility
+        // to choose reminder or reflection).
+        // Component is amplifier-user-goal.
         $templatecontext['usergoals'] = $this->usergoals;
 
         return $OUTPUT->render_from_template(
@@ -384,6 +351,52 @@ class amplifier_controller {
             $templatecontext
         );
 
+    }
+
+    /**
+     * Function to get the learninggoalwidget ID from the course
+     *
+     * @return number
+     */
+    private function get_lgwid_from_course() {
+        global $DB;
+        // Get LGW instance ID from courseID.
+        // TODO: add possibility in settings to choose which lgw.
+        $stmt = "SELECT lgw.id as lgwid
+                   FROM {course_modules} cm
+                   JOIN {modules} m ON cm.module = m.id
+                   JOIN {learninggoalwidget} lgw ON cm.instance = lgw.id
+                  WHERE m.name = 'learninggoalwidget'
+                    AND cm.course = :courseid";
+        $params = ["courseid" => $this->courseid];
+        $data = $DB->get_records_sql($stmt, $params);
+        return reset($data)->lgwid;
+    }
+
+    /**
+     * Function to get the reflection question
+     *
+     * @param number $lgwid ID of the learninggoalwidget
+     * @param string $title Title of the topic
+     * @return array
+     */
+    private function get_reflection_question($lgwid, $title) {
+        global $DB;
+        // TODO: remove once lgwid is saved in amplifier table, and topic id not shortname, add lgwid otherwise only based on course
+//                $sqlstmt = "SELECT goal.id as goalid, goal.title as reflectionquestion, topic.id as topicid
+//                    FROM {learninggoalwidget_i_goals} goals, {learninggoalwidget_topic} topic, {learninggoalwidget_goal} goal
+//                    WHERE goals.course = ? AND goals.topic = topic.id AND topic.title = ? AND goals.goal = goal.id";
+        $sqlstmt = "SELECT goals.id as goalid, goals.title as reflectionquestion, goals.topicid
+                      FROM {learninggoalwidget_goals} goals
+                 LEFT JOIN {learninggoalwidget_topics} topics ON goals.topicid = topics.id
+                     WHERE goals.learninggoalwidgetid = :lgwid
+                       AND topics.shortname = :topicshortname";
+        $params = [
+            "lgwid" => $lgwid,
+            "topicshortname" => $title,
+        ];
+        var_dump($params);
+        return $DB->get_records_sql($sqlstmt, $params);
     }
 
 }

@@ -60,8 +60,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_topic" TYPE="foreign" FIELDS="topic" REFTABLE="learninggoalwidget_topic" REFFIELDS="id"/>
-        <KEY NAME="fk_goal" TYPE="foreign" FIELDS="goal" REFTABLE="learninggoalwidget_goal" REFFIELDS="id"/>
+        <KEY NAME="fk_topic" TYPE="foreign" FIELDS="topic" REFTABLE="learninggoalwidget_topics" REFFIELDS="id"/>
+        <KEY NAME="fk_goal" TYPE="foreign" FIELDS="goal" REFTABLE="learninggoalwidget_goals" REFFIELDS="id"/>
         <KEY NAME="fk_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
         <KEY NAME="fk_setup" TYPE="foreign" FIELDS="setup" REFTABLE="amplifier_setup" REFFIELDS="id"/>
         <KEY NAME="fk_user" TYPE="foreign" FIELDS="amp_user" REFTABLE="user" REFFIELDS="id"/>
@@ -89,8 +89,8 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="fk_topic" TYPE="foreign" FIELDS="topic" REFTABLE="learninggoalwidget_topic" REFFIELDS="id"/>
-        <KEY NAME="fk_goal" TYPE="foreign" FIELDS="goal" REFTABLE="learninggoalwidget_goal" REFFIELDS="id"/>
+        <KEY NAME="fk_topic" TYPE="foreign" FIELDS="topic" REFTABLE="learninggoalwidget_topics" REFFIELDS="id"/>
+        <KEY NAME="fk_goal" TYPE="foreign" FIELDS="goal" REFTABLE="learninggoalwidget_goals" REFFIELDS="id"/>
         <KEY NAME="fk_course" TYPE="foreign" FIELDS="course" REFTABLE="course" REFFIELDS="id"/>
         <KEY NAME="fk_setup" TYPE="foreign" FIELDS="setup" REFTABLE="amplifier_setup" REFFIELDS="id"/>
         <KEY NAME="fk_user" TYPE="foreign" FIELDS="amp_user" REFTABLE="user" REFFIELDS="id"/>

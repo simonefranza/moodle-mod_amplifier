@@ -32,7 +32,6 @@ use core_privacy\local\request\contextlist;
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-use stdClass;
 
 /**
  * Privacy Subsystem for Learning Goals Widget Activity
@@ -218,17 +217,17 @@ class provider implements
         INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
         INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
         JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
-        JOIN {learninggoalwidget_topic} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topic
+        JOIN {learninggoalwidget_topics} lgwtopic ON ampgoals.topic = lgwtopic.id
+        JOIN {learninggoalwidget_goals} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topicid
         WHERE c.id {$contextsql}";
 
         // Export user selected goals
         $selectedusergoals = $DB->get_recordset_sql($sql, $params);
-        $data = new stdClass;
+        $data = new \stdClass;
         $data->selectedgoals = [];
         foreach ($selectedusergoals as $selectedgoalrecord) {
             $context = $contextlist->current();
-            $selectedgoal = new stdClass;
+            $selectedgoal = new \stdClass;
             $selectedgoal->course = $selectedgoalrecord->course;
             $selectedgoal->instance = $selectedgoalrecord->instance;
             $selectedgoal->participantcode = $selectedgoalrecord->participantcode;
@@ -262,16 +261,16 @@ class provider implements
         INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
         JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
         JOIN {amplifier_reminder} ampremind ON ampgoals.goal = ampremind.goal
-        JOIN {learninggoalwidget_topic} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topic
+        JOIN {learninggoalwidget_topics} lgwtopic ON ampgoals.topic = lgwtopic.id
+        JOIN {learninggoalwidget_goals} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topicid
         WHERE c.id {$contextsql}";
 
         $reminders = $DB->get_recordset_sql($sql, $params);
-        $data = new stdClass;
+        $data = new \stdClass;
         $data->reminders = [];
         foreach ($reminders as $reminderrecord) {
             $context = $contextlist->current();
-            $reminder = new stdClass;
+            $reminder = new \stdClass;
             $reminder->course = $reminderrecord->course;
             $reminder->instance = $reminderrecord->instance;
             $reminder->participantcode = $reminderrecord->participantcode;
@@ -307,16 +306,16 @@ class provider implements
         INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
         JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
         JOIN {amplifier_reflection} ampref ON ampgoals.goal = ampref.goal
-        JOIN {learninggoalwidget_topic} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goal} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topic
+        JOIN {learninggoalwidget_topics} lgwtopic ON ampgoals.topic = lgwtopic.id
+        JOIN {learninggoalwidget_goals} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topicid
         WHERE c.id {$contextsql}";
 
         $reflections = $DB->get_recordset_sql($sql, $params);
-        $data = new stdClass;
+        $data = new \stdClass;
         $data->reflections = [];
         foreach ($reflections as $reflectionrecord) {
             $context = $contextlist->current();
-            $reflection = new stdClass;
+            $reflection = new \stdClass;
             $reflection->course = $reflectionrecord->course;
             $reflection->instance = $reflectionrecord->instance;
             $reflection->participantcode = $reflectionrecord->participantcode;

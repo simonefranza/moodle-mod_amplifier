@@ -41,8 +41,7 @@ $string['noaccess'] = 'You need to login first';
 
 $string['amplifier_welcome_headline'] = "Welcome to the Training Amplifier";
 $string['amplifier_welcome_text_1'] = "The goal of the Training Amplifier is to support YOU to transfer the theory learned in a recently attended course into practice.";
-$string['amplifier_welcome_text_2'] = "First, we will ask you to think about the recently completed course and the conveyed content, and to note down the topics most relevant for you.";
-$string['amplifier_welcome_text_3'] = "Second, we ask you to select 3 to 5 goals related to the course that you would like to pursue in the following days or weeks. For each of your selected goals you can set a reminder for reflection, asking you if you already have applied the goal in practice.";
+$string['amplifier_welcome_text_2'] = "Please select up to 5 goals that you would like to pursue in the following days or weeks. For each of your selected goals you can set a reminder for reflection, asking you if you already have applied the goal in practice.";
 
 $string['amplifier_username_invalid_feedback'] = 'The username contains one or more invalid characters.';
 $string['amplifier_username_exists_feedback'] = 'A user with username "{$a}" already exists. Please choose a different name.';
@@ -70,30 +69,6 @@ $string['amplifier_user_role_student'] = 'Student';
 $string['amplifier_user_role_teacher'] = 'Teachers (school)';
 $string['amplifier_user_role_lecturer'] = 'Teachers (university)';
 
-$string['amplifier_consent'] = "Consent Form";
-$string['amplifier_consent_title'] = "DIGIVIDget Consent Form";
-$string['amplifier_consent_statement_1'] = "Dear DIGIVIDget users!
-
-The DIGIVID platform called DIGIVIDget has been developed within the DIGIVID Erasmus+ project. In this research project the following information and data will be collected in order to create and manage your user* accounts on the one hand and to analyze the general usage behavior for evaluation and improvement purposes on the other hand:
-";
-$string['amplifier_consent_statement_2'] = "
-Your username and email address will be used EXCLUSIVELY for registration or for managing your account on the DIGIVID platform.
-";
-$string['amplifier_consent_statement_3'] = "
-All other information collected as part of the evaluation is anonymized/pseudonymized and treated confidentially. A subsequent identification of individual persons is therefore not possible. The information you provide will be evaluated and presented in project reports and publications together with the information of the other participants. The raw data will be stored on the internal servers of Graz University of Technology and will be protected by passwords known only to the researchers of this project. All raw data will be stored for 5 years after the end of the project and then deleted.
-";
-$string['amplifier_consent_statement_4'] = "
-By filling out this form you declare the following:
-    ";
-
-$string['amplifier_consent_username_and_email'] = 'Your username and email address';
-$string['amplifier_consent_userbehaviour'] = 'Your user behavior';
-$string['amplifier_consent_user_response'] = 'Your answers to open, reflective questions';
-$string['amplifier_consent_user_ipadress'] = 'Your IP address.';
-$string['amplifier_consent_form_check_save'] = "I consent to the above information being stored.";
-$string['amplifier_consent_form_check_publish'] = "I consent to the data collected being published in anonymous form in papers, presentations, books, reports or journals.";
-$string['amplifier_consent_form_check_register'] = "I agree to register on the DIGIVID platform under the above conditions.";
-
 $string['amplifier_participation_info'] = 'Conditions of Use';
 $string['amplifier_participation_info_terms_of_service'] = 'Please read carefully';
 $string['amplifier_participation_info_terms_of_service_check_agreement'] = 'As a user of the DIGIVID platform, I agree to the following Conditions of Use without exception.';
@@ -116,7 +91,6 @@ $string['amplifier_button_submit_setup'] = 'Submit';
 $string['amplifier_button_submit_reflection'] = 'Save';
 
 $string['amplifier_button_next'] = 'Next';
-$string['amplifier_button_previous'] = 'Previous';
 
 $string['amplifier_reflective_question_headline'] = 'Your first reflection session';
 $string['amplifier_reflective_question_intro'] = 'Think about the “Time Management” course your just finished and answer the questions below.';
@@ -124,10 +98,9 @@ $string['amplifier_reflective_question_intro'] = 'Think about the “Time Manage
 $string['amplifier_learning_goal_selection_headline'] = 'Set Your Goals';
 $string['amplifier_learning_goal_selection_intro'] = 'Please select either pre-defined goals or define your own goals. You should not have more than 5 goals selected.';
 
-$string['amplifier_setup_submit_headline'] = "Training Amplifier Setup";
 $string['amplifier_submit_reflections_headline'] = "Reflection";
 $string['amplifier_setup_submit_text_1'] = 'You successfully finished the Training Amplifier setup!';
-$string['amplifier_setup_submit_text_2'] = 'Please click on "Save" to finish your reflecion session.';
+$string["amplifier_reflection_text_1"] = "Please reflect on the following learning goal.";
 $string["amplifier_reminder_settings_headline"] = "Reminder Settings";
 $string["amplifier_reminder_frequency_daily"] = "Daily";
 $string["amplifier_reminder_frequency_weekly"] = "Weekly";
@@ -147,10 +120,6 @@ $string["amplifier_reminder_settings_month9_label"] = "September";
 $string["amplifier_reminder_settings_month10_label"] = "October";
 $string["amplifier_reminder_settings_month11_label"] = "November";
 $string["amplifier_reminder_settings_month12_label"] = "December";
-
-$string['amplifier_setup_participantcode_headline'] = 'Participant Code';
-$string['amplifier_setup_participantcode_description'] = 'The participant code consists of: the first letter of your place of birth,<br/>your birthday (two digits, if less than 10 then with a leading zero),<br/>the first letter of your father\'s first name,<br/>the first letter of your mother\'s first name.<br/><br/>An example:<br/>The participant code of a person born in Graz on the second of February, whose parents\' names are Johann and Susanne, is: <br/>"G" (for Graz) in the first place,<br/>"02" (for the second of February) in the second place,<br/>"J" (for Johann) in the third place,<br/>"S" (for Susanne) in the fourth place.<br/><br/>The participant code of the person would be: G02JS<br/>';
-$string['amplifier_setup_participantcode_input_label'] = 'Please, enter the participant code here';
 
 $string['amplifier_check_scheduled_reminders'] = 'Lookup user set reminders and send reflection notification message';
 
@@ -191,7 +160,6 @@ $string['privacy:metadata:amplifier_reflection:course'] = 'The ID of the course.
 $string['privacy:metadata:amplifier_reflection:coursemodule'] = 'The ID of the coursemodule.';
 $string['privacy:metadata:amplifier_reflection:instance'] = 'The ID of the coursemodule instance.';
 $string['privacy:metadata:amplifier_reflection:user'] = 'The ID of the user.';
-$string['privacy:metadata:amplifier_reflection:participantcode'] = 'The users participant code.';
 $string['privacy:metadata:amplifier_reflection:goal'] = 'The ID of the goal related to the reflection.';
 $string['privacy:metadata:amplifier_reflection:response'] = 'The textual representation of the users reflection.';
 
@@ -200,7 +168,6 @@ $string['privacy:metadata:amplifier_reminder:course'] = 'The ID of the course.';
 $string['privacy:metadata:amplifier_reminder:coursemodule'] = 'The ID of the coursemodule.';
 $string['privacy:metadata:amplifier_reminder:instance'] = 'The ID of the coursemodule instance.';
 $string['privacy:metadata:amplifier_reminder:user'] = 'The ID of the user.';
-$string['privacy:metadata:amplifier_reminder:participantcode'] = 'The users participant code.';
 $string['privacy:metadata:amplifier_reminder:goal'] = 'The ID of the goal related to the reminder setting.';
 
 $string['privacy:metadata:amplifier_setup_goals'] = 'Information about the selected learning goals from a user.';
@@ -208,7 +175,6 @@ $string['privacy:metadata:amplifier_setup_goals:course'] = 'The ID of the course
 $string['privacy:metadata:amplifier_setup_goals:coursemodule'] = 'The ID of the coursemodule.';
 $string['privacy:metadata:amplifier_setup_goals:instance'] = 'The ID of the coursemodule instance.';
 $string['privacy:metadata:amplifier_setup_goals:user'] = 'The ID of the user.';
-$string['privacy:metadata:amplifier_setup_goals:participantcode'] = 'The users participant code.';
 $string['privacy:metadata:amplifier_setup_goals:goal'] = 'The ID of the goal the user selected for reminding and reflecting.';
 
 $string['privacy:metadata:amplifier_setup_reflection'] = 'Information about the first reflections from a user at the end of a lecture.';
@@ -216,7 +182,6 @@ $string['privacy:metadata:amplifier_setup_reflection:course'] = 'The ID of the c
 $string['privacy:metadata:amplifier_setup_reflection:coursemodule'] = 'The ID of the coursemodule.';
 $string['privacy:metadata:amplifier_setup_reflection:instance'] = 'The ID of the coursemodule instance.';
 $string['privacy:metadata:amplifier_setup_reflection:user'] = 'The ID of the user.';
-$string['privacy:metadata:amplifier_setup_reflection:participantcode'] = 'The users participant code.';
 $string['privacy:metadata:amplifier_setup_reflection:goal'] = 'The ID of the goal related to the reflection.';
 $string['privacy:metadata:amplifier_setup_reflection:response'] = 'The textual representation of the users reflection.';
 
@@ -225,4 +190,3 @@ $string['privacy:metadata:amplifier_setup:course'] = 'The ID of the course.';
 $string['privacy:metadata:amplifier_setup:coursemodule'] = 'The ID of the coursemodule.';
 $string['privacy:metadata:amplifier_setup:instance'] = 'The ID of the coursemodule instance.';
 $string['privacy:metadata:amplifier_setup:user'] = 'The ID of the user.';
-$string['privacy:metadata:amplifier_setup:participantcode'] = 'The users participant code.';

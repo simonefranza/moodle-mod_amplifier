@@ -34,7 +34,6 @@
     * courseModuleId
     * instanceId
     * userId
-    * participantcode
     * amplifier_setup_finished
 
     Example context (json):
@@ -44,7 +43,6 @@
         "courseModuleId": "1",
         "instanceId": "1",
         "userId": "1",
-        "participantcode": "A01AA",
         "amplifier_setup_finished": "true"
     }
 }}
@@ -56,6 +54,7 @@
 
     {{> mod_amplifier/widget/amplifier-setup }}
 
+    <!-- List of goals with buttons to set reminder or reflect -->
     {{{usergoals}}}
 
 </div>
@@ -73,7 +72,7 @@ function(
 
     $(document).ready(function() {
 
-        AmplifierWidget.init({{{userId}}}, {{{courseId}}}, {{{courseModuleId}}}, {{{instanceId}}}, "{{{participantcode}}}", {{amplifier_setup_finished}});
+        AmplifierWidget.init({{{userId}}}, {{{courseId}}}, {{{courseModuleId}}}, {{{instanceId}}}, {{amplifier_setup_finished}});
 
     });
 

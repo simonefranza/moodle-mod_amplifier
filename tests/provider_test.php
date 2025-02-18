@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/amplifier/externallib.php');
+//require_once($CFG->dirroot . '/mod/amplifier/externallib.php');
 
 use core_privacy\tests\provider_testcase;
 use core_privacy\local\request\writer;

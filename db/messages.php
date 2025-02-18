@@ -23,10 +23,16 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = array (
+$messageproviders = [
 
     // Reflection reminder
-    'reflection_reminder' => array(
-    )
+    'reflection_reminder' => [
+        'capability' => 'mod/amplifier:view',
+        'defaults' => [
+            'popup' => MESSAGE_PERMITTED,
+            'email' => MESSAGE_PERMITTED,
+            'notification' => MESSAGE_PERMITTED,
+        ],
+    ],
 
-);
+];
