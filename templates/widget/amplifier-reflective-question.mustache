@@ -26,49 +26,30 @@
     * none
 
     Context variables required for this template:
-    * amplifier_reflective_question_headline
-    * amplifier_reflective_question_intro
     * amplifier_reflective_question_questiontext
     * amplifier_placeholder_thoughts
     * amplifier_reflective_question_topicid
     * amplifier_reflective_question_goalid
-    * amplifier_button_next
 
     Example context (json):
     {
-        "amplifier_reflective_question_headline": "Reflexion",
-        "amplifier_reflective_question_intro": "Denken Sie an die Lehrveranstaltung 'Selbstorganisation, Zeitmanagement und Arbeitstechniken' und beantworten Sie bitte die folgenden Fragen.",
         "amplifier_reflective_question_questiontext": "Was haben Sie in der Lehrveranstaltung 'Selbstorganisation, Zeitmanagement und Arbeitstechniken' gelernt? Welche Themenschwerpunkte wurden besprochen?",
         "amplifier_placeholder_thoughts": "Meine Gedanken...",
         "amplifier_reflective_question_topicid": "1",
         "amplifier_reflective_question_goalid": "2",
-        "amplifier_button_next": "Weiter"
     }
 }}
 <fieldset>
-
-    <h3 class="fs-subtitle">{{{amplifier_reflective_question_headline}}}</h3>
-
-    <div class="form-group text-left">
-
-        <label class="col-form-label d-inline">{{{amplifier_reflective_question_intro}}}</label>
-
-    </div>
-
     <div class="amplifier-questiontext">
-
         <p>{{{amplifier_reflective_question_questiontext}}}</p>
-
     </div>
 
     <div class="amplifier-user-response">
-
         <textarea
             placeholder="{{{amplifier_placeholder_thoughts}}}"
             rows="5"
             data-topicid="{{{amplifier_reflective_question_topicid}}}"
             data-goalid="{{{amplifier_reflective_question_goalid}}}"
             class="col p-0 amplifier-user-response-input"></textarea>
-
     </div>
 </fieldset>

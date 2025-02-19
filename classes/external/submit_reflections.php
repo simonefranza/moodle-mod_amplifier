@@ -46,14 +46,9 @@ class submit_reflections extends \core_external\external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'reflectiondate' => new external_value(PARAM_INT, ''),
-                'reflections' => new external_value(PARAM_TEXT, ''),
-                'goal' => new external_value(PARAM_INT, ''),
-                'user' => new external_value(PARAM_INT, 'ID of the logged in user'),
-                'course' => new external_value(PARAM_INT, 'ID of the course'),
-                'coursemodule' => new external_value(PARAM_INT, ''),
-                'instance' => new external_value(PARAM_INT, ''),
-                'participantcode' => new external_value(PARAM_TEXT, ''),
+                'reflection' => new external_value(PARAM_TEXT, ''),
+                'amplifiergoalid' => new external_value(PARAM_INT, ''),
+                'instanceid' => new external_value(PARAM_INT, ''),
             ]
         );
     }
@@ -69,61 +64,64 @@ class submit_reflections extends \core_external\external_api {
     /**
      * Saves a users reflection response for a learning goal
      *
-     * @param [type] $reflectiondate
-     * @param [type] $reflections
-     * @param [type] $goal
-     * @param [type] $user
-     * @param [type] $course
-     * @param [type] $coursemodule
-     * @param [type] $instance
-     * @param [type] $participantcode
+     * @param string $reflection
+     * @param number $amplifiergoalid
+     * @param number $instanceid
      * @return void
      */
     public static function execute(
-        $reflectiondate,
-        $reflections,
-        $goal,
-        $user,
-        $course,
-        $coursemodule,
-        $instance,
-        $participantcode
+        $reflection,
+        $amplifiergoalid,
+        $instanceid,
     ) {
         global $USER, $DB;
 
         // Parameter validation.
         self::validate_parameters(
             self::execute_parameters(),
-            array(
-                'reflectiondate' => $reflectiondate,
-                'reflections' => $reflections,
-                'goal' => $goal,
-                'user' => $user,
-                'course' => $course,
-                'coursemodule' => $coursemodule,
-                'instance' => $instance,
-                'participantcode' => $participantcode
-            )
+            [
+                'reflection' => $reflection,
+                'amplifiergoalid' => $amplifiergoalid,
+                'instanceid' => $instanceid,
+            ]
         );
 
-        self::validate_context(\context_user::instance($USER->id));
-        $reflections = json_decode($reflections);
+        // Capability check.
+        $userid = $USER->id;
+        $cm = get_coursemodule_from_instance('amplifier', $instanceid, 0, false, MUST_EXIST);
+        $context = \context_module::instance($cm->id);
+        self::validate_context($context);
+        require_capability('mod/amplifier:setupgoals', $context);
 
-        foreach ($reflections as $reflection) {
-            $userreflection = new \stdClass;
-            $userreflection->reflectedat = $reflectiondate;
-            $userreflection->response = $reflection;
-            $userreflection->goal = $goal;
-            $userreflection->amp_user = $user;
-            $userreflection->course = $course;
-            $userreflection->coursemodule = $coursemodule;
-            $userreflection->instance = $instance;
-            $userreflection->participantcode = $participantcode;
-            $DB->insert_record('amplifier_reflection', $userreflection);
+        // Ignore empty reflections.
+        if ($reflection === '') {
+            return "Reflection is empty, ignored.";
         }
 
-        $jsontaxonomy = "{}";
-        return $jsontaxonomy;
+        // Make sure that instance exists and user has done setup.
+        $params = [
+            "instanceid" => $instanceid,
+            "userid" => $userid,
+            "amplifiergoalid" => $amplifiergoalid,
+        ];
+        $stmt = "SELECT *
+                  FROM {amplifier_goals} goals
+                  JOIN {amplifier} amplifier ON amplifier.id = goals.amplifierid
+                 WHERE goals.id = :amplifiergoalid
+                   AND goals.userid = :userid
+                   AND amplifier.id = :instanceid";
+        if (!$DB->record_exists_sql($stmt, $params)) {
+            throw new invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
+        }
+
+        $newreflection = new \stdClass;
+        $newreflection->amplifiergoalid = $amplifiergoalid;
+        $newreflection->response = $reflection;
+        $newreflection->timecreated = time() * 1000;
+
+        $DB->insert_record('amplifier_reflections', $newreflection);
+
+        return "OK";
     }
 }
 

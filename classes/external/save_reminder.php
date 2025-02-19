@@ -51,13 +51,8 @@ class save_reminder extends \core_external\external_api {
                 'reminderhour' => new external_value(PARAM_INT, ''),
                 'reminderminute' => new external_value(PARAM_INT, ''),
                 'frequency' => new external_value(PARAM_INT, ''),
-                'lastnotificationdate' => new external_value(PARAM_INT, ''),
-                'goal' => new external_value(PARAM_INT, ''),
-                'user' => new external_value(PARAM_INT, 'ID of the logged in user'),
-                'course' => new external_value(PARAM_INT, 'ID of the course'),
-                'coursemodule' => new external_value(PARAM_INT, ''),
-                'instance' => new external_value(PARAM_INT, ''),
-                'participantcode' => new external_value(PARAM_TEXT, ''),
+                'amplifiergoalid' => new external_value(PARAM_INT, ''),
+                'instanceid' => new external_value(PARAM_INT, ''),
             ]
         );
     }
@@ -73,18 +68,13 @@ class save_reminder extends \core_external\external_api {
     /**
      * Saves a users reflection reminder
      *
-     * @param [type] $startdate
-     * @param [type] $enddate
-     * @param [type] $reminderhour
-     * @param [type] $reminderminute
-     * @param [type] $frequency
-     * @param [type] $lastnotificationdate
-     * @param [type] $goal
-     * @param [type] $user
-     * @param [type] $course
-     * @param [type] $coursemodule
-     * @param [type] $instance
-     * @param [type] $participantcode
+     * @param number $startdate
+     * @param number $enddate
+     * @param number $reminderhour
+     * @param number $reminderminute
+     * @param number $frequency
+     * @param number $amplifiergoalid
+     * @param number $instanceid
      * @return void
      */
     public static function execute(
@@ -93,13 +83,8 @@ class save_reminder extends \core_external\external_api {
         $reminderhour,
         $reminderminute,
         $frequency,
-        $lastnotificationdate,
-        $goal,
-        $user,
-        $course,
-        $coursemodule,
-        $instance,
-        $participantcode
+        $amplifiergoalid,
+        $instanceid,
     ) {
         global $USER, $DB;
 
@@ -112,49 +97,60 @@ class save_reminder extends \core_external\external_api {
                 'reminderhour' => $reminderhour,
                 'reminderminute' => $reminderminute,
                 'frequency' => $frequency,
-                'lastnotificationdate' => $lastnotificationdate,
-                'goal' => $goal,
-                'user' => $user,
-                'course' => $course,
-                'coursemodule' => $coursemodule,
-                'instance' => $instance,
-                'participantcode' => $participantcode,
+                'amplifiergoalid' => $amplifiergoalid,
+                'instanceid' => $instanceid,
             )
         );
 
-        self::validate_context(\context_user::instance($USER->id));
+        // Capability check.
+        $userid = $USER->id;
+        $cm = get_coursemodule_from_instance('amplifier', $instanceid, 0, false, MUST_EXIST);
+        $context = \context_module::instance($cm->id);
+        self::validate_context($context);
+        require_capability('mod/amplifier:setupgoals', $context);
 
-        $params = [
-            "amp_user" => $user,
-            "course" => $course,
-            "coursemodule" => $coursemodule,
-            "instance" => $instance,
-            "goal" => $goal
-        ];
-        $ampeminderrecord = $DB->get_record('amplifier_reminder', $params);
-
-        $ampuserreminder = new \stdClass;
-        $ampuserreminder->startdate = $startdate;
-        $ampuserreminder->enddate = $enddate;
-        $ampuserreminder->reminderhour = $reminderhour;
-        $ampuserreminder->reminderminute = $reminderminute;
-        $ampuserreminder->frequency = $frequency;
-        $ampuserreminder->lastnotificationdate = $lastnotificationdate;
-        $ampuserreminder->amp_user = $user;
-        $ampuserreminder->course = $course;
-        $ampuserreminder->coursemodule = $coursemodule;
-        $ampuserreminder->instance = $instance;
-        $ampuserreminder->participantcode = $participantcode;
-        if ($ampeminderrecord) {
-            $ampuserreminder->id = $ampeminderrecord->id;
-            $DB->update_record('amplifier_reminder', $ampuserreminder);
-        } else {
-            $ampuserreminder->goal = $goal;
-            $DB->insert_record('amplifier_reminder', $ampuserreminder);
+        // Custom validation: $startdate <= $enddate.
+        if ($startdate > $enddate) {
+            throw new invalid_parameter_exception('The start date must be before the end date.');
         }
 
-        $jsontaxonomy = "{}";
-        return $jsontaxonomy;
+        // Make sure that instance exists and user has done setup.
+        $params = [
+            "instanceid" => $instanceid,
+            "userid" => $userid,
+            "amplifiergoalid" => $amplifiergoalid,
+        ];
+        $stmt = "SELECT *
+                  FROM {amplifier_goals} goals
+                  JOIN {amplifier} amplifier ON amplifier.id = goals.amplifierid
+                 WHERE goals.id = :amplifiergoalid
+                   AND goals.userid = :userid
+                   AND amplifier.id = :instanceid";
+        if (!$DB->record_exists_sql($stmt, $params)) {
+            throw new invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
+        }
+
+        $params = [
+            "amplifiergoalid" => $amplifiergoalid
+        ];
+        $reminderrecord = $DB->get_record('amplifier_reminders', $params);
+
+        $update = new \stdClass;
+        $update->amplifiergoalid = $amplifiergoalid;
+        $update->startdate = $startdate;
+        $update->enddate = $enddate;
+        $update->reminderhour = $reminderhour;
+        $update->reminderminute = $reminderminute;
+        $update->frequency = $frequency;
+        $update->lastnotificationdate = 0;
+        if ($reminderrecord) {
+            $update->id = $reminderrecord->id;
+            $DB->update_record('amplifier_reminders', $update);
+        } else {
+            $DB->insert_record('amplifier_reminders', $update);
+        }
+
+        return "OK";
     }
 }
 

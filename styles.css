@@ -1,24 +1,24 @@
-.amplifier-setup {
+.mod_amplifier .amplifier-setup {
     /* padding: 1rem; */
 }
 
-.amplifier-user-response {
+.mod_amplifier .amplifier-user-response {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-.amplifier-user-response-input {
+.mod_amplifier .amplifier-user-response-input {
     resize: none;
 }
 
 /* Details */
-.details-view {
+.mod_amplifier .details-view {
     /* topics minimum width (thumbnails + data + actions) (30px + 300px + 70px) */
     /* topics maximum height: 155px (set according to the longest text plus buffer */
     min-width: 400px;
 }
 
 /* Topics */
-.topic-card {
+.mod_amplifier .topic-card {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -27,7 +27,7 @@
     border: none;
 }
 
-.topic-card .topic-card-header {
+.mod_amplifier .topic-card .topic-card-header {
     padding: 0.75rem 1.25rem;
     margin-bottom: 0;
     border: none;
@@ -35,7 +35,7 @@
 
 
 /* Topics Thumbnail */
-.topic-card .topic-thumbnail {
+.mod_amplifier .topic-card .topic-thumbnail {
     min-width: 30px;
     max-width: 30px;
     min-height: 20px;
@@ -43,50 +43,50 @@
 }
 
 /* Topics Data */
-.topic-card .topic-data {
+.mod_amplifier .topic-card .topic-data {
     min-width: 300px;
     max-height: 155px;
 }
 
-.topic-card .topic-data .topic-title {
+.mod_amplifier .topic-card .topic-data .topic-title {
     font-weight: 400;
     font-size: 1.125rem;
     color: #000;
     text-decoration: none;
 }
 
-.topic-card:hover .topic-data .topic-title {
+.mod_amplifier .topic-card:hover .topic-data .topic-title {
     font-weight: 600;
 }
 
 /* Topics Actions */
-.topic-card .topic-actions {
+.mod_amplifier .topic-card .topic-actions {
     min-width: 60px;
     max-width: 60px;
     min-height: 20px;
     max-height: 155px;
 }
 
-.topic-card .topic-actions .reflection-dropdown-toggle {
+.mod_amplifier .topic-card .topic-actions .reflection-dropdown-toggle {
     min-width: 30px;
     max-width: 30px;
 }
 
-.topic-card .topic-actions .reminder-dropdown-toggle {
+.mod_amplifier .topic-card .topic-actions .reminder-dropdown-toggle {
     min-width: 30px;
     max-width: 30px;
 }
 
-.topic-card .topic-actions .topic-dropdown-toggle {
+.mod_amplifier .topic-card .topic-actions .topic-dropdown-toggle {
     color: #818589;
     white-space: nowrap;
 }
 
-.topic-card .topic-actions .topic-dropdown-toggle:hover {
+.mod_amplifier .topic-card .topic-actions .topic-dropdown-toggle:hover {
     color: #525252;
 }
 
-.topic-card .topic-actions .topic-dropdown-toggle::after {
+.mod_amplifier .topic-card .topic-actions .topic-dropdown-toggle::after {
     display: inline-block;
     margin-left: 0.255em;
     vertical-align: 0.255em;
@@ -97,6 +97,6 @@
     border-left: 0.8em solid transparent;
 }
 
-.topic-card .topic-actions .topic-dropdown-toggle:empty::after {
+.mod_amplifier .topic-card .topic-actions .topic-dropdown-toggle:empty::after {
     margin-left: 0;
 }

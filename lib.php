@@ -38,11 +38,10 @@ use mod_amplifier\core\amplifier_controller;
  */
 function amplifier_add_instance(stdClass $data): int {
     global $DB;
+    var_dump($data);
 
     $data->timecreated = time();
     $data->timemodified = $data->timecreated;
-    $data->name = $data->name;
-    $data->intro = $data->intro;
     $data->id = $DB->insert_record('amplifier', $data);
 
     return $data->id;
@@ -54,7 +53,7 @@ function amplifier_add_instance(stdClass $data): int {
  * Given an object containing all the necessary data (defined in mod_form.php),
  * this function will update an existing instance with new data.
  *
- * @param  stdClass                        $data  An object from the form in mod_form.php.
+ * @param  stdClass $data An object from the form in mod_form.php.
  * @return bool True if successful, false otherwise.
  */
 function amplifier_update_instance(stdClass $data): bool {
@@ -93,15 +92,9 @@ function amplifier_delete_instance(int $id): bool {
  * @param cm_info $cm Course-module object
  */
 function amplifier_cm_info_view(cm_info $cm) {
+    $amplifiercontroller = new amplifier_controller($cm->instance);
 
-    global $USER;
-
-    $amplifiercontroller = new amplifier_controller($cm->course, $USER->id, $cm->id, $cm->instance);
-
-    $templatecontext['courseId'] = $cm->course;
-    $templatecontext['courseModuleId'] = $cm->id;
     $templatecontext['instanceId'] = $cm->instance;
-    $templatecontext['userId'] = $USER->id;
 
     $amplifierwidget = $amplifiercontroller->render($templatecontext);
 

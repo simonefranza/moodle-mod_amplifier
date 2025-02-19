@@ -46,12 +46,7 @@ class submit_setup extends \core_external\external_api {
     public static function execute_parameters() {
         return new external_function_parameters(
             [
-                'courseid' => new external_value(PARAM_INT, 'ID of the course'),
-                'userid' => new external_value(PARAM_INT, 'ID of the logged in user'),
-                'coursemoduleid' => new external_value(PARAM_INT, ''),
                 'instanceid' => new external_value(PARAM_INT, ''),
-                'participantcode' => new external_value(PARAM_TEXT, ''),
-                'reflections' => new external_value(PARAM_TEXT, ''),
                 'learninggoals' => new external_value(PARAM_TEXT, ''),
             ]
         );
@@ -62,28 +57,18 @@ class submit_setup extends \core_external\external_api {
      * @return external_value
      */
     public static function execute_returns() {
-        return new external_value(PARAM_TEXT, 'Taxonomy for user in JSON format');
+        return new external_value(PARAM_TEXT, 'OK or error');
     }
 
     /**
      * submit setup
      *
-     * @param [type] $courseid
-     * @param [type] $userid
-     * @param [type] $coursemoduleid
-     * @param [type] $instanceid
-     * @param [type] $participantcode
-     * @param [type] $reflections
-     * @param [type] $learninggoals
+     * @param number $instanceid
+     * @param array $learninggoals
      * @return void
      */
     public static function execute(
-        $courseid,
-        $userid,
-        $coursemoduleid,
         $instanceid,
-        $participantcode,
-        $reflections,
         $learninggoals
     ) {
         global $USER, $DB;
@@ -92,78 +77,43 @@ class submit_setup extends \core_external\external_api {
         self::validate_parameters(
             self::execute_parameters(),
             array(
-                'courseid' => $courseid,
-                'userid' => $userid,
-                'coursemoduleid' => $coursemoduleid,
                 'instanceid' => $instanceid,
-                'participantcode' => $participantcode,
-                'reflections' => $reflections,
                 'learninggoals' => $learninggoals,
             )
         );
 
-        self::validate_context(\context_user::instance($USER->id));
+        // Capability check.
+        $userid = $USER->id;
+        $cm = get_coursemodule_from_instance('amplifier', $instanceid, 0, false, MUST_EXIST);
+        $context = \context_module::instance($cm->id);
+        self::validate_context($context);
+        require_capability('mod/amplifier:setupgoals', $context);
 
-        $setupid = 0;
-        $params = [
-            "course" => $courseid,
-            "coursemodule" => $coursemoduleid,
-            "instance" => $instanceid,
-            "amp_user" => $userid,
-        ];
-        $amplifiersetuprecord = $DB->get_record('amplifier_setup', $params);
-        if ($amplifiersetuprecord) {
-            $amplifierusersetup = new \stdClass;
-            $amplifierusersetup->id = $amplifiersetuprecord->id;
-            $amplifierusersetup->participantcode = $participantcode;
-            $amplifierusersetup->finished = 1;
-            $setupid = $amplifiersetuprecord->id;
-            $DB->update_record('amplifier_setup', $amplifierusersetup);
-        } else {
-            $amplifierusersetup = new \stdClass;
-            $amplifierusersetup->amp_user = $userid;
-            $amplifierusersetup->course = $courseid;
-            $amplifierusersetup->coursemodule = $coursemoduleid;
-            $amplifierusersetup->instance = $instanceid;
-            $amplifierusersetup->participantcode = $participantcode;
-            $amplifierusersetup->reflectiontopicshortname = mod_amplifier\core\amplifier_controller::$reflectiontopicshortname;
-            $amplifierusersetup->goalstopicshortname = mod_amplifier\core\amplifier_controller::$goalstopicshortname;
-            $amplifierusersetup->finished = 1;
-            $setupid = $DB->insert_record('amplifier_setup', $amplifierusersetup);
+        // Check if user already did setup
+        $numexistinggoals = $DB->count_records('amplifier_goals', ['userid' => $userid]);
+        if ($numexistinggoals) {
+            // There are already goals setup
+            throw new moodle_exception('exception:setup_done', 'mod_amplifier',
+                new moodle_url('/course/view.php', array('id' => $cm->course)));
         }
 
-        $reflections = json_decode($reflections);
         $learninggoals = json_decode($learninggoals);
-
-        foreach ($reflections as $reflection) {
-            $userreflection = new \stdClass;
-            $userreflection->amp_user = $userid;
-            $userreflection->course = $courseid;
-            $userreflection->coursemodule = $coursemoduleid;
-            $userreflection->instance = $instanceid;
-            $userreflection->participantcode = $participantcode;
-            $userreflection->setup = $setupid;
-            $userreflection->topic = $reflection->topicid;
-            $userreflection->goal = $reflection->goalid;
-            $userreflection->response = $reflection->userResponse;
-            $DB->insert_record('amplifier_setup_reflection', $userreflection);
-        }
+        $records = [];
 
         foreach ($learninggoals as $learninggoal) {
+            $numgoals = $DB->count_records('learninggoalwidget_goals', ['id' => $learninggoal->goalid, 'topicid' => $learninggoal->topicid]);
+            if ($numgoals !== 1) {
+                continue;
+            }
             $usergoal = new \stdClass;
-            $usergoal->amp_user = $userid;
-            $usergoal->course = $courseid;
-            $usergoal->coursemodule = $coursemoduleid;
-            $usergoal->instance = $instanceid;
-            $usergoal->participantcode = $participantcode;
-            $usergoal->setup = $setupid;
-            $usergoal->topic = $learninggoal->topicid;
-            $usergoal->goal = $learninggoal->goalid;
-            $DB->insert_record('amplifier_setup_goals', $usergoal);
+            $usergoal->amplifierid = $instanceid;
+            $usergoal->lgwgoalid = $learninggoal->goalid;
+            $usergoal->userid = $userid;
+            $records[] = $usergoal;
         }
+        $DB->insert_records('amplifier_goals', $records);
 
-        $jsontaxonomy = "{}";
-        return $jsontaxonomy;
+        return "OK";
     }
 }
 

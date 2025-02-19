@@ -30,14 +30,10 @@
     * amplifier_welcome_headline
     * amplifier_welcome_text_1
     * amplifier_welcome_text_2
-    * amplifier_button_next
     * learning_goal_selection_fieldset
     * amplifier_setup_submit_text_1
     * amplifier_button_submit
-    * courseId
-    * courseModuleId
     * instanceId
-    * userId
 
     Example context (json):
     {
@@ -45,14 +41,10 @@
         "amplifier_welcome_headline": "Willkommen beim Training Amplifier",
         "amplifier_welcome_text_1": "Training Amplifier soll Sie unterstützen, neuerworbenes theoretisches Wissen in der Praxis anzuwenden.",
         "amplifier_welcome_text_2": "Im ersten Schritt denken Sie bitte über die für Sie wichtigsten Themen der gerade absolvierten Lehrveranstaltung nach.",
-        "amplifier_button_next": "Weiter",
         "learning_goal_selection_fieldset": "<fieldset class='d-none'><h3 class='fs-subtitle'>Set Your Goals</h3><div class='form-group text-left'><label class='col-form-label d-inline '>Please select either pre-defined goals or define your own goals. You should not have more than 5 goals selected.</label></div><label class='text-left font-weight-bold mt-2'>Themenbereich 1</label><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='1' goalid='1'><label class='form-check-label font-weight-bold'>Lernziel 1</label></div></div><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='1' goalid='2'><label class='form-check-label font-weight-bold'>Lernziel 2</label></div></div><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='1' goalid='3'><label class='form-check-label font-weight-bold'>Lernziel 3</label></div></div><label class='text-left font-weight-bold mt-2'>Themenbereich 2</label><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='4' goalid='10'><label class='form-check-label font-weight-bold'>Lernziel 1</label></div></div><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='4' goalid='11'><label class='form-check-label font-weight-bold'>Lernziel 2</label></div></div><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='4' goalid='12'><label class='form-check-label font-weight-bold'>Lernziel 3</label></div></div><label class='text-left font-weight-bold mt-2'>Themenbereich 3</label><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='5' goalid='13'><label class='form-check-label font-weight-bold'>Lernziel 1</label></div></div><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='5' goalid='14'><label class='form-check-label font-weight-bold'>Lernziel 2</label></div></div><div class='form-group text-left'><div class='form-check text-left'><input class='form-check-input predefined-learning-goal-check' type='checkbox' value='' topicid='5' goalid='15'><label class='form-check-label font-weight-bold'>Lernziel 3</label></div></div><input type='button' name='next' class='next action-button learning-goals' value='Next' disabled='' style='opacity: .5'></fieldset>",
         "amplifier_setup_submit_text_1": "Sie haben das Training Amplifier Setup erfolgreich abgeschlossen!",
         "amplifier_button_submit": "Übernehmen",
-        "courseId": "1",
-        "courseModuleId": "1",
         "instanceId": "1",
-        "userId": "1"
     }
 }}
 {{^amplifier_setup_finished}}
@@ -97,7 +89,7 @@
 
             $(document).ready(function () {
 
-                AmplifierSetup.init({{{courseId}}}, {{{courseModuleId}}}, {{{instanceId}}}, {{{userId}}});
+                AmplifierSetup.init({{{instanceId}}});
 
             });
 

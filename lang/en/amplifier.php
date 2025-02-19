@@ -25,6 +25,7 @@
 $string['amplifier:addinstance'] = 'Add a new Training Amplifier Widget';
 $string['amplifier:view'] = 'View Training Amplifier Widget';
 $string['amplifiertext'] = 'Training Amplifier Widget Text';
+$string['exception:setup_done'] = 'You already setup the Training Amplifier.';
 $string['modulename'] = 'Training Amplifier Widget';
 $string['modulename_help'] = '';
 $string['modulename_link'] = 'mod/amplifier/view';
@@ -89,14 +90,6 @@ $string['amplifier_account_setup_email_hint'] = 'If you do not want to share you
 
 $string['amplifier_button_submit_setup'] = 'Submit';
 $string['amplifier_button_submit_reflection'] = 'Save';
-
-$string['amplifier_button_next'] = 'Next';
-
-$string['amplifier_reflective_question_headline'] = 'Your first reflection session';
-$string['amplifier_reflective_question_intro'] = 'Think about the “Time Management” course your just finished and answer the questions below.';
-
-$string['amplifier_learning_goal_selection_headline'] = 'Set Your Goals';
-$string['amplifier_learning_goal_selection_intro'] = 'Please select either pre-defined goals or define your own goals. You should not have more than 5 goals selected.';
 
 $string['amplifier_submit_reflections_headline'] = "Reflection";
 $string['amplifier_setup_submit_text_1'] = 'You successfully finished the Training Amplifier setup!';
@@ -190,3 +183,8 @@ $string['privacy:metadata:amplifier_setup:course'] = 'The ID of the course.';
 $string['privacy:metadata:amplifier_setup:coursemodule'] = 'The ID of the coursemodule.';
 $string['privacy:metadata:amplifier_setup:instance'] = 'The ID of the coursemodule instance.';
 $string['privacy:metadata:amplifier_setup:user'] = 'The ID of the user.';
+
+$string['requiredactivitymissing'] = 'A Learning Goal Widget must be present in the course before adding this activity.';
+$string['requiredactivitypluginmissing'] = 'The Learning Goal Widget is not installed.';
+$string['required'] = 'This field is required.';
+$string['selectlearninggoalwidget'] = 'Learning Goal Widget';

@@ -30,28 +30,6 @@ use templatable;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class widget_renderable implements renderable, templatable {
-
-    /**
-     * course id
-     *
-     * @var int
-     */
-    private $courseid;
-
-    /**
-     * user id
-     *
-     * @var int
-     */
-    private $userid;
-
-    /**
-     * course module id
-     *
-     * @var int
-     */
-    private $coursemoduleid;
-
     /**
      * instance id
      *
@@ -62,15 +40,9 @@ class widget_renderable implements renderable, templatable {
     /**
      * ctor of widget_renderable
      *
-     * @param [type] $courseid
-     * @param [type] $userid
-     * @param [type] $coursemoduleid
      * @param [type] $instanceid
      */
-    public function __construct($courseid, $userid, $coursemoduleid, $instanceid) {
-        $this->courseid = $courseid;
-        $this->userid = $userid;
-        $this->coursemoduleid = $coursemoduleid;
+    public function __construct($instanceid) {
         $this->instanceid = $instanceid;
     }
 
@@ -83,9 +55,6 @@ class widget_renderable implements renderable, templatable {
     public function export_for_template(renderer_base $output) {
 
         $contextvariables = [
-            "courseId" => $this->courseid,
-            "userId" => $this->userid,
-            "courseModuleId" => $this->coursemoduleid,
             "instanceId" => $this->instanceid
         ];
         return $contextvariables;

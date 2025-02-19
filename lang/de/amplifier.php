@@ -25,6 +25,7 @@
 $string['amplifier:addinstance'] = 'Training Amplifier Widget hinzufügen';
 $string['amplifier:view'] = 'Training Amplifier Widget anzeigen';
 $string['amplifiertext'] = 'Training Amplifier Widget Text';
+$string['exception:setup_done'] = 'Sie haben den Training Amplifier Setup schon erledigt.';
 $string['modulename'] = 'Training Amplifier Widget';
 $string['modulename_help'] = '';
 $string['modulename_link'] = 'mod/amplifier/view';
@@ -88,12 +89,6 @@ $string['amplifier_account_setup_email_hint'] = '';
 
 $string['amplifier_button_submit_setup'] = 'Übernehmen';
 $string['amplifier_button_submit_reflection'] = 'Speichern';
-$string['amplifier_button_next'] = 'Weiter';
-
-$string['amplifier_reflective_question_headline'] = 'Reflexion';
-$string['amplifier_reflective_question_intro'] = 'Denken Sie an die Lehrveranstaltung "Selbstorganisation, Zeitmanagement und Arbeitstechniken" und beantworten Sie bitte die folgenden Fragen.';
-$string['amplifier_learning_goal_selection_headline'] = 'Lernziele Auswahl';
-$string['amplifier_learning_goal_selection_intro'] = 'Bitte wählen Sie Lernziele aus, die für Sie besonders wichtig sind. Es sollten nicht mehr als fünf Lernziele sein.';
 
 $string['amplifier_submit_reflections_headline'] = "Reflexion";
 $string["amplifier_reflection_text_1"] = "Bitte reflektieren Sie über das folgende Lernziel.";
@@ -191,3 +186,8 @@ $string['privacy:metadata:amplifier_setup:course'] = 'Kurs Identifizierer';
 $string['privacy:metadata:amplifier_setup:coursemodule'] = 'Kurs Modul Identifizierer';
 $string['privacy:metadata:amplifier_setup:instance'] = 'Kurs Modul Instanz Identifizierer';
 $string['privacy:metadata:amplifier_setup:user'] = 'Benutzer Identifizierer';
+
+$string['requiredactivitymissing'] = 'Ein Lernziele Widget muss im Kurs vorhanden sein, bevor diese Aktivität hinzugefügt werden kann.';
+$string['requiredactivitypluginmissing'] = 'Das Lernziele Widget ist nicht installiert.';
+$string['required'] = 'Dieses Feld wird benötigt.';
+$string['selectlearninggoalwidget'] = 'Lernziele Widget';

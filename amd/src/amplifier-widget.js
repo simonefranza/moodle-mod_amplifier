@@ -34,26 +34,6 @@ define(
   ) {
 
     /**
-     * Amplifier Root Html Element
-     */
-    var amplifier;
-
-    /**
-     * The user identifier
-     */
-    var userid;
-
-    /**
-     * The course identifier
-     */
-    var courseid;
-
-    /**
-     * The course module identifier
-     */
-    var coursemoduleid;
-
-    /**
      * The course module instance identifier
      */
     var instanceid;
@@ -61,16 +41,10 @@ define(
     /**
      * Intialise the content widget
      *
-     * @param {object} userId The user identifier
-     * @param {object} courseId The course identifier
-     * @param {object} courseModuleId The course module identifier
      * @param {object} instanceId The course module instance identifier
      */
-    var init = function(userId, courseId, courseModuleId, instanceId) {
-      amplifier = document.querySelector(`#amplifier-widget-${courseId}-${courseModuleId}-${instanceId}`);
-      userid = userId;
-      courseid = courseId;
-      coursemoduleid = courseModuleId;
+    var init = function(instanceId) {
+      const amplifier = document.querySelector(`#amplifier-widget-${instanceId}`);
       instanceid = instanceId;
 
       amplifier.querySelectorAll(".topic-card").forEach((el) => {
@@ -94,7 +68,6 @@ define(
         el.querySelector(".user-goal-reminder-save")
           .addEventListener("click", (e) => submitReminder(e, reminderBlock));
       });
-
     };
 
     /**
@@ -159,13 +132,8 @@ define(
         reminderhour: reminderHour,
         reminderminute: reminderMinute,
         frequency: frequency,
-        lastnotificationdate: 0,
-        goal: amplifierGoalId,
-        user: userid,
-        course: courseid,
-        coursemodule: coursemoduleid,
-        instance: instanceid,
-        participantcode: 'PARTICIPANTCODE'
+        amplifiergoalid: amplifierGoalId,
+        instanceid: instanceid,
       });
     };
 
@@ -176,25 +144,18 @@ define(
      */
     const submitReflection = (e, el) => {
       const textarea = el.querySelector('textarea');
-      const reflections = [textarea.value.trim()];
-      if (reflections[0] === '') {
+      const reflection = textarea.value.trim();
+      if (reflection === '') {
         return;
       }
 
       el.parentElement.classList.add('d-none');
 
-      // TODO remove reflection date and create it server side
       Controller.submitReflections({
-        reflectiondate: Date.now(),
-        reflections: JSON.stringify(reflections),
-        goal: e.target.dataset.goalid,
-        user: userid,
-        course: courseid,
-        coursemodule: coursemoduleid,
-        instance: instanceid,
-        participantcode: "PARTICIPANTCODE"
+        reflection: reflection,
+        amplifiergoalid: e.target.dataset.amplifiergoalid,
+        instanceid: instanceid,
       });
-
     };
 
     /**

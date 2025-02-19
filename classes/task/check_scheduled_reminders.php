@@ -60,7 +60,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
             "enddate" => $now,
             "startdate" => $now,
         ];
-        $ampreminderrecords = $DB->get_records_select('amplifier_reminder', $select, $params);
+        $ampreminderrecords = $DB->get_records_select('amplifier_reminders', $select, $params);
 
         var_dump($now);
         mtrace("we have " . count($ampreminderrecords) . " records");
@@ -90,11 +90,10 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
                     $amplifierreminder = new \stdClass;
                     $amplifierreminder->id = $reminderrecord->id;
                     $amplifierreminder->lastnotificationdate = $now->getTimestamp();
-                    $DB->update_record('amplifier_reminder', $amplifierreminder);
-                    $this->sendnotification($reminderrecord->amp_user, $reminderrecord->course, $reminderrecord->goal);
+                    $DB->update_record('amplifier_reminders', $amplifierreminder);
+                    $this->sendnotification($reminderrecord->userid, $reminderrecord->course, $reminderrecord->amplifiergoalid);
                 }
             } else {
-
                 mtrace('No notification timestamp set so far, so send notification to user and update timestamp');
                 $currenthour = (int)$now->format("G");
                 $currentminute = (int)$now->format("i");
@@ -113,7 +112,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
                         $amplifierreminder = new \stdClass;
                         $amplifierreminder->id = $reminderrecord->id;
                         $amplifierreminder->lastnotificationdate = $now->getTimestamp();
-                        $DB->update_record('amplifier_reminder', $amplifierreminder);
+                        $DB->update_record('amplifier_reminders', $amplifierreminder);
                 }
             }
         }

@@ -35,11 +35,31 @@ class mod_amplifier_mod_form extends moodleform_mod {
      * @return void
      */
     public function definition(): void {
-        global $PAGE;
+        global $PAGE, $DB;
 
         $PAGE->force_settings_menu();
 
         $mform = $this->_form;
+        $courseid = $this->get_course()->id;
+        var_dump($courseid);
+        // Check that there is at least one learninggoalwidget in this course
+        if ($requiredmodule = $DB->get_record('modules', array('name' => 'learninggoalwidget'))) {
+            $exists = $DB->record_exists('course_modules', array(
+                'course' => $courseid,
+                'module' => $requiredmodule->id
+            ));
+
+            if (!$exists) {
+                // Stop the form from displaying by throwing an error.
+                throw new moodle_exception('requiredactivitymissing', 'mod_amplifier',
+                    new moodle_url('/course/view.php', array('id' => $courseid)));
+            }
+        } else {
+            throw new moodle_exception('requiredactivitypluginmissing', 'mod_amplifier',
+                new moodle_url('/course/view.php', array('id' => $courseid)));
+        }
+        $learninggoalwidgetinstances = $DB->get_records('learninggoalwidget', ['course' => $courseid], '', 'id, name');
+        var_dump($learninggoalwidgetinstances);
 
         $mform->addElement('header', 'general', get_string('general'));
 
@@ -50,6 +70,17 @@ class mod_amplifier_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
         $this->standard_intro_elements();
+
+        // Prepare options for the dropdown
+        $options = [];
+        foreach ($learninggoalwidgetinstances as $instance) {
+            $options[$instance->id] = $instance->name;
+        }
+
+        // Add dropdown to form
+        $mform->addElement('select', 'learninggoalwidgetid', get_string('selectlearninggoalwidget', 'mod_amplifier'), $options);
+        $mform->setType('learninggoalwidgetid', PARAM_INT);
+        $mform->addRule('learninggoalwidgetid', get_string('required'), 'required');
 
         $this->standard_coursemodule_elements();
 

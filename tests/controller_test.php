@@ -77,10 +77,7 @@ class controller_test extends \advanced_testcase {
 
         $controller2 = new amplifier_controller($course1->id, $user1->id, $coursemodule->id, $widgetinstance->id);
 
-        $templatecontext['courseId'] = $course1->id;
-        $templatecontext['courseModuleId'] = $coursemodule->id;
         $templatecontext['instanceId'] = $widgetinstance->id;
-        $templatecontext['userId'] = $user1->id;
 
         $renderedwidget = $controller2->render($templatecontext);
 

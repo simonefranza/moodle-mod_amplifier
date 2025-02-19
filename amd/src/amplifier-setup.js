@@ -24,48 +24,39 @@
 define(['jquery', 'mod_amplifier/controller'], function($, Controller) {
 
   /**
-     * Course, Course module, course module instance and user identifiers
-     */
-  let courseId, courseModuleId, instanceId, userId;
+   * course module instance
+   */
+  let instanceId;
 
   /**
-     * The root element
-     */
-  let rootElement;
-
-  /**
-     * The submit button
-     */
+   * The submit button
+   */
   let submitButton;
+
   /**
-     * Wheter the submission is valid
-     */
+   * Wheter the submission is valid
+   */
   let submitEnabled = false;
 
   /**
-     * All chekboxes in the widget
-     */
+   * All chekboxes in the widget
+   */
   let checkboxes;
+
   /**
-     * Number of checked checkboxes
-     */
+   * Number of checked checkboxes
+   */
   let checkedCount = 0;
 
   /**
-     * Initialising the setup of the amplifier widget
-     *
-     * @param {object} paramCourseId The course identifier
-     * @param {object} paramCourseModuleId The course module identifier
-     * @param {object} paramInstanceId The course module instance identifier
-     * @param {object} paramUserId The user identifier
-     */
-  const init = (paramCourseId, paramCourseModuleId, paramInstanceId, paramUserId) => {
-    courseId = paramCourseId;
-    courseModuleId = paramCourseModuleId;
+   * Initialising the setup of the amplifier widget
+   *
+   * @param {object} paramInstanceId The course module instance identifier
+   */
+  const init = (paramInstanceId) => {
     instanceId = paramInstanceId;
-    userId = paramUserId;
 
-    rootElement = document.querySelector(`#amplifier-widget-${courseId}-${courseModuleId}-${instanceId}`);
+    const rootElement = document.querySelector(`#amplifier-widget-${instanceId}`);
 
     submitButton = rootElement.querySelector(".amplifier-setup .amplifier-submit-setup");
     submitButton.addEventListener('click', handleSubmitButtonClick);
@@ -75,9 +66,9 @@ define(['jquery', 'mod_amplifier/controller'], function($, Controller) {
   };
 
   /**
-     * Amplifier setup submit button handler
-     */
-  var handleSubmitButtonClick = function() {
+   * Amplifier setup submit button handler
+   */
+  const handleSubmitButtonClick = async() => {
     let learningGoals = [];
     checkboxes.forEach((checkbox) => {
       if (!checkbox.checked) {
@@ -94,44 +85,30 @@ define(['jquery', 'mod_amplifier/controller'], function($, Controller) {
     }
 
     // Submit the settings and trigger loading landing page of amplifier widget
-    Controller.submitSetup({
-      courseid: courseId,
-      userid: userId,
-      coursemoduleid: courseModuleId,
-      instanceid: instanceId,
-      participantcode: "PARTICIPANT CODE",
-      reflections: JSON.stringify([]),
-      learninggoals: JSON.stringify(learningGoals)
-    })
-      .then(
-        function() {
-          // Reload document to show amplifier widget
-          location.reload();
-          return;
-        }
-      )
-      .catch(function(error) {
-        throw new Error(error);
+    try {
+      await Controller.submitSetup({
+        instanceid: instanceId,
+        learninggoals: JSON.stringify(learningGoals)
       });
+      location.reload();
+    } catch (e) {
+      throw new Error(e);
+    }
   };
 
   /**
-     * Learning goal check box selection handler
-     * @param {*} e Changed event
-     */
-  var handleLearningGoalClick = function(e) {
-    //eslint-disable-next-line
-    console.log(checkedCount + (e.target.checked ? 1 : -1));
+   * Learning goal check box selection handler
+   * @param {*} e Changed event
+   */
+  const handleLearningGoalClick = (e) => {
     handleNewCount(checkedCount + (e.target.checked ? 1 : -1));
   };
 
   /**
-     * Handle a new count of checked checkboxes
-     * @param {Int} newCount New count
-     */
+   * Handle a new count of checked checkboxes
+   * @param {Int} newCount New count
+   */
   const handleNewCount = (newCount) => {
-    //eslint-disable-next-line
-    console.log(newCount);
     checkedCount = newCount;
     submitEnabled = checkedCount > 0 && checkedCount <= 5;
     if (submitEnabled) {
