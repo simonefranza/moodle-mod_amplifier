@@ -36,7 +36,7 @@ class mod_amplifier_generator extends testing_module_generator {
     public function create_instance($record = null, array $options = null) {
         $record = (object)(array)$record;
 
-        $defaultsettings = array(
+        $defaultsettings = [
             'alwaysshowdescription'             => 1,
             'submissiondrafts'                  => 1,
             'requiresubmissionstatement'        => 0,
@@ -56,7 +56,7 @@ class mod_amplifier_generator extends testing_module_generator {
             'maxattempts'                       => -1,
             'markingworkflow'                   => 0,
             'markingallocation'                 => 0,
-        );
+        ];
 
         foreach ($defaultsettings as $name => $value) {
             if (!isset($record->{$name})) {

@@ -27,14 +27,14 @@ require_once("lib.php");
 
 use mod_amplifier\event\course_module_instance_list_viewed;
 
-$id = required_param('id', PARAM_INT);           // Course ID
+$id = required_param('id', PARAM_INT);
 
-// Ensure that the course specified is valid
-if (!$course = $DB->get_record('course', array('id' => $id))) {
+// Ensure that the course specified is valid.
+if (!$course = $DB->get_record('course', ['id' => $id])) {
     throw new moodle_exception('Course ID is incorrect', 'amplifier');
 }
 
-$PAGE->set_url('/mod/amplifier/index.php', array('id' => $id));
+$PAGE->set_url('/mod/amplifier/index.php', ['id' => $id]);
 
 $coursecontext = context_course::instance($id);
 
@@ -42,9 +42,7 @@ require_login($course);
 
 $PAGE->set_pagelayout('incourse');
 
-$params = array(
-    'context' => $coursecontext
-);
+$params = ['context' => $coursecontext];
 
 $event = course_module_instance_list_viewed::create($params);
 $event->trigger();
@@ -65,8 +63,8 @@ if (!$widgets = get_all_instances_in_course("amplifier", $course)) {
 }
 
 // Configure table for displaying the list of instances.
-$headings = array(get_string('name'));
-$align = array('left');
+$headings = [get_string('name')];
+$align = ['left'];
 
 $table = new html_table();
 $table->head = $headings;
@@ -77,7 +75,7 @@ $currentsection = '';
 foreach ($widgets as $widget) {
     $cm = get_coursemodule_from_instance('amplifier', $widget->id);
     $context = context_module::instance($cm->id);
-    $data = array();
+    $data = [];
 
     // Section number if necessary.
     $strsection = '';

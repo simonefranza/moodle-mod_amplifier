@@ -91,7 +91,7 @@ class save_reminder extends \core_external\external_api {
         // Parameter validation.
         self::validate_parameters(
             self::execute_parameters(),
-            array(
+            [
                 'startdate' => $startdate,
                 'enddate' => $enddate,
                 'reminderhour' => $reminderhour,
@@ -99,7 +99,7 @@ class save_reminder extends \core_external\external_api {
                 'frequency' => $frequency,
                 'amplifiergoalid' => $amplifiergoalid,
                 'instanceid' => $instanceid,
-            )
+            ]
         );
 
         // Capability check.
@@ -130,9 +130,7 @@ class save_reminder extends \core_external\external_api {
             throw new invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
         }
 
-        $params = [
-            "amplifiergoalid" => $amplifiergoalid
-        ];
+        $params = ["amplifiergoalid" => $amplifiergoalid];
         $reminderrecord = $DB->get_record('amplifier_reminders', $params);
 
         $update = new \stdClass;

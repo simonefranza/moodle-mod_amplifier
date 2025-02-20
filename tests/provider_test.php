@@ -60,7 +60,7 @@ class provider_test extends provider_testcase {
         $this->resetAfterTest();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $cm = get_coursemodule_from_instance('amplifier', $widgetinstance->id);
         $user1 = $this->getDataGenerator()->create_user();
         $this->setUser($user1);
@@ -86,7 +86,7 @@ class provider_test extends provider_testcase {
         $this->resetAfterTest();
 
         $course1 = $this->getDataGenerator()->create_course();
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $cm = get_coursemodule_from_instance('amplifier', $widgetinstance->id);
         $cmcontext1 = \context_module::instance($cm->id);
 
@@ -302,7 +302,7 @@ class provider_test extends provider_testcase {
         $this->getDataGenerator()->enrol_user($user3->id, $course->id, 'student');
 
         $course1 = $this->getDataGenerator()->create_course();
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $cm = get_coursemodule_from_instance('amplifier', $widgetinstance->id);
         $cmcontext1 = \context_module::instance($cm->id);
 
@@ -422,14 +422,16 @@ class provider_test extends provider_testcase {
         $result = external_api::clean_returnvalue(mod_amplifier_external::save_reminder_returns(), $response);
 
         return $DB->get_record('amplifier_reminder',
-        array('course' => $course,
-        'coursemodule' => $coursemodule,
-        'instance' => $instance,
-        'user' => $user,
-        'goal' => '1',
-        'startdate' => $startdate),
-        '*',
-        IGNORE_MULTIPLE);
+            [
+                'course' => $course,
+                'coursemodule' => $coursemodule,
+                'instance' => $instance,
+                'user' => $user,
+                'goal' => '1',
+                'startdate' => $startdate,
+            ],
+            '*',
+            IGNORE_MULTIPLE);
 
     }
 
@@ -457,13 +459,15 @@ class provider_test extends provider_testcase {
         );
 
         $amplifiersetup = $DB->get_record('amplifier_setup',
-        array('course' => $courseid,
-        'coursemodule' => $cmid,
-        'instance' => $instanceid,
-        'user' => $userid,
-        'finished' => '1'),
-        '*',
-        IGNORE_MULTIPLE);
+            [
+                'course' => $courseid,
+                'coursemodule' => $cmid,
+                'instance' => $instanceid,
+                'user' => $userid,
+                'finished' => '1',
+            ],
+            '*',
+            IGNORE_MULTIPLE);
 
         $this->assertNotNull($amplifiersetup);
         $this->assertEquals($amplifiersetup->finished, 1);
@@ -481,7 +485,7 @@ class provider_test extends provider_testcase {
         $user1 = $this->getDataGenerator()->create_user();
         $this->setUser($user1);
         $this->getDataGenerator()->enrol_user($user1->id, $course1->id, 'student');
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $cm = get_coursemodule_from_instance('amplifier', $widgetinstance->id);
         $cmcontext1 = \context_module::instance($cm->id);
         $controller = new amplifier_controller($course1->id, $user1->id, $cm->id, $widgetinstance->id);

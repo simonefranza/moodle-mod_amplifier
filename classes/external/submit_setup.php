@@ -76,10 +76,10 @@ class submit_setup extends \core_external\external_api {
         // Parameter validation.
         self::validate_parameters(
             self::execute_parameters(),
-            array(
+            [
                 'instanceid' => $instanceid,
                 'learninggoals' => $learninggoals,
-            )
+            ]
         );
 
         // Capability check.
@@ -89,19 +89,22 @@ class submit_setup extends \core_external\external_api {
         self::validate_context($context);
         require_capability('mod/amplifier:setupgoals', $context);
 
-        // Check if user already did setup
+        // Check if user already did setup.
         $numexistinggoals = $DB->count_records('amplifier_goals', ['userid' => $userid]);
         if ($numexistinggoals) {
-            // There are already goals setup
+            // There are already goals setup.
             throw new moodle_exception('exception:setup_done', 'mod_amplifier',
-                new moodle_url('/course/view.php', array('id' => $cm->course)));
+                new moodle_url('/course/view.php', ['id' => $cm->course]));
         }
 
         $learninggoals = json_decode($learninggoals);
         $records = [];
 
         foreach ($learninggoals as $learninggoal) {
-            $numgoals = $DB->count_records('learninggoalwidget_goals', ['id' => $learninggoal->goalid, 'topicid' => $learninggoal->topicid]);
+            $numgoals = $DB->count_records('learninggoalwidget_goals', [
+                'id' => $learninggoal->goalid,
+                'topicid' => $learninggoal->topicid,
+            ]);
             if ($numgoals !== 1) {
                 continue;
             }

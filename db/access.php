@@ -24,20 +24,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
-
+$capabilities = [
     'mod/amplifier:addinstance' => [
         'riskbitmask' => RISK_XSS,
-
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
-
     'mod/amplifier:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
@@ -45,10 +42,9 @@ $capabilities = array(
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
+            'manager' => CAP_ALLOW,
+        ],
     ],
-
     'mod/amplifier:setupgoals' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -56,5 +52,4 @@ $capabilities = array(
             'student' => CAP_ALLOW,
         ],
     ],
-
-);
+];

@@ -50,7 +50,7 @@ class controller_test extends \advanced_testcase {
         $this->resetAfterTest(true);
 
         $course1 = $this->getDataGenerator()->create_course();
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $user1 = $this->getDataGenerator()->create_user();
         $this->setUser($user1);
 
@@ -60,10 +60,12 @@ class controller_test extends \advanced_testcase {
 
         $this->assertNotNull($controller);
         $this->assertNotFalse($DB->get_record('amplifier_setup',
-            array('course' => $course1->id,
-            'coursemodule' => $coursemodule->id,
-            'instance' => $widgetinstance->id,
-            'user' => $user1->id),
+            [
+                'course' => $course1->id,
+                'coursemodule' => $coursemodule->id,
+                'instance' => $widgetinstance->id,
+                'user' => $user1->id,
+            ],
             '*',
             MUST_EXIST));
 
@@ -90,7 +92,7 @@ class controller_test extends \advanced_testcase {
     public function create_user_and_course() {
 
         $course1 = $this->getDataGenerator()->create_course();
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $user1 = $this->getDataGenerator()->create_user();
         $this->setUser($user1);
 
@@ -173,14 +175,16 @@ class controller_test extends \advanced_testcase {
         $result = external_api::clean_returnvalue(mod_amplifier_external::save_reminder_returns(), $response);
 
         return $DB->get_record('amplifier_reminder',
-        array('course' => $course,
-        'coursemodule' => $coursemodule,
-        'instance' => $instance,
-        'user' => $user,
-        'goal' => '1',
-        'startdate' => $startdate),
-        '*',
-        IGNORE_MULTIPLE);
+            [
+                'course' => $course,
+                'coursemodule' => $coursemodule,
+                'instance' => $instance,
+                'user' => $user,
+                'goal' => '1',
+                'startdate' => $startdate,
+            ],
+            '*',
+            IGNORE_MULTIPLE);
 
     }
 
@@ -284,14 +288,16 @@ class controller_test extends \advanced_testcase {
         $result = external_api::clean_returnvalue(mod_amplifier_external::submit_reflections_returns(), $response);
 
         $amplifieruserreflection = $DB->get_record('amplifier_reflection',
-        array('course' => $course1->id,
-        'coursemodule' => $coursemodule->id,
-        'instance' => $widgetinstance->id,
-        'user' => $user1->id,
-        'goal' => '1',
-        'reflectedat' => $reflectiontimestamp),
-        '*',
-        IGNORE_MULTIPLE);
+            [
+                'course' => $course1->id,
+                'coursemodule' => $coursemodule->id,
+                'instance' => $widgetinstance->id,
+                'user' => $user1->id,
+                'goal' => '1',
+                'reflectedat' => $reflectiontimestamp,
+            ],
+            '*',
+            IGNORE_MULTIPLE);
 
         $this->assertNotNull($controller);
         $this->assertNotFalse($amplifieruserreflection);

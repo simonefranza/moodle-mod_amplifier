@@ -24,8 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $messageproviders = [
-
-    // Reflection reminder
+    // Reflection reminder.
     'reflection_reminder' => [
         'capability' => 'mod/amplifier:view',
         'defaults' => [

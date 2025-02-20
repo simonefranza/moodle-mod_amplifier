@@ -32,16 +32,16 @@ list($course, $cm) = get_course_and_cm_from_cmid($id, 'amplifier');
 require_login($course, true, $cm);
 
 if ($id) {
-    $PAGE->set_url('/mod/amplifier/index.php', array('id' => $id));
+    $PAGE->set_url('/mod/amplifier/index.php', ['id' => $id]);
     if (!$cm = get_coursemodule_from_id('amplifier', $id)) {
         throw new moodle_exception('invalidcoursemodule');
     }
 
-    if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
+    if (!$course = $DB->get_record("course", ["id" => $cm->course])) {
         throw new moodle_exception('coursemisconf');
     }
 
-    if (!$label = $DB->get_record("amplifier", array("id" => $cm->instance))) {
+    if (!$label = $DB->get_record("amplifier", ["id" => $cm->instance])) {
         throw new moodle_exception('invalidcoursemodule');
     }
 }

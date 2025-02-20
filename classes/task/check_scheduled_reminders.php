@@ -98,7 +98,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
             $currenthour = (int)$now->format("G");
             $currentminute = (int)$now->format("i");
 
-            // Check that we match user preference
+            // Check that we match user preference.
             if (!((int)$record->reminderhour == $currenthour
                 && (int)$record->reminderminute - 2 <= $currentminute
                 && (int)$record->reminderminute + 2 >= $currentminute)) {

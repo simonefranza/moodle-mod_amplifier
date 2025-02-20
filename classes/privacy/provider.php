@@ -167,7 +167,7 @@ class provider implements
         ];
         $params += $contextparams;
 
-        // Selected goals
+        // Selected goals.
         $sql = "SELECT ampgoals.amplifierid AS instance,
                        ampgoals.userid AS userid,
                        lgwtopic.title AS topictitle,
@@ -183,7 +183,7 @@ class provider implements
                  WHERE c.id {$contextsql}
                    AND ampgoals.userid = :userid";
 
-        // Export user selected goals
+        // Export user selected goals.
         $selectedusergoals = $DB->get_recordset_sql($sql, $params);
         $data = new \stdClass;
         $data->selectedgoals = [];
@@ -201,7 +201,7 @@ class provider implements
         writer::with_context($context)->export_data(['selectedgoals'], $data);
         $selectedusergoals->close();
 
-        // Export user reminders
+        // Export user reminders.
         $sql = "SELECT ampgoals.amplifierid AS instance,
                        ampgoals.userid AS userid,
                        lgwtopics.title AS topictitle,
@@ -247,7 +247,7 @@ class provider implements
         writer::with_context($context)->export_data(['reminders'], $data);
         $reminders->close();
 
-        // Export user reflections
+        // Export user reflections.
         $sql = "SELECT ampgoals.amplifierid AS instance,
                        ampgoals.userid AS userid,
                        lgwtopics.title AS topictitle,
@@ -311,7 +311,7 @@ class provider implements
             // Nothing to delete.
             return;
         }
-        // Convert goal IDs into a safe SQL IN clause
+        // Convert goal IDs into a safe SQL IN clause.
         list($goalidssql, $goalidsparams) = $DB->get_in_or_equal($goalids, SQL_PARAMS_NAMED);
 
         $DB->delete_records_select('amplifier_reminders', "amplifiergoalid $goalidssql", $goalidsparams);
@@ -400,7 +400,7 @@ class provider implements
             // Nothing to delete.
             return;
         }
-        // Convert goal IDs into a safe SQL IN clause
+        // Convert goal IDs into a safe SQL IN clause.
         list($goalidssql, $goalidsparams) = $DB->get_in_or_equal($goalids, SQL_PARAMS_NAMED);
 
         $DB->delete_records_select('amplifier_reminders', "amplifiergoalid $goalidssql", $goalidsparams);

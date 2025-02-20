@@ -160,7 +160,7 @@ class reminder_test extends \advanced_testcase {
     public function create_user_and_course() {
 
         $course1 = $this->getDataGenerator()->create_course();
-        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', array('course' => $course1->id));
+        $widgetinstance = $this->getDataGenerator()->create_module('amplifier', ['course' => $course1->id]);
         $user1 = $this->getDataGenerator()->create_user();
         $this->setUser($user1);
 

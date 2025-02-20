@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 // We defined the web service functions to install.
-$functions = array(
-    'mod_amplifier_submit_setup' => array(
+$functions = [
+    'mod_amplifier_submit_setup' => [
         'classname'   => 'mod_amplifier\external\submit_setup',
         'description' => 'Stores the amplifier user setup and triggers the visualisation of the amplifier widget landing page',
         'type'        => 'write',
@@ -35,8 +35,8 @@ $functions = array(
         'services' => [
             MOODLE_OFFICIAL_MOBILE_SERVICE,
         ],
-    ),
-    'mod_amplifier_submit_reflections' => array(
+    ],
+    'mod_amplifier_submit_reflections' => [
         'classname'   => 'mod_amplifier\external\submit_reflections',
         'description' => 'Stores the amplifier user setup and triggers the visualisation of the amplifier widget landing page',
         'type'        => 'write',
@@ -44,8 +44,8 @@ $functions = array(
         'services' => [
             MOODLE_OFFICIAL_MOBILE_SERVICE,
         ],
-    ),
-    'mod_amplifier_save_reminder' => array(
+    ],
+    'mod_amplifier_save_reminder' => [
         'classname'   => 'mod_amplifier\external\save_reminder',
         'description' => '',
         'type'        => 'write',
@@ -53,5 +53,5 @@ $functions = array(
         'services' => [
             MOODLE_OFFICIAL_MOBILE_SERVICE,
         ],
-    ),
-);
+    ],
+];

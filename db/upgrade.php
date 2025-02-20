@@ -299,7 +299,7 @@ function upgrade2($dbman) {
     delete_foreign_key($dbman, 'amplifier', 'fk_course', ['course'], 'course', ['id']);
     // Add course->course.id.
     add_foreign_key($dbman, 'amplifier', 'course', ['course'], 'course', ['id'], 'course');
-    // Add learninggoalwidgetid->learninggoalwidget.id
+    // Add learninggoalwidgetid->learninggoalwidget.id.
     add_foreign_key($dbman, 'amplifier', 'learninggoalwidgetid', ['learninggoalwidgetid'], 'learninggoalwidget', ['id']);
 
     // Remove amplifier_setup_reflection as it has been removed from the setup.
@@ -375,11 +375,11 @@ function upgrade2($dbman) {
     delete_field($dbman, 'amplifier_setup_goals', 'participantcode');
 
     // Add foreign keys.
-    // Add amplifierid->amplifier.id
+    // Add amplifierid->amplifier.id.
     add_foreign_key($dbman, 'amplifier_setup_goals', 'amplifierid', ['amplifierid'], 'amplifier', ['id']);
-    // Add userid->user.id
+    // Add userid->user.id.
     add_foreign_key($dbman, 'amplifier_setup_goals', 'userid', ['userid'], 'user', ['id']);
-    // Add lgwgoalid->learninggoalwidget_goals.id
+    // Add lgwgoalid->learninggoalwidget_goals.id.
     add_foreign_key($dbman, 'amplifier_setup_goals', 'lgwgoalid', ['lgwgoalid'], 'learninggoalwidget_goals', ['id']);
 
     // Rename table amplifier_setup_goals->amplifier_goals.
@@ -389,7 +389,7 @@ function upgrade2($dbman) {
     // The column goal is said to contain a reference to amplifier_setup_goals.id
     // But actually has a reference to learninggoalwidget_goals.id.
     $stmt = "UPDATE {amplifier_reminder} rem
-               JOIN {amplifier_goals} AS goals
+               JOIN {amplifier_goals} goals
                  ON rem.goal = goals.goal
                 AND rem.amp_user = goals.amp_user
                 SET rem.goal = goals.id";
@@ -411,7 +411,7 @@ function upgrade2($dbman) {
     $field = new xmldb_field('goal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
     rename_field($dbman, 'amplifier_reminder', $field, 'amplifiergoalid');
 
-    // Add amplifiergoalid->amplifier_goals.id
+    // Add amplifiergoalid->amplifier_goals.id.
     add_foreign_key($dbman, 'amplifier_reminder', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
 
     // Rename table amplifier_reminder->amplifier_reminders.
@@ -421,7 +421,7 @@ function upgrade2($dbman) {
     // The column goal is said to contain a reference to amplifier_setup_goals.id
     // But actually has a reference to learninggoalwidget_goals.id.
     $stmt = "UPDATE {amplifier_reflection} ref
-               JOIN {amplifier_goals} AS goals
+               JOIN {amplifier_goals} goals
                  ON ref.goal = goals.goal
                 AND ref.amp_user = goals.amp_user
                 SET ref.goal = goals.id";
@@ -444,7 +444,7 @@ function upgrade2($dbman) {
     $field = new xmldb_field('reflectedat', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
     rename_field($dbman, 'amplifier_reflection', $field, 'timecreated');
 
-    // Add amplifiergoalid->amplifier_goals.id
+    // Add amplifiergoalid->amplifier_goals.id.
     add_foreign_key($dbman, 'amplifier_reflection', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
 
     // Rename amplifier_reflection->amplifier_reflections.

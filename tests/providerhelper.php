@@ -135,22 +135,26 @@ class providerhelper {
         );
 
         $amplifierusersetup = $DB->get_record('amplifier_setup',
-        array('course' => $courseid,
-        'coursemodule' => $coursemoduleid,
-        'instance' => $instanceid,
-        'user' => $userid),
-        '*',
-        MUST_EXIST);
+            [
+                'course' => $courseid,
+                'coursemodule' => $coursemoduleid,
+                'instance' => $instanceid,
+                'user' => $userid,
+            ],
+            '*',
+            MUST_EXIST);
 
         $setupgoals = $DB->get_record('amplifier_setup_goals',
-        array('topic' => $selectedgoal->topicid,
-        'goal' => $selectedgoal->goalid,
-        'course' => $courseid,
-        'coursemodule' => $coursemoduleid,
-        'instance' => $instanceid,
-        'user' => $userid),
-        '*',
-        MUST_EXIST);
+                                      [
+                                          'topic' => $selectedgoal->topicid,
+                                          'goal' => $selectedgoal->goalid,
+                                          'course' => $courseid,
+                                          'coursemodule' => $coursemoduleid,
+                                          'instance' => $instanceid,
+                                          'user' => $userid,
+                                      ],
+                                      '*',
+                                      MUST_EXIST);
 
         return [$amplifierusersetup, $selectedgoal];
     }

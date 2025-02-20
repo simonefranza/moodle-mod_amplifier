@@ -154,9 +154,9 @@ class amplifier_controller {
                 ];
             }
             $templatecontext['yearOptions'] = [];
-            $currentYear = (int) date("Y");
+            $currentyear = (int) date("Y");
             for ($i = 0; $i < 4; $i++) {
-              $templatecontext['yearOptions'][] = ['value' => $currentYear + $i, 'display' => $currentYear + $i];
+                $templatecontext['yearOptions'][] = ['value' => $currentyear + $i, 'display' => $currentyear + $i];
             }
             $templatecontext['hourOptions'] = [];
             for ($i = 0; $i < 24; $i++) {
@@ -195,24 +195,24 @@ class amplifier_controller {
         $predefinedlgsrecords = $DB->get_records_sql($sqlstmt, ['lgwid' => $this->learninggoalwidgetid]);
 
         foreach ($predefinedlgsrecords as $predefinedlgrecord) {
-          if ($lasttopicid != $predefinedlgrecord->topicid) {
+            if ($lasttopicid != $predefinedlgrecord->topicid) {
+                $out .= $OUTPUT->render_from_template(
+                    'mod_amplifier/widget/amplifier-predefined-learning-topic',
+                    [
+                      'amplifier_predefined_learning_topic_label' => $predefinedlgrecord->topictitle,
+                    ]
+                );
+                $lasttopicid = $predefinedlgrecord->topicid;
+            }
+
             $out .= $OUTPUT->render_from_template(
-              'mod_amplifier/widget/amplifier-predefined-learning-topic',
+              'mod_amplifier/widget/amplifier-predefined-learning-goal',
               [
-                'amplifier_predefined_learning_topic_label' => $predefinedlgrecord->topictitle,
+                'amplifier_predefined_learning_goal_topicid' => $predefinedlgrecord->topicid,
+                'amplifier_predefined_learning_goal_goalid' => $predefinedlgrecord->goalid,
+                'amplifier_predefined_learning_goal_label' => $predefinedlgrecord->goaltitle,
               ]
             );
-            $lasttopicid = $predefinedlgrecord->topicid;
-          }
-
-          $out .= $OUTPUT->render_from_template(
-            'mod_amplifier/widget/amplifier-predefined-learning-goal',
-            [
-              'amplifier_predefined_learning_goal_topicid' => $predefinedlgrecord->topicid,
-              'amplifier_predefined_learning_goal_goalid' => $predefinedlgrecord->goalid,
-              'amplifier_predefined_learning_goal_label' => $predefinedlgrecord->goaltitle,
-            ]
-          );
         }
         return $out;
     }

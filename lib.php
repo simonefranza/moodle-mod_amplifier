@@ -92,7 +92,7 @@ function amplifier_delete_instance(int $id): bool {
     $goalids = $DB->get_fieldset_select('amplifier_goals', 'id', 'amplifierid = :amplifierid', ['amplifierid' => $id]);
 
     if (!empty($goalids)) {
-        // Convert goal IDs into a safe SQL IN clause
+        // Convert goal IDs into a safe SQL IN clause.
         list($goalidssql, $goalidsparams) = $DB->get_in_or_equal($goalids, SQL_PARAMS_NAMED);
 
         $DB->delete_records_select('amplifier_reminders', "amplifiergoalid $goalidssql", $goalidsparams);

@@ -53,10 +53,7 @@ class widget_renderable implements renderable, templatable {
      * @return array Context variables for the template
      */
     public function export_for_template(renderer_base $output) {
-
-        $contextvariables = [
-            "instanceId" => $this->instanceid
-        ];
+        $contextvariables = ["instanceId" => $this->instanceid];
         return $contextvariables;
     }
 }
