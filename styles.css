@@ -100,3 +100,7 @@
 .mod_amplifier .topic-card .topic-actions .topic-dropdown-toggle:empty::after {
     margin-left: 0;
 }
+/* Settings page */
+#page-mod-amplifier-mod #fitem_id_lgwname div[data-name="lgwname"] {
+    padding-top: calc(0.375rem + 1px);
+}

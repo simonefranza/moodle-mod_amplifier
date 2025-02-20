@@ -25,6 +25,8 @@
 $string['amplifier:addinstance'] = 'Add a new Training Amplifier Widget';
 $string['amplifier:view'] = 'View Training Amplifier Widget';
 $string['amplifiertext'] = 'Training Amplifier Widget Text';
+$string['exception:change_lgw'] = 'The target Learning Goal Widget cannot be changed. Please delete the Training Amplifier instance and create a new one.';
+$string['exception:instance_not_found'] = 'The instance to update was not found.';
 $string['exception:setup_done'] = 'You already setup the Training Amplifier.';
 $string['modulename'] = 'Training Amplifier Widget';
 $string['modulename_help'] = '';

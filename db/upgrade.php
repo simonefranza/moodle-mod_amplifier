@@ -116,6 +116,25 @@ function delete_index($dbman, $tablename, $indexname, $unique, $fields) {
 }
 
 /**
+ * Adds an index to a table
+ *
+ * @param object $dbman
+ * @param string $tablename
+ * @param string $indexname
+ * @param int $unique XMLDB_INDEX_NOTUNIQUE |
+ * @param string[] $fields
+ * @return void
+ */
+function add_index($dbman, $tablename, $indexname, $unique, $fields) {
+    $table = new xmldb_table($tablename);
+    $index = new xmldb_index($indexname, $unique, $fields);
+
+    if (!$dbman->index_exists($table, $index)) {
+        $dbman->add_index($table, $index);
+    }
+}
+
+/**
  * Adds a key to a table
  *
  * @param object $dbman
@@ -224,7 +243,29 @@ function xmldb_amplifier_upgrade($oldversion) {
         // Amplifier savepoint reached.
         upgrade_mod_savepoint(true, 2025021900, 'amplifier');
     }
+    if ($oldversion < 2025022005) {
+        upgrade3($dbman);
+
+        // Amplifier savepoint reached.
+        upgrade_mod_savepoint(true, 2025022005, 'amplifier');
+    }
     return true;
+}
+
+/**
+ * upgrade amplifier for oldversion < 2025022005
+ *
+ * @param xmldb $dbman
+ * @return void
+ */
+function upgrade3($dbman) {
+    global $DB;
+    // Add index on amplifier.learninggoalwidgetid.
+    add_index($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_INDEX_NOTUNIQUE, ['learninggoalwidgetid']);
+    // Add index on amplifier_reminders.startdate.
+    add_index($dbman, 'amplifier_reminders', 'startdate', XMLDB_INDEX_NOTUNIQUE, ['startdate']);
+    // Add index on amplifier_reminders.enddate.
+    add_index($dbman, 'amplifier_reminders', 'enddate', XMLDB_INDEX_NOTUNIQUE, ['enddate']);
 }
 
 /**

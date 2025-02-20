@@ -41,7 +41,6 @@ class mod_amplifier_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
         $courseid = $this->get_course()->id;
-        var_dump($courseid);
         // Check that there is at least one learninggoalwidget in this course
         if ($requiredmodule = $DB->get_record('modules', array('name' => 'learninggoalwidget'))) {
             $exists = $DB->record_exists('course_modules', array(
@@ -58,9 +57,6 @@ class mod_amplifier_mod_form extends moodleform_mod {
             throw new moodle_exception('requiredactivitypluginmissing', 'mod_amplifier',
                 new moodle_url('/course/view.php', array('id' => $courseid)));
         }
-        $learninggoalwidgetinstances = $DB->get_records('learninggoalwidget', ['course' => $courseid], '', 'id, name');
-        var_dump($learninggoalwidgetinstances);
-
         $mform->addElement('header', 'general', get_string('general'));
 
         // Adding the standard "name" field.
@@ -71,16 +67,28 @@ class mod_amplifier_mod_form extends moodleform_mod {
 
         $this->standard_intro_elements();
 
-        // Prepare options for the dropdown
-        $options = [];
-        foreach ($learninggoalwidgetinstances as $instance) {
-            $options[$instance->id] = $instance->name;
-        }
+        $amplifierrecord = $DB->get_record('amplifier', ['id' => $this->_instance]);
+        if ($amplifierrecord) {
+            $lgwinstance = $DB->get_record('learninggoalwidget', ['id' => (int)$amplifierrecord->learninggoalwidgetid], 'id, name');
+            $widgetname = isset($lgwinstance->name) ? $lgwinstance->name : 'wtf';
+            // If widget has already been setup don't allow to change LGW (to avoid further complexity).
+            $mform->addElement('static', 'lgwname', get_string('selectlearninggoalwidget', 'mod_amplifier'), $widgetname);
+            $mform->addElement('hidden', 'learninggoalwidgetid', $lgwinstance->id);
+            $mform->setType('learninggoalwidgetid', PARAM_INT);
+        } else {
+            $lgwinstances = $DB->get_records('learninggoalwidget', ['course' => $courseid], '', 'id, name');
 
-        // Add dropdown to form
-        $mform->addElement('select', 'learninggoalwidgetid', get_string('selectlearninggoalwidget', 'mod_amplifier'), $options);
-        $mform->setType('learninggoalwidgetid', PARAM_INT);
-        $mform->addRule('learninggoalwidgetid', get_string('required'), 'required');
+            // Prepare options for the dropdown
+            $options = [];
+            foreach ($lgwinstances as $instance) {
+                $options[$instance->id] = $instance->name;
+            }
+
+            // Add dropdown to form
+            $mform->addElement('select', 'learninggoalwidgetid', get_string('selectlearninggoalwidget', 'mod_amplifier'), $options);
+            $mform->setType('learninggoalwidgetid', PARAM_INT);
+            $mform->addRule('learninggoalwidgetid', get_string('required'), 'required');
+        }
 
         $this->standard_coursemodule_elements();
 

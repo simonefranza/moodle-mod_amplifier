@@ -1,0 +1,39 @@
+{
+  "name": "telm_learninggoals_widget",
+  "version": "1.0.0",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "eslint-plugin-jsdoc": "^46.4.3",
+    "eslint-plugin-promise": "^6.1.1",
+    "grunt": "^1.5.3",
+    "grunt-contrib-jshint": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "^4.0.1",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-eslint": "^22.0.0",
+    "grunt-sass": "^3.1.0",
+    "grunt-stylelint": "^0.13.0",
+    "stylelint": "^12.0.1",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.27"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.know-center.tugraz.at/awertner/learninggoalwidget.git"
+  },
+  "description": ""
+}

@@ -38,8 +38,6 @@ use mod_amplifier\core\amplifier_controller;
  */
 function amplifier_add_instance(stdClass $data): int {
     global $DB;
-    var_dump($data);
-
     $data->timecreated = time();
     $data->timemodified = $data->timecreated;
     $data->id = $DB->insert_record('amplifier', $data);
@@ -61,8 +59,18 @@ function amplifier_update_instance(stdClass $data): bool {
 
     $data->timemodified = time();
     $data->id = $data->instance;
-    $data->name = $data->name;
-    $data->intro = $data->intro;
+
+    // Don't allow to change lgw instance (to avoid further complexity).
+    $amplifierrecord = $DB->get_record('amplifier', ['id' => $data->id]);
+    if (!$amplifierrecord) {
+        throw new moodle_exception('exception:instance_not_found', 'mod_amplifier',
+            new moodle_url('/course/view.php', ['id' => $data->course]));
+    }
+
+    if ((int)$data->learninggoalwidgetid !== (int)$amplifierrecord->learninggoalwidgetid) {
+        throw new moodle_exception('exception:change_lgw', 'mod_amplifier',
+            new moodle_url('/course/view.php', ['id' => $data->course]));
+    }
 
     return $DB->update_record('amplifier', $data);
 }
@@ -79,6 +87,17 @@ function amplifier_delete_instance(int $id): bool {
     $activity = $DB->get_record('amplifier', ['id' => $id]);
     if (!$activity) {
         return false;
+    }
+
+    $goalids = $DB->get_fieldset_select('amplifier_goals', 'id', 'amplifierid = :amplifierid', ['amplifierid' => $id]);
+
+    if (!empty($goalids)) {
+        // Convert goal IDs into a safe SQL IN clause
+        list($goalidssql, $goalidsparams) = $DB->get_in_or_equal($goalids, SQL_PARAMS_NAMED);
+
+        $DB->delete_records_select('amplifier_reminders', "amplifiergoalid $goalidssql", $goalidsparams);
+        $DB->delete_records_select('amplifier_reflections', "amplifiergoalid $goalidssql", $goalidsparams);
+        $DB->delete_records_select('amplifier_goals', "id $goalidssql", $goalidsparams);
     }
 
     $DB->delete_records('amplifier', ['id' => $id]);

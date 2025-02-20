@@ -25,6 +25,8 @@
 $string['amplifier:addinstance'] = 'Training Amplifier Widget hinzufügen';
 $string['amplifier:view'] = 'Training Amplifier Widget anzeigen';
 $string['amplifiertext'] = 'Training Amplifier Widget Text';
+$string['exception:change_lgw'] = 'Das Lernziele Widget kann nicht geändert werden. Bitte löschen Sie die Training Amplifier Instanz und erstellen Sie eine neue.';
+$string['exception:instance_not_found'] = 'Die zu aktualisierende Instanz wurde nicht gefunden.';
 $string['exception:setup_done'] = 'Sie haben den Training Amplifier Setup schon erledigt.';
 $string['modulename'] = 'Training Amplifier Widget';
 $string['modulename_help'] = '';

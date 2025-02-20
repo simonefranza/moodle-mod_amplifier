@@ -59,70 +59,36 @@ class provider implements
     public static function get_metadata(collection $items): collection {
 
         $items->add_database_table(
-            'amplifier_reflection',
+            'amplifier_reflections',
             [
-                'course' => 'privacy:metadata:amplifier_reflection:course',
-                'coursemodule' => 'privacy:metadata:amplifier_reflection:coursemodule',
-                'instance' => 'privacy:metadata:amplifier_reflection:instance',
-                'user' => 'privacy:metadata:amplifier_reflection:user',
-                'participantcode' => 'privacy:metadata:amplifier_reflection:participantcode',
-                'goal' => 'privacy:metadata:amplifier_reflection:goal',
-                'response' => 'privacy:metadata:amplifier_reflection:response',
+                'amplifiergoalid' => 'privacy:metadata:amplifier_reflections:amplifiergoalid',
+                'response' => 'privacy:metadata:amplifier_reflections:response',
+                'timecreated' => 'privacy:metadata:amplifier_reflections:timecreated',
             ],
-            'privacy:metadata:amplifier_reflection'
+            'privacy:metadata:amplifier_reflections'
         );
 
         $items->add_database_table(
-            'amplifier_reminder',
+            'amplifier_reminders',
             [
-                'course' => 'privacy:metadata:amplifier_reflection:course',
-                'coursemodule' => 'privacy:metadata:amplifier_reflection:coursemodule',
-                'instance' => 'privacy:metadata:amplifier_reflection:instance',
-                'user' => 'privacy:metadata:amplifier_reflection:user',
-                'participantcode' => 'privacy:metadata:amplifier_reflection:participantcode',
-                'goal' => 'privacy:metadata:amplifier_reflection:goal',
+                'amplifiergoalid' => 'privacy:metadata:amplifier_reminders:amplifiergoalid',
+                'startdate' => 'privacy:metadata:amplifier_reminders:startdate',
+                'enddate' => 'privacy:metadata:amplifier_reminders:enddate',
+                'reminderhour' => 'privacy:metadata:amplifier_reminders:reminderhour',
+                'reminderminute' => 'privacy:metadata:amplifier_reminders:reminderminute',
+                'lastnotificationdate' => 'privacy:metadata:amplifier_reminders:lastnotificationdate',
             ],
-            'privacy:metadata:amplifier_reminder'
+            'privacy:metadata:amplifier_reminders'
         );
 
         $items->add_database_table(
-            'amplifier_setup_goals',
+            'amplifier_goals',
             [
-                'course' => 'privacy:metadata:amplifier_setup_goals:course',
-                'coursemodule' => 'privacy:metadata:amplifier_setup_goals:coursemodule',
-                'instance' => 'privacy:metadata:amplifier_setup_goals:instance',
-                'user' => 'privacy:metadata:amplifier_setup_goals:user',
-                'participantcode' => 'privacy:metadata:amplifier_setup_goals:participantcode',
-                'goal' => 'privacy:metadata:amplifier_setup_goals:goal',
+                'amplifierid' => 'privacy:metadata:amplifier_goals:amplifierid',
+                'lgwgoalid' => 'privacy:metadata:amplifier_goals:lgwgoalid',
+                'userid' => 'privacy:metadata:amplifier_goals:userid',
             ],
-            'privacy:metadata:amplifier_setup_goals'
-        );
-
-        $items->add_database_table(
-            'amplifier_setup_reflection',
-            [
-                'course' => 'privacy:metadata:amplifier_setup_reflection:course',
-                'coursemodule' => 'privacy:metadata:amplifier_setup_reflection:coursemodule',
-                'instance' => 'privacy:metadata:amplifier_setup_reflection:instance',
-                'user' => 'privacy:metadata:amplifier_setup_reflection:user',
-                'participantcode' => 'privacy:metadata:amplifier_setup_reflection:participantcode',
-                'goal' => 'privacy:metadata:amplifier_setup_reflection:goal',
-                'response' => 'privacy:metadata:amplifier_setup_reflection:response',
-            ],
-            'privacy:metadata:amplifier_setup_reflection'
-        );
-
-        $items->add_database_table(
-            'amplifier_setup',
-            [
-                'course' => 'privacy:metadata:amplifier_setup:course',
-                'coursemodule' => 'privacy:metadata:amplifier_setup:coursemodule',
-                'instance' => 'privacy:metadata:amplifier_setup:instance',
-                'user' => 'privacy:metadata:amplifier_setup:user',
-                'participantcode' => 'privacy:metadata:amplifier_setup:participantcode',
-                'finished' => 'privacy:metadata:amplifier_setup:finished',
-            ],
-            'privacy:metadata:amplifier_setup'
+            'privacy:metadata:amplifier_goals'
         );
 
         return $items;
@@ -138,12 +104,12 @@ class provider implements
         $resultset = new contextlist();
 
         // Users who are using the training amplifier.
-        $sql = "SELECT c.id
-                  FROM {context} c
-                  JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
-                  JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-                  JOIN {amplifier_setup} amp ON amp.instance = cm.instance
-                 WHERE amp.amp_user = :userid AND amp.finished = 1";
+        $sql = "SELECT DISTINCT c.id
+                           FROM {context} c
+                           JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+                           JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+                           JOIN {amplifier_goals} amp ON amp.amplifierid = cm.instance
+                          WHERE amp.userid = :userid";
         $params = ['contextlevel' => CONTEXT_MODULE, 'modname' => 'amplifier', 'userid' => $userid];
         $resultset->add_from_sql($sql, $params);
 
@@ -168,12 +134,11 @@ class provider implements
         ];
 
         // Users who reflected on learning goals.
-        $sql = "SELECT amp.amp_user as userid
-                  FROM {course_modules} cm
-                  JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-                  JOIN {amplifier_setup} amp ON amp.instance = cm.instance
-                  JOIN {amplifier_reflection} ampref ON ampref.amp_user = amp.amp_user
-                 WHERE cm.id = :cmid AND amp.finished = 1";
+        $sql = "SELECT DISTINCT amp.userid
+                           FROM {course_modules} cm
+                           JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+                           JOIN {amplifier_goals} amp ON amp.amplifierid = cm.instance
+                          WHERE cm.id = :cmid";
         $userlist->add_from_sql('userid', $sql, $params);
 
         \core_question\privacy\provider::get_users_in_context_from_sql($userlist, 'amp', $sql, $params);
@@ -203,23 +168,20 @@ class provider implements
         $params += $contextparams;
 
         // Selected goals
-        $sql = "SELECT
-        ampset.course AS course,
-        ampset.instance AS instance,
-        ampset.amp_user AS user,
-        ampset.participantcode AS participantcode,
-        lgwtopic.title AS topictitle,
-        lgwgoal.title AS goaltitle,
-        c.id AS contextid,
-        cm.id AS cmid
-        FROM {context} c
-        INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
-        INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-        INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
-        JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
-        JOIN {learninggoalwidget_topics} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goals} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topicid
-        WHERE c.id {$contextsql}";
+        $sql = "SELECT ampgoals.amplifierid AS instance,
+                       ampgoals.userid AS userid,
+                       lgwtopic.title AS topictitle,
+                       lgwgoals.title AS goaltitle,
+                       c.id AS contextid,
+                       cm.id AS cmid
+                  FROM {context} c
+            INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+            INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+            INNER JOIN {amplifier_goals} ampgoals ON ampgoals.amplifierid = cm.instance
+            INNER JOIN {learninggoalwidget_goals} lgwgoals ON ampgoals.lgwgoalid = lgwgoals.id
+            INNER JOIN {learninggoalwidget_topics} lgwtopics ON lgwgoals.topicid = lgwtopics.id
+                 WHERE c.id {$contextsql}
+                   AND ampgoals.userid = :userid";
 
         // Export user selected goals
         $selectedusergoals = $DB->get_recordset_sql($sql, $params);
@@ -228,42 +190,39 @@ class provider implements
         foreach ($selectedusergoals as $selectedgoalrecord) {
             $context = $contextlist->current();
             $selectedgoal = new \stdClass;
-            $selectedgoal->course = $selectedgoalrecord->course;
             $selectedgoal->instance = $selectedgoalrecord->instance;
-            $selectedgoal->participantcode = $selectedgoalrecord->participantcode;
+            $selectedgoal->userid = $selectedgoalrecord->userid;
             $selectedgoal->topictitle = $selectedgoalrecord->topictitle;
             $selectedgoal->goaltitle = $selectedgoalrecord->goaltitle;
-            \array_push($data->selectedgoals, $selectedgoal);
+            $selectedgoal->contextid = $selectedgoalrecord->contextid;
+            $selectedgoal->cmid = $selectedgoalrecord->cmid;
+            $data->selectedgoals[] = $selectedgoal;
         }
-        writer::with_context($context)
-            ->export_data(['selectedgoals'], $data);
+        writer::with_context($context)->export_data(['selectedgoals'], $data);
         $selectedusergoals->close();
 
         // Export user reminders
-        $sql = "SELECT
-        ampset.course AS course,
-        ampset.instance AS instance,
-        ampset.amp_user AS user,
-        ampset.participantcode AS participantcode,
-        lgwtopic.title AS topictitle,
-        lgwgoal.title AS goaltitle,
-        from_unixtime(ampremind.startdate/1000) as startdate,
-        from_unixtime(ampremind.enddate/1000) as enddate,
-        ampremind.reminderhour,
-        ampremind.reminderminute,
-        ampremind.frequency,
-        from_unixtime(ampremind.lastnotificationdate/1000) as lastnotificationdate,
-        c.id AS contextid,
-        cm.id AS cmid
-        FROM {context} c
-        INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
-        INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-        INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
-        JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
-        JOIN {amplifier_reminder} ampremind ON ampgoals.goal = ampremind.goal
-        JOIN {learninggoalwidget_topics} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goals} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topicid
-        WHERE c.id {$contextsql}";
+        $sql = "SELECT ampgoals.amplifierid AS instance,
+                       ampgoals.userid AS userid,
+                       lgwtopics.title AS topictitle,
+                       lgwgoals.title AS goaltitle,
+                       ampremind.startdate,
+                       ampremind.enddate,
+                       ampremind.reminderhour,
+                       ampremind.reminderminute,
+                       ampremind.frequency,
+                       ampremind.lastnotificationdate,
+                       c.id AS contextid,
+                       cm.id AS cmid
+                  FROM {context} c
+            INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+            INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+            INNER JOIN {amplifier_goals} ampgoals ON ampgoals.amplifierid = cm.instance
+            INNER JOIN {amplifier_reminders} ampremind ON ampgoals.id = ampremind.amplifiergoalid
+            INNER JOIN {learninggoalwidget_goals} lgwgoals ON ampgoals.lgwgoalid = lgwgoals.id
+            INNER JOIN {learninggoalwidget_topics} lgwtopics ON lgwgoals.topicid = lgwtopics.id
+                 WHERE c.id {$contextsql}
+                   AND ampgoals.userid = :userid";
 
         $reminders = $DB->get_recordset_sql($sql, $params);
         $data = new \stdClass;
@@ -271,9 +230,8 @@ class provider implements
         foreach ($reminders as $reminderrecord) {
             $context = $contextlist->current();
             $reminder = new \stdClass;
-            $reminder->course = $reminderrecord->course;
             $reminder->instance = $reminderrecord->instance;
-            $reminder->participantcode = $reminderrecord->participantcode;
+            $reminder->userid = $reminderrecord->userid;
             $reminder->topictitle = $reminderrecord->topictitle;
             $reminder->goaltitle = $reminderrecord->goaltitle;
             $reminder->startdate = $reminderrecord->startdate;
@@ -282,33 +240,31 @@ class provider implements
             $reminder->reminderminute = $reminderrecord->reminderminute;
             $reminder->frequency = $reminderrecord->frequency;
             $reminder->lastnotificationdate = $reminderrecord->lastnotificationdate;
-            \array_push($data->reminders, $reminder);
+            $reminder->contextid = $reminderrecord->contextid;
+            $reminder->cmid = $reminderrecord->cmid;
+            $data->reminders[] = $reminder;
         }
-        writer::with_context($context)
-            ->export_data(['reminders'], $data);
+        writer::with_context($context)->export_data(['reminders'], $data);
         $reminders->close();
 
         // Export user reflections
-        $sql = "SELECT
-        ampset.course AS course,
-        ampset.instance AS instance,
-        ampset.amp_user AS user,
-        ampset.participantcode AS participantcode,
-        lgwtopic.title AS topictitle,
-        lgwgoal.title AS goaltitle,
-        from_unixtime(ampref.reflectedat/1000) as reflectiondate,
-        ampref.response,
-        c.id AS contextid,
-        cm.id AS cmid
-        FROM {context} c
-        INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
-        INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
-        INNER JOIN {amplifier_setup} ampset ON ampset.instance = cm.instance
-        JOIN {amplifier_setup_goals} ampgoals ON ampgoals.setup = ampset.id
-        JOIN {amplifier_reflection} ampref ON ampgoals.goal = ampref.goal
-        JOIN {learninggoalwidget_topics} lgwtopic ON ampgoals.topic = lgwtopic.id
-        JOIN {learninggoalwidget_goals} lgwgoal ON ampgoals.goal = lgwgoal.id AND ampgoals.topic = lgwgoal.topicid
-        WHERE c.id {$contextsql}";
+        $sql = "SELECT ampgoals.amplifierid AS instance,
+                       ampgoals.userid AS userid,
+                       lgwtopics.title AS topictitle,
+                       lgwgoals.title AS goaltitle,
+                       ampref.timecreated,
+                       ampref.response,
+                       c.id AS contextid,
+                       cm.id AS cmid
+                  FROM {context} c
+            INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+            INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+            INNER JOIN {amplifier_goals} ampgoals ON ampgoals.amplifierid = cm.instance
+            INNER JOIN {amplifier_reflections} ampref ON ampgoals.id = ampref.amplifiergoalid
+            INNER JOIN {learninggoalwidget_goals} lgwgoals ON ampgoals.lgwgoalid = lgwgoals.id
+            INNER JOIN {learninggoalwidget_topics} lgwtopics ON lgwgoals.topicid = lgwtopics.id
+                 WHERE c.id {$contextsql}
+                   AND ampgoals.userid = :userid";
 
         $reflections = $DB->get_recordset_sql($sql, $params);
         $data = new \stdClass;
@@ -316,17 +272,17 @@ class provider implements
         foreach ($reflections as $reflectionrecord) {
             $context = $contextlist->current();
             $reflection = new \stdClass;
-            $reflection->course = $reflectionrecord->course;
             $reflection->instance = $reflectionrecord->instance;
-            $reflection->participantcode = $reflectionrecord->participantcode;
+            $reflection->userid = $reflectionrecord->userid;
             $reflection->topictitle = $reflectionrecord->topictitle;
             $reflection->goaltitle = $reflectionrecord->goaltitle;
             $reflection->reflectiondate = $reflectionrecord->reflectiondate;
             $reflection->response = $reflectionrecord->response;
-            \array_push($data->reflections, $reflection);
+            $reflection->contextid = $reflectionrecord->contextid;
+            $reflection->cmid = $reflectionrecord->cmid;
+            $data->reflections[] = $reflection;
         }
-        writer::with_context($context)
-            ->export_data(['reflections'], $data);
+        writer::with_context($context)->export_data(['reflections'], $data);
         $reflections->close();
     }
 
@@ -349,26 +305,18 @@ class provider implements
             return;
         }
 
-        $DB->delete_records('amplifier_setup', array(
-            'coursemodule' => $cm->id,
-            'instance' => $cm->instance
-        ));
-        $DB->delete_records('amplifier_setup_reflection', array(
-            'coursemodule' => $cm->id,
-            'instance' => $cm->instance
-        ));
-        $DB->delete_records('amplifier_setup_goals', array(
-            'coursemodule' => $cm->id,
-            'instance' => $cm->instance
-        ));
-        $DB->delete_records('amplifier_reminder', array(
-            'coursemodule' => $cm->id,
-            'instance' => $cm->instance
-        ));
-        $DB->delete_records('amplifier_reflection', array(
-            'coursemodule' => $cm->id,
-            'instance' => $cm->instance
-        ));
+        $goalids = $DB->get_fieldset_select('amplifier_goals', 'id', 'amplifierid = ?', [$cm->instance]);
+
+        if (empty($goalids)) {
+            // Nothing to delete.
+            return;
+        }
+        // Convert goal IDs into a safe SQL IN clause
+        list($goalidssql, $goalidsparams) = $DB->get_in_or_equal($goalids, SQL_PARAMS_NAMED);
+
+        $DB->delete_records_select('amplifier_reminders', "amplifiergoalid $goalidssql", $goalidsparams);
+        $DB->delete_records_select('amplifier_reflections', "amplifiergoalid $goalidssql", $goalidsparams);
+        $DB->delete_records_select('amplifier_goals', "id $goalidssql", $goalidsparams);
     }
 
     /**
@@ -394,7 +342,7 @@ class provider implements
             // Fetch the details of the data to be removed.
             $user = $contextlist->get_user();
 
-            self::delete_data_for_user_int($cm->id, $cm->instance, $user->id);
+            self::delete_data_for_user_int($cm->instance, $user->id);
 
         }
     }
@@ -423,45 +371,40 @@ class provider implements
         $userids = $userlist->get_userids();
 
         foreach ($userids as $userid) {
-            self::delete_data_for_user_int($cm->id, $cm->instance, $userid);
+            self::delete_data_for_user_int($cm->instance, $userid);
         }
     }
 
     /**
      * Delete a single user
      *
-     * @param cmid $cmid The course module
      * @param instance $instance The course module instance
-     * @param user $user The user id
+     * @param user $userid The user id
      */
-    private static function delete_data_for_user_int($cmid, $instance, $user) {
+    private static function delete_data_for_user_int($instance, $userid) {
 
         global $DB;
 
-        $DB->delete_records('amplifier_setup', array(
-            'coursemodule' => $cmid,
-            'instance' => $instance,
-            'user' => $user
-        ));
-        $DB->delete_records('amplifier_setup_reflection', array(
-            'coursemodule' => $cmid,
-            'instance' => $instance,
-            'user' => $user
-        ));
-        $DB->delete_records('amplifier_setup_goals', array(
-            'coursemodule' => $cmid,
-            'instance' => $instance,
-            'user' => $user
-        ));
-        $DB->delete_records('amplifier_reminder', array(
-            'coursemodule' => $cmid,
-            'instance' => $instance,
-            'user' => $user
-        ));
-        $DB->delete_records('amplifier_reflection', array(
-            'coursemodule' => $cmid,
-            'instance' => $instance,
-            'user' => $user
-        ));
+        $params = [
+            "userid" => $userid,
+            "amplifierid" => $instance,
+        ];
+        $goalids = $DB->get_fieldset_select(
+            'amplifier_goals',
+            'id',
+            'userid = :userid AND amplifierid = :amplifierid',
+            $params
+        );
+
+        if (empty($goalids)) {
+            // Nothing to delete.
+            return;
+        }
+        // Convert goal IDs into a safe SQL IN clause
+        list($goalidssql, $goalidsparams) = $DB->get_in_or_equal($goalids, SQL_PARAMS_NAMED);
+
+        $DB->delete_records_select('amplifier_reminders', "amplifiergoalid $goalidssql", $goalidsparams);
+        $DB->delete_records_select('amplifier_reflections', "amplifiergoalid $goalidssql", $goalidsparams);
+        $DB->delete_records_select('amplifier_goals', "id $goalidssql", $goalidsparams);
     }
 }
