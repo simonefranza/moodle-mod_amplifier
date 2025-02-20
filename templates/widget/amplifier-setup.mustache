@@ -74,26 +74,8 @@
 
 </div>
 
-
 {{#js}}
-
-        require(
-        [
-            'jquery',
-            'mod_amplifier/amplifier-setup',
-        ],
-        function(
-            $,
-            AmplifierSetup
-        ) {
-
-            $(document).ready(function () {
-
-                AmplifierSetup.init({{{instanceId}}});
-
-            });
-
-        });
-
+require(['mod_amplifier/amplifier-setup'], (module) =>
+  module.init({{{instanceId}}}));
 {{/js}}
 {{/amplifier_setup_finished}}

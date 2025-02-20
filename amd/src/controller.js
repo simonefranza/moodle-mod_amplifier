@@ -19,42 +19,38 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(
-    ['core/ajax'], function(Ajax) {
+import Ajax from 'core/ajax';
 
-        var submitSetup = function(args) {
-            var request = {
-                methodname: 'mod_amplifier_submit_setup',
-                args: args
-            };
-            var promise = Ajax.call([request])[0];
-            return promise;
-        };
+var submitSetup = function(args) {
+    var request = {
+        methodname: 'mod_amplifier_submit_setup',
+        args: args
+    };
+    var promise = Ajax.call([request])[0];
+    return promise;
+};
 
 
-        var submitReflections = function(args) {
-            var request = {
-                methodname: 'mod_amplifier_submit_reflections',
-                args: args
-            };
-            var promise = Ajax.call([request])[0];
-            return promise;
-        };
+var submitReflections = function(args) {
+    var request = {
+        methodname: 'mod_amplifier_submit_reflections',
+        args: args
+    };
+    var promise = Ajax.call([request])[0];
+    return promise;
+};
 
-        var saveReminder = function(args) {
-            var request = {
-                methodname: 'mod_amplifier_save_reminder',
-                args: args
-            };
-            var promise = Ajax.call([request])[0];
-            return promise;
-        };
+var saveReminder = function(args) {
+    var request = {
+        methodname: 'mod_amplifier_save_reminder',
+        args: args
+    };
+    var promise = Ajax.call([request])[0];
+    return promise;
+};
 
-        return {
-            submitSetup: submitSetup,
-            saveReminder: saveReminder,
-            submitReflections: submitReflections
-        };
-
-    }
-);
+export default {
+    submitSetup: submitSetup,
+    saveReminder: saveReminder,
+    submitReflections: submitReflections
+};

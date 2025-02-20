@@ -46,21 +46,6 @@
 </div>
 
 {{#js}}
-require(
-[
-    'jquery',
-    'mod_amplifier/amplifier-widget'
-],
-function(
-    $,
-    AmplifierWidget
-) {
-
-    $(document).ready(function() {
-
-        AmplifierWidget.init({{{instanceId}}}, {{amplifier_setup_finished}});
-
-    });
-
-});
+require(['mod_amplifier/amplifier-widget'], (module) =>
+  module.init({{{instanceId}}}));
 {{/js}}
