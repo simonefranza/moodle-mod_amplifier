@@ -111,16 +111,16 @@ class save_reminder extends \core_external\external_api {
 
         // Custom validation: $startdate <= $enddate.
         if ($startdate > $enddate) {
-            throw new invalid_parameter_exception('The start date must be before the end date.');
+            throw new \invalid_parameter_exception('The start date must be before the end date.');
         }
         // Custom validation: 0 <= $reminderhour <= 23.
         if ($reminderhour < 0 || $reminderhour > 23) {
-            throw new invalid_parameter_exception('The reminder hour is invalid.');
+            throw new \invalid_parameter_exception('The reminder hour is invalid.');
         }
 
         // Custom validation: 0 <= $reminderminute <= 59.
         if ($reminderminute < 0 || $reminderminute > 59) {
-            throw new invalid_parameter_exception('The reminder minute is invalid.');
+            throw new \invalid_parameter_exception('The reminder minute is invalid.');
         }
 
         // Make sure that instance exists and user has done setup.
@@ -136,7 +136,7 @@ class save_reminder extends \core_external\external_api {
                    AND goals.userid = :userid
                    AND amplifier.id = :instanceid";
         if (!$DB->record_exists_sql($stmt, $params)) {
-            throw new invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
+            throw new \invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
         }
 
         $params = ["amplifiergoalid" => $amplifiergoalid];

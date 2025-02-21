@@ -111,7 +111,7 @@ class submit_reflections extends \core_external\external_api {
                    AND goals.userid = :userid
                    AND amplifier.id = :instanceid";
         if (!$DB->record_exists_sql($stmt, $params)) {
-            throw new invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
+            throw new \invalid_parameter_exception("You didn't do the setup or the amplifier instance doesn't exist.");
         }
 
         $newreflection = new \stdClass;

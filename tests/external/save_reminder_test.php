@@ -58,8 +58,98 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $setup = $this->setup_widget(true);
 
         // Submit reflection.
-        $this->expectException(\required_capability_exception::class);
         $now = time() * 1000;
-        $res = save_reminder::execute($now, $now, 0, 0, 1, $setup->instance->id);
+        $this->expectException(\required_capability_exception::class);
+        $res = save_reminder::execute($now, $now, 0, 0, 0, 0, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder usign invalid start and end date
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_date_exc(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now + 2000, $now, 0, 0, 0, 0, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder usign reminderhour < 0
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_hour_exc_1(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, -1, 0, 0, 0, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder usign reminderhour > 23
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_hour_exc_2(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, 24, 0, 0, 0, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder usign reminderminute < 0
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_minute_exc_1(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, 19, -10, 0, 0, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder usign reminderminute > 59
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_minute_exc_2(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, 19, 65, 0, 0, $setup->instance->id);
     }
 }
