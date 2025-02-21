@@ -24,6 +24,7 @@
 $string['amplifier'] = 'User Registration';
 
 $string['amplifier:addinstance'] = 'Add a new Training Amplifier Widget';
+$string['amplifier:setupgoals'] = 'Setup and use the Training Amplifier Widget';
 $string['amplifier:view'] = 'View Training Amplifier Widget';
 $string['amplifiertext'] = 'Training Amplifier Widget Text';
 

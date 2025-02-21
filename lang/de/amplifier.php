@@ -25,6 +25,7 @@
 $string['amplifier'] = 'Benutzerregistrierung';
 
 $string['amplifier:addinstance'] = 'Training Amplifier Widget hinzufügen';
+$string['amplifier:setupgoals'] = 'Training Amplifier Widget einstellen und verwenden';
 $string['amplifier:view'] = 'Training Amplifier Widget anzeigen';
 $string['amplifiertext'] = 'Training Amplifier Widget Text';
 

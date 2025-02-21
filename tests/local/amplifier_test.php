@@ -132,7 +132,8 @@ class controller_test extends \advanced_testcase {
         $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $firsttopic = $setup->taxonomy->children[0];
+        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+        $firsttopic = $taxonomy->children[0];
         $goals = [
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],

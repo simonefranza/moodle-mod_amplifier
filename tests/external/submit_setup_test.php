@@ -58,7 +58,8 @@ final class submit_setup_test extends externallib_advanced_testcase {
         $setup = $this->setup_widget(true);
 
         // Submit setup.
-        $firsttopic = $setup->taxonomy->children[0];
+        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+        $firsttopic = $taxonomy->children[0];
         $goals = [
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
@@ -81,7 +82,8 @@ final class submit_setup_test extends externallib_advanced_testcase {
         $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $firsttopic = $setup->taxonomy->children[0];
+        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+        $firsttopic = $taxonomy->children[0];
         $wronggoalid = $firsttopic->children[0]->goalid + $firsttopic->children[1]->goalid;
         $goals = [
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],

@@ -89,6 +89,16 @@ trait utils {
     }
 
     /**
+     * helper function to retrieve the taxonomy of a learninggoalwidget
+     *
+     * @param number $lgwid ID of the learninggoalwidget instance
+     * @return \stdClass
+     */
+    protected function get_taxonomy($lgwid) {
+        return json_decode(taxonomy::get_taxonomy_as_json($lgwid));
+    }
+
+    /**
      * helper function to create a user with the desired role
      *
      * @param string $role of the user to be created
