@@ -63,7 +63,7 @@ jobs:
           LGW_REPO: 'simonefranza/moodle-mod_learninggoalwidget'
           LGW_BRANCH: 'MOODLE_405_STABLE'
         run: |
-          moodle-plugin-ci add_plugin $LGW_REPO -b $LGW_BRANCH || exit 1
+          moodle-plugin-ci add-plugin $LGW_REPO -b $LGW_BRANCH || exit 1
           moodle-plugin-ci install || exit 1
 
       - name: Install moodle-plugin-ci

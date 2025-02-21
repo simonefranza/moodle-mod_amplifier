@@ -81,6 +81,30 @@ class controller_test extends \advanced_testcase {
         );
     }
 
+    /**
+     * Render the widget for a student who has not done the setup yet
+     * @return void
+     *
+     * @covers \mod_amplifier\local\amplifier::render
+     */
+    public function test_creation_student(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        $amp = amplifier($setup->instance);
+        $context['instanceId'] = $setup->instance;
+        $widget = $amp->render($context);
+        $this->assertStringContainsString(
+          get_string('template:setup:headline', 'mod_amplifier'),
+          $widget
+        );
+        $this->assertStringNotContainsString(
+          get_string('template:setup:teacher', 'mod_amplifier'),
+          $widget
+        );
+    }
+
 
     /**
      * testing class controller
