@@ -71,7 +71,7 @@ trait utils {
             $taxonomy = new \stdClass;
             $taxonomy->name = 'name';
             $taxonomy->children = $this->create_taxonomy(2, 2);
-            taxonomy::update_taxonomy($return->lgwinstance, $taxonomy);
+            taxonomy::update_taxonomy($return->lgwinstance->id, $taxonomy);
             $return->taxonomy = $taxonomy;
         } else {
             $return->lgwinstance = -1;
@@ -81,7 +81,7 @@ trait utils {
         $options = [
             'course' => $return->course->id,
             'name' => 'Training Amplifier',
-            'learninggoalwidgetid' => $return->lgwinstance,
+            'learninggoalwidgetid' => $return->lgwinstance->id,
         ];
         $return->instance = $this->getDataGenerator()->create_module('amplifier', $options);
 

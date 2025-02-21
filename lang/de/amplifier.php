@@ -128,7 +128,6 @@ $string["template:reminder:month:11"] = "November";
 $string["template:reminder:month:12"] = "Dezember";
 
 $string['template:setup:headline'] = "Willkommen beim Training Amplifier";
-$string['template:setup:success'] = 'Sie haben das Training Amplifier Setup erfolgreich abgeschlossen!';
 $string['template:setup:teacher'] = 'Bitte ändern Sie Ihre Rolle zu Teilnehmer/in, um den Training Amplifier auszuprobieren.';
 $string['template:setup:text_1'] = "Training Amplifier soll Sie unterstützen, neuerworbenes theoretisches Wissen in der Praxis anzuwenden.";
 $string['template:setup:text_2'] = "Bitte wählen Sie bis zu 5 Ziele aus, die Sie in den kommenden Tagen oder Wochen verfolgen möchten. Für jedes Ihrer ausgewählten Ziele können Sie eine Erinnerung zur Reflexion setzen, die Sie daran erinnert, ob Sie das Ziel bereits in die Praxis umgesetzt haben.";

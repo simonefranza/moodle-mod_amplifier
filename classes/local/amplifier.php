@@ -46,7 +46,7 @@ class amplifier {
      * @param number $instanceid
      */
     public function __construct($instanceid) {
-        global $DB, $OUTPUT;
+        global $DB;
 
         $this->instanceid = $instanceid;
         $res = $DB->get_record('amplifier', ['id' => $instanceid], 'learninggoalwidgetid');
@@ -225,7 +225,6 @@ class amplifier {
         global $OUTPUT, $USER, $DB;
 
         // Capability check.
-        $userid = $USER->id;
         $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
         $context = \context_module::instance($cm->id);
         require_capability('mod/amplifier:view', $context);
@@ -244,7 +243,6 @@ class amplifier {
             $templatecontext['amplifier_welcome_headline'] = get_string('template:setup:headline', 'mod_amplifier');
             $templatecontext['amplifier_welcome_text_1'] = get_string('template:setup:text_1', 'mod_amplifier');
             $templatecontext['amplifier_welcome_text_2'] = get_string('template:setup:text_2', 'mod_amplifier');
-            $templatecontext['amplifier_setup_submit_text_1'] = get_string('template:setup:success', 'mod_amplifier');
             $templatecontext['amplifier_button_submit'] = get_string('template:general:submit', 'mod_amplifier');
             $templatecontext['amplifier_setup_finished'] = 0;
             // Component to select goals during setup.
