@@ -97,9 +97,9 @@ final class submit_setup_test extends externallib_advanced_testcase {
         $data = array_values($DB->get_records('amplifier_goals', ['amplifierid' => $setup->instance->id]));
         $this->assertSame(count($data), 2);
         for ($i = 0; $i < 2; $i++) {
-            $this->assertSame($goals[$i]->goalid, $data[$i]->lgwgoalid);
-            $this->assertSame($setup->instance->id, $data[$i]->amplifierid);
-            $this->assertSame($student->id, $data[$i]->userid);
+            $this->assertSame($goals[$i]->goalid, (int)$data[$i]->lgwgoalid);
+            $this->assertSame($setup->instance->id, (int)$data[$i]->amplifierid);
+            $this->assertSame($student->id, (int)$data[$i]->userid);
         }
 
         // Trigger exception by doing setup again with the same user.

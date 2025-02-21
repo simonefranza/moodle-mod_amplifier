@@ -63,6 +63,24 @@ final class submit_reflections_test extends externallib_advanced_testcase {
     }
 
     /**
+     * Test submit_reflections to trigger the exception of not having done the setup
+     * @return void
+     *
+     * @covers \mod_amplifier\external\submit_reflections::execute
+     * @covers \mod_amplifier\external\submit_reflections::execute_returns
+     * @covers \mod_amplifier\external\submit_reflections::execute_parameters
+     */
+    public function test_submit_reflections_no_setup_exc(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = submit_reflections::execute('Reflection', 1, $setup->instance->id);
+    }
+
+    /**
      * Test submit_reflections
      * @return void
      *
@@ -86,9 +104,12 @@ final class submit_reflections_test extends externallib_advanced_testcase {
         $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
         $this->assertSame("OK", $submission);
 
-        $goalids = $DB->get_fieldset_select('amplifier_goals', 'id', 'amplifierid = :amplifierid', ['amplifierid' => $id]);
-
-        $amplifiergoalids = $DB->get_fieldset_select('amplifier_goals', 'id', 'userid = :userid', ['userid' => $student->id]);
+        $amplifiergoalids = $DB->get_fieldset_select(
+          'amplifier_goals',
+          'id',
+          'userid = :userid',
+          ['userid' => $student->id]
+        );
 
         $this->assertSame(2, count($amplifiergoalids));
 
