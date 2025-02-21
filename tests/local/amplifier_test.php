@@ -27,6 +27,7 @@ require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php
 use mod_amplifier\local\amplifier_controller;
 use mod_learninggoalwidget\local\taxonomy;
 use mod_amplifier\external\submit_setup;
+use core_external\external_api;
 use stdClass;
 use mod_amplifier_external;
 use external_api;
