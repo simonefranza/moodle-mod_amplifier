@@ -21,7 +21,7 @@
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_amplifier\core\amplifier_controller;
+use mod_amplifier\local\amplifier;
 
 /**
  * Saves a new instance of the mod_amplifier into the database.
@@ -108,7 +108,7 @@ function amplifier_delete_instance(int $id): bool {
  * @param cm_info $cm Course-module object
  */
 function amplifier_cm_info_view(cm_info $cm) {
-    $amplifiercontroller = new amplifier_controller($cm->instance);
+    $amplifiercontroller = new amplifier($cm->instance);
 
     $templatecontext['instanceId'] = $cm->instance;
 

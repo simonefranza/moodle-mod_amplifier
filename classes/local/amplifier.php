@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_amplifier\core;
+namespace mod_amplifier\local;
 
 /**
  * Training Amplifier Controller
@@ -25,7 +25,7 @@ namespace mod_amplifier\core;
  * @copyright University of Technology Graz
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class amplifier_controller {
+class amplifier {
     /**
      * instance id
      *
@@ -223,16 +223,29 @@ class amplifier_controller {
      */
     public function render($templatecontext) {
         global $OUTPUT, $USER, $DB;
+
+        // Capability check.
+        $userid = $USER->id;
+        $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
+        $context = \context_module::instance($cm->id);
+        require_capability('mod/amplifier:view', $context);
+        $isteacher = !has_capability('mod/amplifier:setupgoals', $context);
+        $templatecontext['is_teacher'] = $isteacher;
+
         $numusergoals = $DB->count_records('amplifier_goals', ['userid' => $USER->id]);
 
-        if (!$numusergoals) {
+        if ($isteacher) {
+            // User hasn't setupgoals capability, aka is a teacher
+            $templatecontext['teacher_headline'] = get_string('template:setup:headline', 'mod_amplifier');
+            $templatecontext['teacher_text'] = get_string('template:setup:teacher', 'mod_amplifier');
+        } else if (!$numusergoals) {
             // User has not setup the training amplifier yet.
             // Needed for template amplifier-setup.mustache.
             $templatecontext['amplifier_welcome_headline'] = get_string('template:setup:headline', 'mod_amplifier');
             $templatecontext['amplifier_welcome_text_1'] = get_string('template:setup:text_1', 'mod_amplifier');
             $templatecontext['amplifier_welcome_text_2'] = get_string('template:setup:text_2', 'mod_amplifier');
             $templatecontext['amplifier_setup_submit_text_1'] = get_string('template:setup:success', 'mod_amplifier');
-            $templatecontext['amplifier_button_submit'] = get_string('template:general:submit_setup', 'mod_amplifier');
+            $templatecontext['amplifier_button_submit'] = get_string('template:general:submit', 'mod_amplifier');
             $templatecontext['amplifier_setup_finished'] = 0;
             // Component to select goals during setup.
             $templatecontext['predefined_learning_goals'] = $this->render_goals_selection();

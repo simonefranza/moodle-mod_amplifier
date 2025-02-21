@@ -64,7 +64,6 @@ This is the link to the course page:
 
 Good luck!';
 
-$string['modform:required'] = 'This field is required.';
 $string['modform:selectlearninggoalwidget'] = 'Learning Goal Widget';
 
 $string['modulename'] = 'Training Amplifier Widget';
@@ -128,5 +127,6 @@ $string["template:reminder:month:12"] = "December";
 
 $string['template:setup:headline'] = "Welcome to the Training Amplifier";
 $string['template:setup:success'] = 'You successfully finished the Training Amplifier setup!';
+$string['template:setup:teacher'] = 'Please change your role to student to try out the Training Amplifier.';
 $string['template:setup:text_1'] = "The goal of the Training Amplifier is to support YOU to transfer the theory learned in a recently attended course into practice.";
 $string['template:setup:text_2'] = "Please select up to 5 goals that you would like to pursue in the following days or weeks. For each of your selected goals you can set a reminder for reflection, asking you if you already have applied the goal in practice.";

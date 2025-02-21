@@ -92,7 +92,7 @@ class mod_amplifier_mod_form extends moodleform_mod {
               $options
             );
             $mform->setType('learninggoalwidgetid', PARAM_INT);
-            $mform->addRule('learninggoalwidgetid', get_string('modform:required'), 'required');
+            $mform->addRule('learninggoalwidgetid', get_string('required'), 'required');
         }
 
         $this->standard_coursemodule_elements();

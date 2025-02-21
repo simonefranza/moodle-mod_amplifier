@@ -14,28 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_amplifier;
+namespace mod_amplifier\local;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-//require_once($CFG->dirroot . '/mod/amplifier/externallib.php');
 require_once($CFG->dirroot . '/mod/amplifier/tests/providerhelper.php');
 
-use mod_amplifier\core\amplifier_controller;
+use mod_amplifier\local\amplifier_controller;
 use stdClass;
 use mod_amplifier_external;
 use external_api;
 
 /**
- * Learning Goal Taxonomy Test
+ * Amplifier Test
  *
  * @package   mod_amplifier
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class controller_test extends \advanced_testcase {
+    use \mod_amplifier\utils;
 
 
     /**
