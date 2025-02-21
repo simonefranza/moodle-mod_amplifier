@@ -71,9 +71,11 @@ jobs:
         env:
           LGW_REPO: 'https://github.com/simonefranza/moodle-mod_learninggoalwidget.git'
         run: |
-          git clone $LGW_REPO /var/www/moodle/mod/learninggoalwidget
+          sudo chown -R www-data:www-data ./
+          sudo chmod -R 755 ./
+          git clone $LGW_REPO ./mod/learninggoalwidget
           php admin/cli/install_plugin.php --name=learninggoalwidget
-          php /var/www/moodle/admin/cli/purge_caches.php
+          php ./admin/cli/purge_caches.php
 
       - name: PHP Lint
         if: ${{ !cancelled() }}
