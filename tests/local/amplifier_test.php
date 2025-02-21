@@ -56,7 +56,8 @@ class controller_test extends \advanced_testcase {
         $record = $DB->get_record('amplifier', ['id' => $setup->instance->id]);
         $this->assertSame($record->name, 'Training Amplifier');
         $this->assertSame($record->learninggoalwidgetid, $setup->lgwinstance->id);
-        amplifier($setup->instance->id);
+        $amp = new amplifier($setup->instance->id);
+        $this->assertNotNull($amp);
     }
 
     /**
@@ -68,7 +69,7 @@ class controller_test extends \advanced_testcase {
     public function test_creation_teacher(): void {
         global $DB;
         $setup = $this->setup_widget(true);
-        $amp = amplifier($setup->instance->id);
+        $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
         $widget = $amp->render($context);
         $this->assertStringContainsString(
@@ -86,13 +87,14 @@ class controller_test extends \advanced_testcase {
      * @return void
      *
      * @covers \mod_amplifier\local\amplifier::render
+     * @covers \mod_amplifier\local\amplifier::render_goals_selection
      */
     public function test_creation_student(): void {
         global $DB;
         $setup = $this->setup_widget(true);
         $student = $this->create_user('student', $setup->course->id, true);
 
-        $amp = amplifier($setup->instance->id);
+        $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
         $widget = $amp->render($context);
         // Does not contain teacher string.
@@ -107,6 +109,12 @@ class controller_test extends \advanced_testcase {
           get_string('template:setup:text_2', 'mod_amplifier'), $widget);
         $this->assertStringContainsString(
           get_string('template:setup:submit', 'mod_amplifier'), $widget);
+        foreach ($setup->taxonomy->children as $topic) {
+            $this->assertStringContainsString($topic->title, $widget);
+            foreach ($topic->children as $goal) {
+                $this->assertStringContainsString($goal->title, $widget);
+            }
+        }
     }
 
 
