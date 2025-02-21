@@ -259,7 +259,6 @@ function xmldb_amplifier_upgrade($oldversion) {
  * @return void
  */
 function upgrade3($dbman) {
-    global $DB;
     // Add index on amplifier.learninggoalwidgetid.
     add_index($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_INDEX_NOTUNIQUE, ['learninggoalwidgetid']);
     // Add index on amplifier_reminders.startdate.

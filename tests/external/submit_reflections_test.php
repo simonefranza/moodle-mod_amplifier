@@ -130,11 +130,11 @@ final class submit_reflections_test extends externallib_advanced_testcase {
         $data2 = array_values($DB->get_records('amplifier_reflections', ['amplifiergoalid' => $amplifiergoalids[0]]));
         $this->assertSame(2, count($data2));
 
-        $thi->assertSame($reflections[0], $data2[0]->response);
-        $thi->assertSame($reflections[1], $data2[1]->response);
+        $this->assertSame($reflections[0], $data2[0]->response);
+        $this->assertSame($reflections[1], $data2[1]->response);
 
         $data = array_values($DB->get_records('amplifier_reflections', ['amplifiergoalid' => $amplifiergoalids[1]]));
         $this->assertSame(1, count($data));
-        $thi->assertSame("Test 3", $data[0]->response);
+        $this->assertSame("Test 3", $data[0]->response);
     }
 }

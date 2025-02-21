@@ -113,6 +113,15 @@ class save_reminder extends \core_external\external_api {
         if ($startdate > $enddate) {
             throw new invalid_parameter_exception('The start date must be before the end date.');
         }
+        // Custom validation: 0 <= $reminderhour <= 23.
+        if ($reminderhour < 0 || $reminderhour > 23) {
+            throw new invalid_parameter_exception('The reminder hour is invalid.');
+        }
+
+        // Custom validation: 0 <= $reminderminute <= 59.
+        if ($reminderminute < 0 || $reminderminute > 59) {
+            throw new invalid_parameter_exception('The reminder minute is invalid.');
+        }
 
         // Make sure that instance exists and user has done setup.
         $params = [

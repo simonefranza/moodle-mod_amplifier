@@ -255,16 +255,16 @@ class amplifier {
 
     /**
      * render the training amplifier widget
-     * @param [type] $templatecontext
+     * @param [type] $context
      */
-    public function render($templatecontext) {
+    public function render($context) {
         global $OUTPUT, $USER, $DB;
 
         // Capability check.
         $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
-        $context = \context_module::instance($cm->id);
-        require_capability('mod/amplifier:view', $context);
-        $isteacher = !has_capability('mod/amplifier:setupgoals', $context);
+        $context_module = \context_module::instance($cm->id);
+        require_capability('mod/amplifier:view', $context_module);
+        $isteacher = !has_capability('mod/amplifier:setupgoals', $context_module);
         $context['is_teacher'] = $isteacher;
 
         $numusergoals = $DB->count_records('amplifier_goals', ['userid' => $USER->id]);
