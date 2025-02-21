@@ -229,7 +229,6 @@ final class save_reminder_test extends externallib_advanced_testcase {
           ['userid' => $student->id]
         );
 
-        $now = time();
         $testdata = (object)[
             'startdate' => [0, 430, 3242],
             'enddate' => [200000, 4300000, 342423],
@@ -258,12 +257,12 @@ final class save_reminder_test extends externallib_advanced_testcase {
                 ['amplifiergoalid' => $testdata->amplifiergoalid[$i]]
             ));
             $this->assertSame(1, count($data));
-            $this->assertSame($testdata->startdate[$i], $data[0]->startdate);
-            $this->assertSame($testdata->enddate[$i], $data[0]->enddate);
-            $this->assertSame($testdata->reminderhour[$i], $data[0]->reminderhour);
-            $this->assertSame($testdata->reminderminute[$i], $data[0]->reminderminute);
-            $this->assertSame($testdata->frequency[$i], $data[0]->frequency);
-            $this->assertSame($testdata->amplifiergoalid[$i], $data[0]->amplifiergoalid);
+            $this->assertSame((int)($testdata->startdate[$i]), (int)($data[0]->startdate));
+            $this->assertSame((int)($testdata->enddate[$i]), (int)($data[0]->enddate));
+            $this->assertSame((int)($testdata->reminderhour[$i]), (int)($data[0]->reminderhour));
+            $this->assertSame((int)($testdata->reminderminute[$i]), (int)($data[0]->reminderminute));
+            $this->assertSame((int)($testdata->frequency[$i]), (int)($data[0]->frequency));
+            $this->assertSame((int)($testdata->amplifiergoalid[$i]), (int)($data[0]->amplifiergoalid));
         }
 
         // Update reminider.
@@ -283,11 +282,11 @@ final class save_reminder_test extends externallib_advanced_testcase {
             ['amplifiergoalid' => $testdata->amplifiergoalid[2]]
         ));
         $this->assertSame(1, count($data));
-        $this->assertSame($testdata->startdate[2], $data[0]->startdate);
-        $this->assertSame($testdata->enddate[2], $data[0]->enddate);
-        $this->assertSame($testdata->reminderhour[2], $data[0]->reminderhour);
-        $this->assertSame($testdata->reminderminute[2], $data[0]->reminderminute);
-        $this->assertSame($testdata->frequency[2], $data[0]->frequency);
-        $this->assertSame($testdata->amplifiergoalid[2], $data[0]->amplifiergoalid);
+        $this->assertSame((int)($testdata->startdate[2]), (int)($data[0]->startdate));
+        $this->assertSame((int)($testdata->enddate[2]), (int)($data[0]->enddate));
+        $this->assertSame((int)($testdata->reminderhour[2]), (int)($data[0]->reminderhour));
+        $this->assertSame((int)($testdata->reminderminute[2]), (int)($data[0]->reminderminute));
+        $this->assertSame((int)($testdata->frequency[2]), (int)($data[0]->frequency));
+        $this->assertSame((int)($testdata->amplifiergoalid[2]), (int)($data[0]->amplifiergoalid));
     }
 }

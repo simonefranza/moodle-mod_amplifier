@@ -54,7 +54,6 @@ final class submit_setup_test extends externallib_advanced_testcase {
      * @covers \mod_amplifier\external\submit_setup::execute_parameters
      */
     public function test_submit_setup_teacher_exc(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
 
         // Submit setup.
@@ -65,7 +64,7 @@ final class submit_setup_test extends externallib_advanced_testcase {
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
         ];
         $this->expectException(\required_capability_exception::class);
-        $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
+        submit_setup::execute($setup->instance->id, json_encode($goals));
     }
 
     /**

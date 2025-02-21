@@ -106,7 +106,14 @@ jobs:
 
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpunit --coverage-text #--fail-on-warning
+        run: moodle-plugin-ci phpunit --coverage-html --coverage-text #--fail-on-warning
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: coverage-report/
+          retention-days: 7
 
       - name: Behat features
         id: behat
