@@ -26,6 +26,7 @@ require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php
 
 use mod_amplifier\local\amplifier_controller;
 use mod_learninggoalwidget\local\taxonomy;
+use mod_learninggoalwidget\external\taxonomy;
 use stdClass;
 use mod_amplifier_external;
 use external_api;
@@ -66,7 +67,7 @@ class controller_test extends \advanced_testcase {
      *
      * @covers \mod_amplifier\local\amplifier::render
      */
-    public function test_creation_teacher(): void {
+    public function test_render_teacher(): void {
         global $DB;
         $setup = $this->setup_widget(true);
         $amp = new amplifier($setup->instance->id);
@@ -89,7 +90,7 @@ class controller_test extends \advanced_testcase {
      * @covers \mod_amplifier\local\amplifier::render
      * @covers \mod_amplifier\local\amplifier::render_goals_selection
      */
-    public function test_creation_student(): void {
+    public function test_render_student_no_setup(): void {
         global $DB;
         $setup = $this->setup_widget(true);
         $student = $this->create_user('student', $setup->course->id, true);
@@ -107,10 +108,45 @@ class controller_test extends \advanced_testcase {
           get_string('template:setup:text_1', 'mod_amplifier'), $widget);
         $this->assertStringContainsString(
           get_string('template:setup:text_2', 'mod_amplifier'), $widget);
-        $this->assertStringContainsString(
-          get_string('template:setup:submit', 'mod_amplifier'), $widget);
         foreach ($setup->taxonomy->children as $topic) {
             $this->assertStringContainsString($topic->title, $widget);
+            foreach ($topic->children as $goal) {
+                $this->assertStringContainsString($goal->title, $widget);
+            }
+        }
+    }
+
+    /**
+     * Render the widget for a student who has completed the setup
+     * @return void
+     *
+     * @covers \mod_amplifier\local\amplifier::render
+     * @covers \mod_amplifier\local\amplifier::render_training_goals
+     */
+    public function test_render_student_setup_done(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        $amp = new amplifier($setup->instance->id);
+        $context['instanceId'] = $setup->instance->id;
+        $widget = $amp->render($context);
+        // Does not contain teacher string.
+        $this->assertStringNotContainsString(
+          get_string('template:setup:teacher', 'mod_amplifier'), $widget);
+        // Does not contain student setup strings.
+        $this->assertStringNotContainsString(
+          get_string('template:setup:headline', 'mod_amplifier'), $widget);
+        $this->assertStringNotContainsString(
+          get_string('template:setup:text_1', 'mod_amplifier'), $widget);
+        $this->assertStringNotContainsString(
+          get_string('template:setup:text_2', 'mod_amplifier'), $widget);
+
+        // Contains student strings.
+        $this->assertStringContainsString(
+            get_string('template:reflection:placeholder', 'mod_amplifier'), $widget);
+
+        foreach ($setup->taxonomy->children as $topic) {
             foreach ($topic->children as $goal) {
                 $this->assertStringContainsString($goal->title, $widget);
             }
