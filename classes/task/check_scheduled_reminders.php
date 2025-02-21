@@ -23,8 +23,6 @@
  */
 namespace mod_amplifier\task;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_user;
 use DateTime;
 

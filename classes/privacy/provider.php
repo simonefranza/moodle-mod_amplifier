@@ -24,8 +24,6 @@
 
 namespace mod_amplifier\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;

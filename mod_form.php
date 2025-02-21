@@ -85,7 +85,12 @@ class mod_amplifier_mod_form extends moodleform_mod {
             }
 
             // Add dropdown to form.
-            $mform->addElement('select', 'learninggoalwidgetid', get_string('modform:selectlearninggoalwidget', 'mod_amplifier'), $options);
+            $mform->addElement(
+              'select',
+              'learninggoalwidgetid',
+              get_string('modform:selectlearninggoalwidget', 'mod_amplifier'),
+              $options
+            );
             $mform->setType('learninggoalwidgetid', PARAM_INT);
             $mform->addRule('learninggoalwidgetid', get_string('modform:required'), 'required');
         }

@@ -24,8 +24,6 @@
 
 namespace mod_amplifier\output\widget;
 
-defined('MOODLE_INTERNAL') || die;
-
 use plugin_renderer_base;
 
 /**

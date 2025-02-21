@@ -21,7 +21,6 @@
  * @copyright 2021 KnowCenter GmbH {@link http://www.know-center.at}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Code run before the mod_amplifier database schema is dropped.

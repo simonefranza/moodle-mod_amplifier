@@ -16,8 +16,6 @@
 
 namespace mod_amplifier\output\widget;
 
-defined('MOODLE_INTERNAL') || die();
-
 use renderable;
 use renderer_base;
 use templatable;

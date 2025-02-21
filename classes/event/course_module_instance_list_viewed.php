@@ -24,8 +24,6 @@
 
 namespace mod_amplifier\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * The mod_amplifier instance list viewed event class.
  *
