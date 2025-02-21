@@ -67,6 +67,14 @@ jobs:
           # Uncomment this to run Behat tests using the Moodle App.
           # MOODLE_APP: 'true'
 
+      - name: Install Learning Goal Widget
+        env:
+          LGW_REPO: 'https://github.com/simonefranza/moodle-mod_learninggoalwidget.git'
+        run: |
+          git clone $LGW_REPO /var/www/moodle/mod/learninggoalwidget
+          php admin/cli/install_plugin.php --name=learninggoalwidget
+          php /var/www/moodle/admin/cli/purge_caches.php
+
       - name: PHP Lint
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phplint
