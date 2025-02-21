@@ -118,7 +118,7 @@ final class submit_reflections_test extends externallib_advanced_testcase {
         $this->assertSame("Reflection is empty, ignored.", $res);
 
         $reflections = ["Test 1", "Test 2"];
-        foreach($reflections as $reflection) {
+        foreach ($reflections as $reflection) {
             $res = submit_reflections::execute($reflection, $amplifiergoalids[0], $setup->instance->id);
             $res = external_api::clean_returnvalue(submit_setup::execute_returns(), $res);
             $this->assertSame("OK", $res);

@@ -55,13 +55,131 @@ class amplifier {
         }
     }
 
+    /**
+     * Fetches the localised strings and adds them to the context
+     *
+     * @param stdClass $strings key values of strings to fetch
+     * @param array $context Template context
+     * @return void
+     */
+    private function add_strings($strings, &$context) {
+        foreach ($strings as $key => $value) {
+          $context[$key] = get_string($value, 'mod_amplifier');
+        }
+    }
+
+    /**
+     * Adds the learning goal information to the context
+     *
+     * @param stdClass $usergoal User goal object
+     * @param array $context Template context
+     * @return void
+     */
+    private function add_learninggoal_context($usergoal, &$context) {
+        $context['topictitle'] = $usergoal->topictitle;
+        $context['goaltitle'] = $usergoal->goaltitle;
+        $context['topicid'] = $usergoal->topicid;
+        $context['goalid'] = $usergoal->goalid;
+        $context['amplifiergoalid'] = $usergoal->amplifiergoalid;
+    }
+
+    /**
+     * Renders the template to allow the users do the reflection
+     *
+     * @param stdClass $usergoal User goal object
+     * @return string
+     */
+    private function add_reflection_context($usergoal, &$context) {
+        global $OUTPUT;
+        $strings = [
+            'amplifier_submit_reflections_headline' => 'template:reflection:headline',
+            'amplifier_reflection_text_1' => 'template:reflection:text_1',
+            'amplifier_button_submit' => 'template:general:save',
+        ];
+        $this->add_strings($strings, $context);
+
+        $context['reflectivequestions'] = $OUTPUT->render_from_template(
+            'mod_amplifier/widget/amplifier-reflective-question',
+            [
+                'amplifier_reflective_question_topicid' => $usergoal->topicid,
+                'amplifier_reflective_question_goalid' => $usergoal->goalid,
+                'amplifier_reflective_question_questiontext' => $usergoal->goaltitle,
+                'amplifier_placeholder_thoughts' =>
+                    get_string('template:reflection:placeholder', 'mod_amplifier'),
+            ]
+        );
+    }
+
+    /**
+     * Adds the reminder information to the context
+     *
+     * @param number $amplifiergoalid amplifier_goals id
+     * @param array $context Template context
+     * @return void
+     */
+    private function add_reminder_context($amplifiergoalid, &$context) {
+        global $DB, $OUTPUT;
+        $params = ["amplifiergoalid" => $amplifiergoalid];
+        $reminderrecord = $DB->get_record('amplifier_reminders', $params);
+
+        if ($reminderrecord) {
+            $context['reminder'] = true;
+            $context['reminderstartdate'] = $reminderrecord->startdate;
+            $context['reminderenddate'] = $reminderrecord->enddate;
+            $context['reminderhour'] = $reminderrecord->reminderhour;
+            $context['reminderminute'] = $reminderrecord->reminderminute;
+            $context['reminderfrequency'] = $reminderrecord->frequency;
+        }
+        $context['amplifier_calendar'] = $OUTPUT->image_url('amplifier_calendar', 'amplifier');
+        $strings = (object)[
+            'amplifier_reminder_settings_headline' => 'template:reminder:headline',
+            'amplifier_reminder_frequency_daily' => 'template:reminder:frequency:daily',
+            'amplifier_reminder_frequency_weekly' => 'template:reminder:frequency:weekly',
+            'amplifier_reminder_frequency_monthly' => 'template:reminder:frequency:monthly',
+            'amplifier_reminder_settings_startdate_label' => 'template:reminder:date:start',
+            'amplifier_reminder_settings_enddate_label' => 'template:reminder:date:end',
+            'amplifier_reminder_settings_time_label' => 'template:reminder:label:time',
+            'amplifier_button_submit_reflection' => 'template:general:save',
+        ];
+        $this->add_strings($strings, $context);
+
+
+        $context['dayOptions'] = [];
+        for ($i = 1; $i <= 31; $i++) {
+            $context['dayOptions'][] = ['value' => $i, 'display' => $i];
+        }
+        $context['monthOptions'] = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthstrname = "template:reminder:month:" . $i;
+            $context['monthOptions'][] = [
+                "value" => $i,
+                "label" => get_string($monthstrname, 'mod_amplifier'),
+            ];
+        }
+        $context['yearOptions'] = [];
+        $currentyear = (int) date("Y");
+        for ($i = 0; $i < 4; $i++) {
+            $context['yearOptions'][] = ['value' => $currentyear + $i, 'display' => $currentyear + $i];
+        }
+        $context['hourOptions'] = [];
+        for ($i = 0; $i < 24; $i++) {
+            $context['hourOptions'][] = ['value' => $i, 'display' => $i];
+        }
+        $context['minuteOptions'] = [];
+        for ($i = 0; $i < 4; $i++) {
+            $context['minuteOptions'][] = [
+                'value' => $i * 15,
+                'display' => sprintf('%02d', $i * 15),
+            ];
+        }
+    }
 
     /**
      * Renders the template to allow the users to set reminders and do the reflection
      *
      * @return string
      */
-    private function render_training_goals() {
+    private function render_setup_done() {
         global $OUTPUT, $USER, $DB;
         $out = '';
         $sqlstmt = "SELECT lgwgoals.id as goalid,
@@ -83,96 +201,14 @@ class amplifier {
         ];
         $usergoalrecords = $DB->get_records_sql($sqlstmt, $params);
         foreach ($usergoalrecords as $usergoal) {
-            $renderedrq = "";
-            $templatecontext = [];
-            $params = [
-                "amplifiergoalid" => $usergoal->amplifiergoalid,
-            ];
-            $reminderrecord = $DB->get_record('amplifier_reminders', $params);
-            if ($reminderrecord) {
-                $templatecontext['reminder'] = true;
-                $templatecontext['reminderstartdate'] = $reminderrecord->startdate;
-                $templatecontext['reminderenddate'] = $reminderrecord->enddate;
-                $templatecontext['reminderhour'] = $reminderrecord->reminderhour;
-                $templatecontext['reminderminute'] = $reminderrecord->reminderminute;
-                $templatecontext['reminderfrequency'] = $reminderrecord->frequency;
-            }
-
-            $templatecontext['topictitle'] = $usergoal->topictitle;
-            $templatecontext['goaltitle'] = $usergoal->goaltitle;
-            $templatecontext['topicid'] = $usergoal->topicid;
-            $templatecontext['goalid'] = $usergoal->goalid;
-            $templatecontext['amplifiergoalid'] = $usergoal->amplifiergoalid;
-            $templatecontext['amplifier_calendar'] = $OUTPUT->image_url('amplifier_calendar', 'amplifier');
-
-            $renderedrq .= $OUTPUT->render_from_template(
-                'mod_amplifier/widget/amplifier-reflective-question',
-                [
-                    'amplifier_reflective_question_topicid' => $usergoal->topicid,
-                    'amplifier_reflective_question_goalid' => $usergoal->goalid,
-                    'amplifier_reflective_question_questiontext' => $usergoal->goaltitle,
-                    'amplifier_placeholder_thoughts' => get_string('template:reflection:placeholder', 'mod_amplifier'),
-                ]
-            );
-            // This is presented before "Please click on "Save" to finish your reflecion session."
-            // when clicking on the reflection of a goal.
-            // Component amplifier-reflective-question.
-            $templatecontext['reflectivequestions'] = $renderedrq;
-            $templatecontext['amplifier_submit_reflections_headline'] =
-            get_string('template:reflection:headline', 'mod_amplifier');
-            $templatecontext['amplifier_reflection_text_1'] =
-            get_string('template:reflection:text_1', 'mod_amplifier');
-            $templatecontext['amplifier_button_submit'] =
-            get_string('template:general:save', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_settings_headline'] =
-            get_string('template:reminder:headline', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_frequency_daily'] =
-            get_string('template:reminder:frequency:daily', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_frequency_weekly'] =
-            get_string('template:reminder:frequency:weekly', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_frequency_monthly'] =
-            get_string('template:reminder:frequency:monthly', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_settings_startdate_label'] =
-            get_string('template:reminder:date:start', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_settings_enddate_label'] =
-            get_string('template:reminder:date:end', 'mod_amplifier');
-            $templatecontext['amplifier_reminder_settings_time_label'] =
-            get_string('template:reminder:label:time', 'mod_amplifier');
-            $templatecontext['amplifier_button_submit_reflection'] =
-            get_string('template:general:save', 'mod_amplifier');
-
-            $templatecontext['dayOptions'] = [];
-            for ($i = 1; $i <= 31; $i++) {
-                $templatecontext['dayOptions'][] = ['value' => $i, 'display' => $i];
-            }
-            $templatecontext['monthOptions'] = [];
-            for ($i = 1; $i <= 12; $i++) {
-                $monthstrname = "template:reminder:month:" . $i;
-                $templatecontext['monthOptions'][] = [
-                    "value" => $i,
-                    "label" => get_string($monthstrname, 'mod_amplifier'),
-                ];
-            }
-            $templatecontext['yearOptions'] = [];
-            $currentyear = (int) date("Y");
-            for ($i = 0; $i < 4; $i++) {
-                $templatecontext['yearOptions'][] = ['value' => $currentyear + $i, 'display' => $currentyear + $i];
-            }
-            $templatecontext['hourOptions'] = [];
-            for ($i = 0; $i < 24; $i++) {
-                $templatecontext['hourOptions'][] = ['value' => $i, 'display' => $i];
-            }
-            $templatecontext['minuteOptions'] = [];
-            for ($i = 0; $i < 4; $i++) {
-                $templatecontext['minuteOptions'][] = [
-                    'value' => $i * 15,
-                    'display' => sprintf('%02d', $i * 15),
-                ];
-            }
+            $context = [];
+            $this->add_learninggoal_context($usergoal, $context);
+            $this->add_reflection_context($usergoal, $context);
+            $this->add_reminder_context($usergoal->amplifiergoalid, $context);
 
             $out .= $OUTPUT->render_from_template(
                 'mod_amplifier/widget/amplifier-user-goal',
-                $templatecontext);
+                $context);
         }
         return $out;
     }
@@ -183,7 +219,7 @@ class amplifier {
      *
      * @return string
      */
-    private function render_goals_selection() {
+    private function render_no_setup() {
         global $DB, $OUTPUT;
         $out = "";
         $lasttopicid = 0;
@@ -229,37 +265,42 @@ class amplifier {
         $context = \context_module::instance($cm->id);
         require_capability('mod/amplifier:view', $context);
         $isteacher = !has_capability('mod/amplifier:setupgoals', $context);
-        $templatecontext['is_teacher'] = $isteacher;
+        $context['is_teacher'] = $isteacher;
 
         $numusergoals = $DB->count_records('amplifier_goals', ['userid' => $USER->id]);
+        $strings = [];
 
         if ($isteacher) {
-            // User hasn't setupgoals capability, aka is a teacher
-            $templatecontext['teacher_headline'] = get_string('template:setup:headline', 'mod_amplifier');
-            $templatecontext['teacher_text'] = get_string('template:setup:teacher', 'mod_amplifier');
+            // User hasn't setupgoals capability, aka is a teacher.
+            $strings = [
+                'teacher_headline' => 'template:setup:headline',
+                'teacher_text' => 'template:setup:teacher',
+            ];
         } else if (!$numusergoals) {
             // User has not setup the training amplifier yet.
             // Needed for template amplifier-setup.mustache.
-            $templatecontext['amplifier_welcome_headline'] = get_string('template:setup:headline', 'mod_amplifier');
-            $templatecontext['amplifier_welcome_text_1'] = get_string('template:setup:text_1', 'mod_amplifier');
-            $templatecontext['amplifier_welcome_text_2'] = get_string('template:setup:text_2', 'mod_amplifier');
-            $templatecontext['amplifier_button_submit'] = get_string('template:general:submit', 'mod_amplifier');
-            $templatecontext['amplifier_setup_finished'] = 0;
+            $context['amplifier_setup_finished'] = 0;
+            $strings = [
+                'amplifier_welcome_headline' => 'template:setup:headline',
+                'amplifier_welcome_text_1' => 'template:setup:text_1',
+                'amplifier_welcome_text_2' => 'template:setup:text_2',
+                'amplifier_button_submit' => 'template:general:submit',
+            ];
             // Component to select goals during setup.
-            $templatecontext['predefined_learning_goals'] = $this->render_goals_selection();
+            $context['predefined_learning_goals'] = $this->render_no_setup();
         } else {
             // User completed setup already.
-            $templatecontext['amplifier_setup_finished'] = 1;
+            $context['amplifier_setup_finished'] = 1;
             // Component shown once the setup is done (list of goals with possibility
             // to choose reminder or reflection).
             // Component is amplifier-user-goal.
-            $templatecontext['usergoals'] = $this->render_training_goals();
+            $context['usergoals'] = $this->render_setup_done();
         }
+        $this->add_strings($strings, $context);
 
         return $OUTPUT->render_from_template(
             'mod_amplifier/widget/amplifier-widget',
-            $templatecontext
+            $context
         );
-
     }
 }

@@ -67,7 +67,10 @@ trait utils {
         $this->getDataGenerator()->enrol_user($return->user->id, $return->course->id, 'editingteacher');
         $this->setUser($return->user);
         if ($setuplgw) {
-            $return->lgwinstance = $this->getDataGenerator()->create_module('learninggoalwidget', ['course' => $return->course->id]);
+            $return->lgwinstance = $this->getDataGenerator()->create_module(
+              'learninggoalwidget',
+              ['course' => $return->course->id]
+            );
             $taxonomy = new \stdClass;
             $taxonomy->name = 'name';
             $taxonomy->children = $this->create_taxonomy(2, 2);

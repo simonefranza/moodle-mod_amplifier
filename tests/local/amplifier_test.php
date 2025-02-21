@@ -38,7 +38,7 @@ use mod_amplifier_external;
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class controller_test extends \advanced_testcase {
+class amplifier_test extends \advanced_testcase {
     use \mod_amplifier\utils;
     /**
      * Testing creation of amplfier widget
@@ -66,6 +66,7 @@ class controller_test extends \advanced_testcase {
      * @return void
      *
      * @covers \mod_amplifier\local\amplifier::render
+     * @covers \mod_amplifier\local\amplifier::add_strings
      */
     public function test_render_teacher(): void {
         global $DB;
@@ -88,7 +89,8 @@ class controller_test extends \advanced_testcase {
      * @return void
      *
      * @covers \mod_amplifier\local\amplifier::render
-     * @covers \mod_amplifier\local\amplifier::render_goals_selection
+     * @covers \mod_amplifier\local\amplifier::render_no_setup
+     * @covers \mod_amplifier\local\amplifier::add_strings
      */
     public function test_render_student_no_setup(): void {
         global $DB;
@@ -121,7 +123,11 @@ class controller_test extends \advanced_testcase {
      * @return void
      *
      * @covers \mod_amplifier\local\amplifier::render
-     * @covers \mod_amplifier\local\amplifier::render_training_goals
+     * @covers \mod_amplifier\local\amplifier::render_setup_done
+     * @covers \mod_amplifier\local\amplifier::add_learninggoal_context
+     * @covers \mod_amplifier\local\amplifier::add_reflection_context
+     * @covers \mod_amplifier\local\amplifier::add_reminder_context
+     * @covers \mod_amplifier\local\amplifier::add_strings
      * @covers \mod_amplifier\external\submit_setup::execute
      * @covers \mod_amplifier\external\submit_setup::execute_parameters
      * @covers \mod_amplifier\external\submit_setup::execute_returns

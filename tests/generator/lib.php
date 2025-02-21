@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * amplifier module data generator class
  *
@@ -33,7 +31,7 @@ class mod_amplifier_generator extends testing_module_generator {
      * @param array|null $options
      * @return void
      */
-    public function create_instance($record = null, array $options = null) {
+    public function create_instance($record = null, ?array $options = null) {
         $record = (object)(array)$record;
 
         $defaultsettings = [
