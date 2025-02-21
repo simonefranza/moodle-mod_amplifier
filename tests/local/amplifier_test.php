@@ -109,9 +109,9 @@ class controller_test extends \advanced_testcase {
         $this->assertStringContainsString(
           get_string('template:setup:text_2', 'mod_amplifier'), $widget);
         foreach ($setup->taxonomy->children as $topic) {
-            $this->assertStringContainsString($topic->title, $widget);
+            $this->assertStringContainsString($topic->name, $widget);
             foreach ($topic->children as $goal) {
-                $this->assertStringContainsString($goal->title, $widget);
+                $this->assertStringContainsString($goal->name, $widget);
             }
         }
     }
@@ -137,7 +137,7 @@ class controller_test extends \advanced_testcase {
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
             (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
         ];
-        $submission = submit_setup::execute($setup->instance->id, $goals);
+        $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
         $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
 
         $amp = new amplifier($setup->instance->id);
@@ -174,13 +174,13 @@ class controller_test extends \advanced_testcase {
         }
 
         foreach ($firsttopic->children as $goal) {
-            $this->assertStringContainsString($goal->title, $widget);
-            $this->assertStringContainsString($firsttopic->title . ' - ' . $goal->title, $widget);
+            $this->assertStringContainsString($goal->name, $widget);
+            $this->assertStringContainsString($firsttopic->name . ' - ' . $goal->name, $widget);
         }
         $secondtopic = $taxonomy->children[1];
         foreach ($secondtopic->children as $goal) {
-            $this->assertStringNotContainsString($goal->title, $widget);
-            $this->assertStringNotContainsString($secondtopic->title . ' - ' . $goal->title, $widget);
+            $this->assertStringNotContainsString($goal->name, $widget);
+            $this->assertStringNotContainsString($secondtopic->name . ' - ' . $goal->name, $widget);
         }
     }
 
