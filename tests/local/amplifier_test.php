@@ -65,13 +65,20 @@ class controller_test extends \advanced_testcase {
      *
      * @covers \mod_amplifier\local\amplifier::render
      */
-    public function test_creation(): void {
+    public function test_creation_teacher(): void {
         global $DB;
         $setup = $this->setup_widget(true);
         $amp = amplifier($setup->instance);
         $context['instanceId'] = $setup->instance;
         $widget = $amp->render($context);
-        $this->assertStringContainsString('learninggoals-widget-', $output);
+        $this->assertStringContainsString(
+          get_string('template:setup:headline', 'mod_amplifier'),
+          $widget
+        );
+        $this->assertStringContainsString(
+          get_string('template:setup:teacher', 'mod_amplifier'),
+          $widget
+        );
     }
 
 
