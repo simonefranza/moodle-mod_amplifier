@@ -62,9 +62,7 @@ jobs:
         env:
           LGW_REPO: 'https://github.com/simonefranza/moodle-mod_learninggoalwidget.git'
         run: |
-          sudo mkdir ./learninggoalwidget || exit 1
-          sudo git clone $LGW_REPO ./learninggoalwidget || exit 1
-          moodle-plugin-ci install --plugin ./learninggoalwidget --db-host=127.0.0.1
+          moodle-plugin-ci install --repo $LGW_REPO --branch MOODLE_405_STABLE  --db-host=127.0.0.1 || exit 1
 
       - name: Install moodle-plugin-ci
         run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
