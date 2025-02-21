@@ -43,7 +43,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
      * @return string
      */
     public function get_name() {
-        return get_string('amplifier_check_scheduled_reminders', 'mod_amplifier');
+        return get_string('task:reminder', 'mod_amplifier');
     }
 
     /**
@@ -141,10 +141,10 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
         $eventdata->name = 'reflection_reminder';
         $eventdata->userfrom = \core_user::get_noreply_user();
         $eventdata->userto = $user;
-        $eventdata->subject = get_string('amplifier_user_reminder_message_subject', 'amplifier');
-        $eventdata->fullmessage = get_string('amplifier_user_reminder_message_text', 'amplifier', $info);
+        $eventdata->subject = get_string('message:reminder:subject', 'amplifier');
+        $eventdata->fullmessage = get_string('message:reminder:text', 'amplifier', $info);
         $eventdata->fullmessageformat = FORMAT_PLAIN;
-        $eventdata->fullmessagehtml = get_string('amplifier_user_reminder_message_html', 'amplifier', $info);
+        $eventdata->fullmessagehtml = get_string('message:reminder:html', 'amplifier', $info);
         $eventdata->notification = 1;
         $eventdata->smallmessage = '';
         $eventdata->contexturl = $CFG->wwwroot . '/course/view.php?' . 'id=' . $course->id;

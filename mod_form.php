@@ -50,11 +50,11 @@ class mod_amplifier_mod_form extends moodleform_mod {
 
             if (!$exists) {
                 // Stop the form from displaying by throwing an error.
-                throw new moodle_exception('requiredactivitymissing', 'mod_amplifier',
+                throw new moodle_exception('exception:requiredactivitymissing', 'mod_amplifier',
                     new moodle_url('/course/view.php', ['id' => $courseid]));
             }
         } else {
-            throw new moodle_exception('requiredactivitypluginmissing', 'mod_amplifier',
+            throw new moodle_exception('exception:requiredactivitypluginmissing', 'mod_amplifier',
                 new moodle_url('/course/view.php', ['id' => $courseid]));
         }
         $mform->addElement('header', 'general', get_string('general'));
@@ -72,7 +72,7 @@ class mod_amplifier_mod_form extends moodleform_mod {
             $lgwinstance = $DB->get_record('learninggoalwidget', ['id' => (int)$amplifierrecord->learninggoalwidgetid], 'id, name');
             $widgetname = isset($lgwinstance->name) ? $lgwinstance->name : 'wtf';
             // If widget has already been setup don't allow to change LGW (to avoid further complexity).
-            $mform->addElement('static', 'lgwname', get_string('selectlearninggoalwidget', 'mod_amplifier'), $widgetname);
+            $mform->addElement('static', 'lgwname', get_string('modform:selectlearninggoalwidget', 'mod_amplifier'), $widgetname);
             $mform->addElement('hidden', 'learninggoalwidgetid', $lgwinstance->id);
             $mform->setType('learninggoalwidgetid', PARAM_INT);
         } else {
@@ -85,9 +85,9 @@ class mod_amplifier_mod_form extends moodleform_mod {
             }
 
             // Add dropdown to form.
-            $mform->addElement('select', 'learninggoalwidgetid', get_string('selectlearninggoalwidget', 'mod_amplifier'), $options);
+            $mform->addElement('select', 'learninggoalwidgetid', get_string('modform:selectlearninggoalwidget', 'mod_amplifier'), $options);
             $mform->setType('learninggoalwidgetid', PARAM_INT);
-            $mform->addRule('learninggoalwidgetid', get_string('required'), 'required');
+            $mform->addRule('learninggoalwidgetid', get_string('modform:required'), 'required');
         }
 
         $this->standard_coursemodule_elements();

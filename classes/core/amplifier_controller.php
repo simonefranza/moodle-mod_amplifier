@@ -111,7 +111,7 @@ class amplifier_controller {
                     'amplifier_reflective_question_topicid' => $usergoal->topicid,
                     'amplifier_reflective_question_goalid' => $usergoal->goalid,
                     'amplifier_reflective_question_questiontext' => $usergoal->goaltitle,
-                    'amplifier_placeholder_thoughts' => get_string('amplifier_placeholder_thoughts', 'mod_amplifier'),
+                    'amplifier_placeholder_thoughts' => get_string('template:reflection:placeholder', 'mod_amplifier'),
                 ]
             );
             // This is presented before "Please click on "Save" to finish your reflecion session."
@@ -119,27 +119,27 @@ class amplifier_controller {
             // Component amplifier-reflective-question.
             $templatecontext['reflectivequestions'] = $renderedrq;
             $templatecontext['amplifier_submit_reflections_headline'] =
-            get_string('amplifier_submit_reflections_headline', 'mod_amplifier');
+            get_string('template:reflection:headline', 'mod_amplifier');
             $templatecontext['amplifier_reflection_text_1'] =
-            get_string('amplifier_reflection_text_1', 'mod_amplifier');
+            get_string('template:reflection:text_1', 'mod_amplifier');
             $templatecontext['amplifier_button_submit'] =
-            get_string('amplifier_button_submit_reflection', 'mod_amplifier');
+            get_string('template:general:save', 'mod_amplifier');
             $templatecontext['amplifier_reminder_settings_headline'] =
-            get_string('amplifier_reminder_settings_headline', 'mod_amplifier');
+            get_string('template:reminder:headline', 'mod_amplifier');
             $templatecontext['amplifier_reminder_frequency_daily'] =
-            get_string('amplifier_reminder_frequency_daily', 'mod_amplifier');
+            get_string('template:reminder:frequency:daily', 'mod_amplifier');
             $templatecontext['amplifier_reminder_frequency_weekly'] =
-            get_string('amplifier_reminder_frequency_weekly', 'mod_amplifier');
+            get_string('template:reminder:frequency:weekly', 'mod_amplifier');
             $templatecontext['amplifier_reminder_frequency_monthly'] =
-            get_string('amplifier_reminder_frequency_monthly', 'mod_amplifier');
+            get_string('template:reminder:frequency:monthly', 'mod_amplifier');
             $templatecontext['amplifier_reminder_settings_startdate_label'] =
-            get_string('amplifier_reminder_settings_startdate_label', 'mod_amplifier');
+            get_string('template:reminder:date:start', 'mod_amplifier');
             $templatecontext['amplifier_reminder_settings_enddate_label'] =
-            get_string('amplifier_reminder_settings_enddate_label', 'mod_amplifier');
+            get_string('template:reminder:date:end', 'mod_amplifier');
             $templatecontext['amplifier_reminder_settings_time_label'] =
-            get_string('amplifier_reminder_settings_time_label', 'mod_amplifier');
+            get_string('template:reminder:label:time', 'mod_amplifier');
             $templatecontext['amplifier_button_submit_reflection'] =
-            get_string('amplifier_button_submit_reflection', 'mod_amplifier');
+            get_string('template:general:save', 'mod_amplifier');
 
             $templatecontext['dayOptions'] = [];
             for ($i = 1; $i <= 31; $i++) {
@@ -147,7 +147,7 @@ class amplifier_controller {
             }
             $templatecontext['monthOptions'] = [];
             for ($i = 1; $i <= 12; $i++) {
-                $monthstrname = "amplifier_reminder_settings_month" . $i . "_label";
+                $monthstrname = "template:reminder:month:" . $i;
                 $templatecontext['monthOptions'][] = [
                     "value" => $i,
                     "label" => get_string($monthstrname, 'mod_amplifier'),
@@ -228,11 +228,11 @@ class amplifier_controller {
         if (!$numusergoals) {
             // User has not setup the training amplifier yet.
             // Needed for template amplifier-setup.mustache.
-            $templatecontext['amplifier_welcome_headline'] = get_string('amplifier_welcome_headline', 'mod_amplifier');
-            $templatecontext['amplifier_welcome_text_1'] = get_string('amplifier_welcome_text_1', 'mod_amplifier');
-            $templatecontext['amplifier_welcome_text_2'] = get_string('amplifier_welcome_text_2', 'mod_amplifier');
-            $templatecontext['amplifier_setup_submit_text_1'] = get_string('amplifier_setup_submit_text_1', 'mod_amplifier');
-            $templatecontext['amplifier_button_submit'] = get_string('amplifier_button_submit_setup', 'mod_amplifier');
+            $templatecontext['amplifier_welcome_headline'] = get_string('template:setup:headline', 'mod_amplifier');
+            $templatecontext['amplifier_welcome_text_1'] = get_string('template:setup:text_1', 'mod_amplifier');
+            $templatecontext['amplifier_welcome_text_2'] = get_string('template:setup:text_2', 'mod_amplifier');
+            $templatecontext['amplifier_setup_submit_text_1'] = get_string('template:setup:success', 'mod_amplifier');
+            $templatecontext['amplifier_button_submit'] = get_string('template:general:submit_setup', 'mod_amplifier');
             $templatecontext['amplifier_setup_finished'] = 0;
             // Component to select goals during setup.
             $templatecontext['predefined_learning_goals'] = $this->render_goals_selection();
