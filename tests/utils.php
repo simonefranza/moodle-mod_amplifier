@@ -28,8 +28,11 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+require_once($CFG->dirroot . '/mod/learninggoalwidget/local/taxonomy.php');
+
 use core_external\external_api;
 use mod_amplifier\local\amplifier;
+use mod_learninggoalwidget\local\taxonomy;
 
 /**
  * Training Amplifier Test Utils
@@ -52,9 +55,10 @@ trait utils {
     /**
      * helper function creating an instance
      *
+     * @param bool $setuplgw Whether to setup the learninggoalwidget
      * @return \stdClass
      */
-    protected function setup_widget() {
+    protected function setup_widget($setuplgw) {
         $this->setUp();
 
         $return = new \stdClass;
@@ -62,7 +66,24 @@ trait utils {
         $return->user = $this->getDataGenerator()->create_user();
         $this->getDataGenerator()->enrol_user($return->user->id, $return->course->id, 'editingteacher');
         $this->setUser($return->user);
-        $return->instance = $this->getDataGenerator()->create_module('amplifier', ['course' => $return->course->id]);
+        if ($setuplgw) {
+            $return->lgwinstance = $this->getDataGenerator()->create_module('learninggoalwidget', ['course' => $return->course->id]);
+            $taxonomy = new \stdClass;
+            $taxonomy->name = 'name';
+            $taxonomy->children = $this->create_taxonomy(2, 2);
+            taxonomy::update_taxonomy($return->lgwinstance, $taxonomy);
+            $return->taxonomy = $taxonomy;
+        } else {
+            $return->lgwinstance = -1;
+            $return->taxonomy = (object)[];
+        }
+
+        $options = [
+            'course' => $return->course->id,
+            'name' => 'Training Amplifier',
+            'learninggoalwidgetid' => $return->lgwinstance,
+        ];
+        $return->instance = $this->getDataGenerator()->create_module('amplifier', $options);
 
         return $return;
     }
@@ -103,4 +124,59 @@ trait utils {
         }
         return $topics;
     }
+
+    /**
+     * Helper function to check that a topic contains the expected data
+     * The data must be generated with create_taxonomy
+     *
+     * @param stdClass $topic Topic to check
+     * @param number $i Value to use for the check
+     * @param number $newranking New ranking of the topic
+     * @param number $numgoals Number of goals that the topic should contain
+     * @param bool $checkgoals Whether to check the goals of the topic or not
+     */
+    private function check_topic($topic, $i, $newranking, $numgoals, $checkgoals) {
+        $this->assertTrue(isset($topic->name) && is_string($topic->name));
+        $this->assertSame($topic->name, 'T' . $i);
+        $this->assertTrue(isset($topic->shortname) && is_string($topic->shortname));
+        $this->assertSame($topic->shortname, 'T' . $i);
+        $this->assertTrue(isset($topic->url) && is_string($topic->url));
+        $this->assertSame($topic->url, 'http://topic' . $i . '.com');
+        $this->assertTrue(isset($topic->ranking) && is_int($topic->ranking));
+        $this->assertSame($topic->ranking, $newranking);
+        $this->assertTrue(isset($topic->topicid) && is_int($topic->topicid));
+        $this->assertTrue(isset($topic->children) && is_array($topic->children));
+        $this->assertTrue(count($topic->children) == $numgoals);
+        if (!$checkgoals) {
+            return;
+        }
+        for ($ii = 0; $ii < $numgoals; $ii++) {
+            $this->check_goal($topic->children[$ii], $i, $ii);
+        }
+    }
+
+    /**
+     * Helper function to check that a goal contains the expected data
+     * The data must be generated with create_taxonomy
+     *
+     * @param stdClass $goal Goal to check
+     * @param number $i Topic-value to use for the check
+     * @param number $ii Goal-value to use for the check
+     * @param number $newranking New ranking
+     */
+    private function check_goal($goal, $i, $ii, $newranking = -2) {
+        if ($newranking == -2) {
+            $newranking = $ii + 1;
+        }
+        $this->assertTrue(isset($goal->name) && is_string($goal->name));
+        $this->assertSame($goal->name, 'T' . $i . 'G' . $ii);
+        $this->assertTrue(isset($goal->shortname) && is_string($goal->shortname));
+        $this->assertSame($goal->shortname, 'T' . $i . 'G' . $ii);
+        $this->assertTrue(isset($goal->url) && is_string($goal->url));
+        $this->assertSame($goal->url, 'http://topic' . $i . 'goal' . $ii . '.com');
+        $this->assertTrue(isset($goal->ranking) && is_int($goal->ranking));
+        $this->assertSame($goal->ranking, $newranking);
+        $this->assertTrue(isset($goal->goalid) && is_int($goal->goalid));
+    }
+
 }

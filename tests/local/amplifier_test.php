@@ -21,8 +21,11 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 require_once($CFG->dirroot . '/mod/amplifier/tests/providerhelper.php');
+require_once($CFG->dirroot . '/mod/amplifier/tests/utils.php');
+require_once($CFG->dirroot . '/mod/learninggoalwidget/local/taxonomy.php');
 
 use mod_amplifier\local\amplifier_controller;
+use mod_learninggoalwidget\local\taxonomy;
 use stdClass;
 use mod_amplifier_external;
 use external_api;
@@ -36,6 +39,24 @@ use external_api;
  */
 class controller_test extends \advanced_testcase {
     use \mod_amplifier\utils;
+    /**
+     * Testing creation of amplfier widget
+     * @return void
+     *
+     * @covers \mod_amplifier\local\amplifier::__construct
+     */
+    public function test_creation(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $taxonomy = json_decode(taxonomy::get_taxonomy_as_json($setup->lgwinstance));
+        for ($i = 0; $i < 2; $i++) {
+            $this->check_topic($taxonomy->children[$i], $i, $i + 1, 2, true);
+        }
+
+        $record = $DB->get_record('amplifier', ['id' => $setup->instance]);
+        $this->assertSame($record->name, 'Training Amplifier');
+        $this->assertSame($record->learninggoalwidgetid, $setup->lgwinstance);
+    }
 
 
     /**
