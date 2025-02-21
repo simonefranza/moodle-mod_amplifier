@@ -26,7 +26,7 @@ require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php
 
 use mod_amplifier\local\amplifier_controller;
 use mod_learninggoalwidget\local\taxonomy;
-use mod_learninggoalwidget\external\taxonomy;
+use mod_amplifier\external\submit_setup;
 use stdClass;
 use mod_amplifier_external;
 use external_api;
@@ -122,11 +122,23 @@ class controller_test extends \advanced_testcase {
      *
      * @covers \mod_amplifier\local\amplifier::render
      * @covers \mod_amplifier\local\amplifier::render_training_goals
+     * @covers \mod_amplifier\external\submit_setup::execute
+     * @covers \mod_amplifier\external\submit_setup::execute_parameters
+     * @covers \mod_amplifier\external\submit_setup::execute_returns
      */
     public function test_render_student_setup_done(): void {
         global $DB;
         $setup = $this->setup_widget(true);
         $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit setup.
+        $firsttopic = $setup->taxonomy->children[0];
+        $goals = [
+            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
+            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
+        ];
+        $submission = submit_setup::execute($setup->instance->id, $goals);
+        $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
 
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
@@ -143,13 +155,32 @@ class controller_test extends \advanced_testcase {
           get_string('template:setup:text_2', 'mod_amplifier'), $widget);
 
         // Contains student strings.
-        $this->assertStringContainsString(
-            get_string('template:reflection:placeholder', 'mod_amplifier'), $widget);
+        $contained = [
+            'template:reflection:headline',
+            'template:reflection:text_1',
+            'template:general:save',
+            'template:reminder:headline',
+            'template:reminder:frequency:daily',
+            'template:reminder:frequency:weekly',
+            'template:reminder:frequency:monthly',
+            'template:reminder:date:start',
+            'template:reminder:date:end',
+            'template:reminder:label:time',
+            'template:general:save',
+            'template:reflection:placeholder',
+        ];
+        foreach ($contained as $langstring) {
+            $this->assertStringContainsString(get_string($langstring, 'mod_amplifier'), $widget);
+        }
 
-        foreach ($setup->taxonomy->children as $topic) {
-            foreach ($topic->children as $goal) {
-                $this->assertStringContainsString($goal->title, $widget);
-            }
+        foreach ($firsttopic->children as $goal) {
+            $this->assertStringContainsString($goal->title, $widget);
+            $this->assertStringContainsString($firsttopic->title . ' - ' . $goal->title, $widget);
+        }
+        $secondtopic = $taxonomy->children[1];
+        foreach ($secondtopic->children as $goal) {
+            $this->assertStringNotContainsString($goal->title, $widget);
+            $this->assertStringNotContainsString($secondtopic->title . ' - ' . $goal->title, $widget);
         }
     }
 
