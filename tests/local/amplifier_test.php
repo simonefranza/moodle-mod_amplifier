@@ -139,6 +139,7 @@ class controller_test extends \advanced_testcase {
         ];
         $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
         $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
+        $this->assertSame("OK", $submission);
 
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
