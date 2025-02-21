@@ -123,6 +123,11 @@ class save_reminder extends \core_external\external_api {
             throw new \invalid_parameter_exception('The reminder minute is invalid.');
         }
 
+        // Custom validation: 0 <= $frequency <= 2.
+        if ($frequency < 0 || $frequency > 2) {
+            throw new \invalid_parameter_exception('The frequency is invalid.');
+        }
+
         // Make sure that instance exists and user has done setup.
         $params = [
             "instanceid" => $instanceid,

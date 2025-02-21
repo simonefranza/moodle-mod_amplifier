@@ -124,4 +124,3 @@ class submit_reflections extends \core_external\external_api {
         return "OK";
     }
 }
-

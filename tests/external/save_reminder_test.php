@@ -152,4 +152,57 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $this->expectException(\invalid_parameter_exception::class);
         $res = save_reminder::execute($now, $now + 2000, 19, 65, 0, 0, $setup->instance->id);
     }
+
+    /**
+     * Test save_reminder usign a frequency < 0
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_frequency_exc_1(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, 19, 22, 0, -1, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder usign a frequency > 2
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_frequency_exc_2(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, 19, 22, 0, 3, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder to trigger the exception of not having done the setup
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_submit_reflections_no_setup_exc(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $this->expectException(\invalid_parameter_exception::class);
+        $res = save_reminder::execute($now, $now + 2000, 19, 25, 0, 0, $setup->instance->id);
+    }
 }

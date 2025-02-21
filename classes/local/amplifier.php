@@ -64,7 +64,7 @@ class amplifier {
      */
     private function add_strings($strings, &$context) {
         foreach ($strings as $key => $value) {
-          $context[$key] = get_string($value, 'mod_amplifier');
+            $context[$key] = get_string($value, 'mod_amplifier');
         }
     }
 
@@ -87,6 +87,7 @@ class amplifier {
      * Renders the template to allow the users do the reflection
      *
      * @param stdClass $usergoal User goal object
+     * @param array $context Template context
      * @return string
      */
     private function add_reflection_context($usergoal, &$context) {
@@ -142,7 +143,6 @@ class amplifier {
             'amplifier_button_submit_reflection' => 'template:general:save',
         ];
         $this->add_strings($strings, $context);
-
 
         $context['dayOptions'] = [];
         for ($i = 1; $i <= 31; $i++) {
@@ -262,9 +262,9 @@ class amplifier {
 
         // Capability check.
         $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
-        $context_module = \context_module::instance($cm->id);
-        require_capability('mod/amplifier:view', $context_module);
-        $isteacher = !has_capability('mod/amplifier:setupgoals', $context_module);
+        $contextmodule = \context_module::instance($cm->id);
+        require_capability('mod/amplifier:view', $contextmodule);
+        $isteacher = !has_capability('mod/amplifier:setupgoals', $contextmodule);
         $context['is_teacher'] = $isteacher;
 
         $numusergoals = $DB->count_records('amplifier_goals', ['userid' => $USER->id]);

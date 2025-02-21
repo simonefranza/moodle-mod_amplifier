@@ -93,8 +93,8 @@ class submit_setup extends \core_external\external_api {
         $numexistinggoals = $DB->count_records('amplifier_goals', ['userid' => $userid]);
         if ($numexistinggoals) {
             // There are already goals setup.
-            throw new moodle_exception('exception:setup_done', 'mod_amplifier',
-                new moodle_url('/course/view.php', ['id' => $cm->course]));
+            throw new \moodle_exception('exception:setup_done', 'mod_amplifier',
+                new \moodle_url('/course/view.php', ['id' => $cm->course]));
         }
 
         $learninggoals = json_decode($learninggoals);
