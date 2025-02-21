@@ -56,6 +56,22 @@ class controller_test extends \advanced_testcase {
         $record = $DB->get_record('amplifier', ['id' => $setup->instance]);
         $this->assertSame($record->name, 'Training Amplifier');
         $this->assertSame($record->learninggoalwidgetid, $setup->lgwinstance);
+        amplifier($setup->instance);
+    }
+
+    /**
+     * Render the widget for a teacher
+     * @return void
+     *
+     * @covers \mod_amplifier\local\amplifier::render
+     */
+    public function test_creation(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $amp = amplifier($setup->instance);
+        $context['instanceId'] = $setup->instance;
+        $widget = $amp->render($context);
+        $this->assertStringContainsString('learninggoals-widget-', $output);
     }
 
 
