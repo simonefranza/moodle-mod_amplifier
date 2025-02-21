@@ -94,7 +94,7 @@ final class submit_setup_test extends externallib_advanced_testcase {
         $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
         $this->assertSame("OK", $submission);
 
-        $data = $DB->get_records('amplifier_goals', ['amplifierid' => $setup->instance->id]);
+        $data = array_values($DB->get_records('amplifier_goals', ['amplifierid' => $setup->instance->id]));
         $this->assertSame(count($data), 2);
         for ($i = 0; $i < 2; $i++) {
             $this->assertSame($goals[$i]->goalid, $data[$i]->lgwgoalid);
