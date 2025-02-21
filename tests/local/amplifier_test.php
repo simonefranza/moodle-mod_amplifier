@@ -69,7 +69,6 @@ class amplifier_test extends \advanced_testcase {
      * @covers \mod_amplifier\local\amplifier::add_strings
      */
     public function test_render_teacher(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
@@ -93,9 +92,8 @@ class amplifier_test extends \advanced_testcase {
      * @covers \mod_amplifier\local\amplifier::add_strings
      */
     public function test_render_student_no_setup(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
@@ -133,9 +131,8 @@ class amplifier_test extends \advanced_testcase {
      * @covers \mod_amplifier\external\submit_setup::execute_returns
      */
     public function test_render_student_setup_done(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
         $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);

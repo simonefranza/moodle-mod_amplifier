@@ -54,12 +54,11 @@ final class submit_reflections_test extends externallib_advanced_testcase {
      * @covers \mod_amplifier\external\submit_reflections::execute_parameters
      */
     public function test_submit_reflections_teacher_exc(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
 
         // Submit reflection.
         $this->expectException(\required_capability_exception::class);
-        $res = submit_reflections::execute('Reflection', 1, $setup->instance->id);
+        submit_reflections::execute('Reflection', 1, $setup->instance->id);
     }
 
     /**
@@ -71,13 +70,12 @@ final class submit_reflections_test extends externallib_advanced_testcase {
      * @covers \mod_amplifier\external\submit_reflections::execute_parameters
      */
     public function test_submit_reflections_no_setup_exc(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         // Submit reflection.
         $this->expectException(\invalid_parameter_exception::class);
-        $res = submit_reflections::execute('Reflection', 1, $setup->instance->id);
+        submit_reflections::execute('Reflection', 1, $setup->instance->id);
     }
 
     /**
