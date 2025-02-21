@@ -22,7 +22,7 @@ global $CFG;
 
 require_once($CFG->dirroot . '/mod/amplifier/tests/providerhelper.php');
 require_once($CFG->dirroot . '/mod/amplifier/tests/utils.php');
-require_once($CFG->dirroot . '/mod/learninggoalwidget/local/taxonomy.php');
+require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php');
 
 use mod_amplifier\local\amplifier_controller;
 use mod_learninggoalwidget\local\taxonomy;

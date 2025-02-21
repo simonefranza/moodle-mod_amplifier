@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/learninggoalwidget/local/taxonomy.php');
+require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php');
 
 use core_external\external_api;
 use mod_amplifier\local\amplifier;
