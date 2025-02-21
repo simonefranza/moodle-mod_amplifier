@@ -30,7 +30,6 @@ use mod_amplifier\external\submit_setup;
 use core_external\external_api;
 use stdClass;
 use mod_amplifier_external;
-use external_api;
 
 /**
  * Amplifier Test
