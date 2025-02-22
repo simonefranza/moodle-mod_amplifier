@@ -40,10 +40,12 @@ use mod_amplifier\task\check_scheduled_reminders;
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class check_scheduled_reminders_test extends \advanced_testcase {
+final class check_scheduled_reminders_test extends \advanced_testcase {
     use \mod_amplifier\utils;
     /**
      * Test for getting name of task
+     * @return void
+     *
      * @covers \mod_amplifier\task\check_scheduled_reminders::get_name
      */
     public function test_get_name() {
@@ -52,6 +54,8 @@ class check_scheduled_reminders_test extends \advanced_testcase {
     }
     /**
      * Test if notifications are sent
+     * @return void
+     *
      * @covers \mod_amplifier\task\check_scheduled_reminders::execute
      * @covers \mod_amplifier\task\check_scheduled_reminders::is_correct_time
      * @covers \mod_amplifier\task\check_scheduled_reminders::send_notification

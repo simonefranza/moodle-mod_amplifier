@@ -85,6 +85,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
                 // Reminder time does not match.
                 continue;
             }
+            $now = new DateTime();
             $amplifierreminder = new \stdClass;
             $amplifierreminder->id = $record->reminderid;
             $amplifierreminder->lastnotificationdate = $now->getTimestamp() * 1000;
@@ -98,11 +99,11 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
     }
 
     /**
-      * Checks whether the last notification was sent recently.
-      *
-      * @param stdClass $record
-      * @return bool
-      */
+     * Checks whether the last notification was sent recently.
+     *
+     * @param stdClass $record
+     * @return bool
+     */
     private function is_lastnotificationdate_recent($record) {
         if ($record->lastnotificationdate <= 0) {
             return false;
@@ -119,11 +120,11 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
     }
 
     /**
-      * Checks whether it is the correct time to send a notification
-      *
-      * @param stdClass $record
-      * @return bool
-      */
+     * Checks whether it is the correct time to send a notification
+     *
+     * @param stdClass $record
+     * @return bool
+     */
     private function is_correct_time($record) {
         $now = time();
         $currenthour = (int)date('G', $now);

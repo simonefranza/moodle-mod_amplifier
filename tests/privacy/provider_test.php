@@ -43,6 +43,8 @@ class provider_test extends provider_testcase {
     use \mod_amplifier\utils;
     /**
      * Test for provider::get_metadata().
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::get_metadata
      */
     public function test_get_metadata() {
@@ -57,6 +59,8 @@ class provider_test extends provider_testcase {
 
     /**
      * Test that getting the contexts for a user works.
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::get_contexts_for_userid
      */
     public function test_get_contexts_for_userid() {
@@ -85,6 +89,8 @@ class provider_test extends provider_testcase {
 
     /**
      * Test returning a list of user IDs related to a context (assign).
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::get_users_in_context
      */
     public function test_get_users_in_context() {
@@ -123,6 +129,8 @@ class provider_test extends provider_testcase {
 
     /**
      * Test exporting data
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::export_user_data
      */
     public function test_export_user_data_student() {
@@ -188,6 +196,8 @@ class provider_test extends provider_testcase {
 
     /**
      * Test delete all users data wrt training amplifier widget
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::delete_data_for_all_users_in_context
      */
     public function test_delete_data_for_all_users_in_context() {
@@ -230,6 +240,8 @@ class provider_test extends provider_testcase {
 
     /**
      * A test for deleting all user data for one user.
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::delete_data_for_user
      */
     public function test_delete_data_for_user() {
@@ -289,6 +301,8 @@ class provider_test extends provider_testcase {
 
     /**
      * A test for deleting all user data for a bunch of users.
+     * @return void
+     *
      * @covers \mod_amplifier\privacy\provider::delete_data_for_users
      * @covers \mod_amplifier\privacy\provider::delete_data_for_user_int
      */

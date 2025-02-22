@@ -37,7 +37,7 @@ use stdClass;
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class amplifier_test extends \advanced_testcase {
+final class amplifier_test extends \advanced_testcase {
     use \mod_amplifier\utils;
     /**
      * Testing creation of amplfier widget

@@ -48,10 +48,9 @@ class widget_renderable implements renderable, templatable {
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
-     * @param  \renderer_base $_output
      * @return array Context variables for the template
      */
-    public function export_for_template(renderer_base $_output) {
+    public function export_for_template() {
         $amplifier = new amplifier($this->instanceid);
         $context = ['instanceId' => $this->instanceid];
 
