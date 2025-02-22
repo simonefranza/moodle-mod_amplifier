@@ -25,6 +25,7 @@ namespace mod_amplifier\task;
 
 use core_user;
 use DateTime;
+use DateTimeZone;
 
 /**
  * Amplifier User Scheduled Reminders Task
@@ -59,6 +60,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
                         amprem.amplifiergoalid,
                         amprem.startdate,
                         amprem.enddate,
+                        amprem.timezone,
                         amprem.reminderhour,
                         amprem.reminderminute,
                         amprem.frequency,
@@ -78,17 +80,17 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
         $ampreminderrecords = $DB->get_records_sql($stmt, $params);
 
         foreach ($ampreminderrecords as $record) {
-            if ($this->is_lastnotificationdate_recent($record)) {
+            $date = $this->get_timezoned_date($record->timezone);
+            if ($this->is_lastnotificationdate_recent($record, $date)) {
                 // We sent a reminder recently.
                 continue;
-            } else if (!$this->is_correct_time($record)) {
+            } else if (!$this->is_correct_time($record, $date)) {
                 // Reminder time does not match.
                 continue;
             }
-            $now = new DateTime();
             $amplifierreminder = new \stdClass;
             $amplifierreminder->id = $record->reminderid;
-            $amplifierreminder->lastnotificationdate = $now->getTimestamp() * 1000;
+            $amplifierreminder->lastnotificationdate = $date->getTimestamp() * 1000;
             // If message send failed, skip update.
             if (!$this->send_notification($record)) {
                 mtrace('mod_amplifier: Failed to send notification to user ' . $record->userid . '. No update.');
@@ -102,16 +104,17 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
      * Checks whether the last notification was sent recently.
      *
      * @param stdClass $record
+     * @param DateTime $date
      * @return bool
      */
-    private function is_lastnotificationdate_recent($record) {
+    private function is_lastnotificationdate_recent($record, $date) {
         if ($record->lastnotificationdate <= 0) {
             return false;
         }
-        $now = new DateTime();
         $lastnotificationdate = new DateTime();
         $lastnotificationdate->setTimestamp($record->lastnotificationdate / 1000);
-        $diff = $now->diff($lastnotificationdate);
+        $lastnotificationdate->setTimezone(new DateTimeZone($record->timezone));
+        $diff = $date->diff($lastnotificationdate);
 
         // If last reminder was sent too little ago, skip.
         return !($record->frequency == 0 && $diff->d > 0
@@ -120,15 +123,30 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
     }
 
     /**
-     * Checks whether it is the correct time to send a notification
+     * Returns the current date adjusted with the desired timezone
      *
      * @param stdClass $record
      * @return bool
      */
-    private function is_correct_time($record) {
-        $now = time();
-        $currenthour = (int)date('G', $now);
-        $currentminute = (int)date('i', $now);
+    private function get_timezoned_date($timezone) {
+        $date = new DateTime();
+        if (!in_array($timezone, timezone_identifiers_list())) {
+            return $date;
+        }
+        $date->setTimezone(new DateTimeZone($timezone));
+        return $date;
+    }
+
+    /**
+     * Checks whether it is the correct time to send a notification
+     *
+     * @param stdClass $record
+     * @param DateTime $date
+     * @return bool
+     */
+    private function is_correct_time($record, $date) {
+        $currenthour = (int)$date->format('G');
+        $currentminute = (int)$date->format('i');
         return (int)$record->reminderhour == $currenthour
             && (int)$record->reminderminute - 2 <= $currentminute
             && (int)$record->reminderminute + 2 >= $currentminute;

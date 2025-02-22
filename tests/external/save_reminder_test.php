@@ -59,7 +59,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\required_capability_exception::class);
-        save_reminder::execute($now, $now, 0, 0, 0, 0, $setup->instance->id);
+        save_reminder::execute($now, $now, 'Europe/Vienna', 0, 0, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -76,7 +76,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now + 2000, $now, 0, 0, 0, 0, $setup->instance->id);
+        save_reminder::execute($now + 2000, $now, 0, 'Europe/Vienna', 0, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -93,7 +93,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, -1, 0, 0, 0, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', -1, 0, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -110,7 +110,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 24, 0, 0, 0, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', 24, 0, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -127,7 +127,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 19, -10, 0, 0, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', 19, -10, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -144,7 +144,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 19, 65, 0, 0, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', 19, 65, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -161,7 +161,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 10, 10, -1, 0, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', 10, 10, -1, 0, $setup->instance->id);
     }
 
     /**
@@ -178,7 +178,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 10, 10, 3, 0, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', 10, 10, 3, 0, $setup->instance->id);
     }
 
     /**
@@ -195,7 +195,24 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 19, 25, 0, 34234, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 'Europe/Vienna', 19, 25, 0, 34234, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder to trigger the exception for invalid timezone
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     */
+    public function test_save_reminder_timezone_exc(): void {
+        $setup = $this->setup_widget(true);
+        $this->create_user('student', $setup->course->id, true);
+
+        // Submit reflection.
+        $now = time() * 1000;
+        $this->expectException(\invalid_parameter_exception::class);
+        save_reminder::execute($now, $now + 2000, 'NonExistingTimezone', 19, 25, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -212,15 +229,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
-        $firsttopic = $taxonomy->children[0];
-        $goals = [
-            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
-            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
-        ];
-        $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
-        $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
-        $this->assertSame("OK", $submission);
+        $setupdata = $this->submit_setup($setup);
 
         $amplifiergoalids = $DB->get_fieldset_select(
           'amplifier_goals',
@@ -232,6 +241,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $testdata = (object)[
             'startdate' => [0, 430, 3242],
             'enddate' => [200000, 4300000, 342423],
+            'timezone' => ['Europe/Paris', 'Europe/Oslo', 'Europe/Stockholm'],
             'reminderhour' => [10, 14, 22],
             'reminderminute' => [10, 4, 32],
             'frequency' => [0, 1, 2],
@@ -241,6 +251,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
             $res = save_reminder::execute(
                 $testdata->startdate[$i],
                 $testdata->enddate[$i],
+                $testdata->timezone[$i],
                 $testdata->reminderhour[$i],
                 $testdata->reminderminute[$i],
                 $testdata->frequency[$i],
@@ -259,6 +270,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
             $this->assertSame(1, count($data));
             $this->assertSame((int)($testdata->startdate[$i]), (int)($data[0]->startdate));
             $this->assertSame((int)($testdata->enddate[$i]), (int)($data[0]->enddate));
+            $this->assertSame((int)($testdata->timezone[$i]), (int)($data[0]->timezone));
             $this->assertSame((int)($testdata->reminderhour[$i]), (int)($data[0]->reminderhour));
             $this->assertSame((int)($testdata->reminderminute[$i]), (int)($data[0]->reminderminute));
             $this->assertSame((int)($testdata->frequency[$i]), (int)($data[0]->frequency));
@@ -269,6 +281,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $res = save_reminder::execute(
             $testdata->startdate[2],
             $testdata->enddate[2],
+            $testdata->timezone[2],
             $testdata->reminderhour[2],
             $testdata->reminderminute[2], $testdata->frequency[2],
             $testdata->amplifiergoalid[2],
@@ -284,6 +297,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $this->assertSame(1, count($data));
         $this->assertSame((int)($testdata->startdate[2]), (int)($data[0]->startdate));
         $this->assertSame((int)($testdata->enddate[2]), (int)($data[0]->enddate));
+        $this->assertSame((int)($testdata->timezone[2]), (int)($data[0]->timezone));
         $this->assertSame((int)($testdata->reminderhour[2]), (int)($data[0]->reminderhour));
         $this->assertSame((int)($testdata->reminderminute[2]), (int)($data[0]->reminderminute));
         $this->assertSame((int)($testdata->frequency[2]), (int)($data[0]->frequency));

@@ -122,6 +122,7 @@ const submitReminder = (e, el) => {
   Controller.saveReminder({
     startdate: startDate.getTime(),
     enddate: endDate.getTime(),
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     reminderhour: reminderHour,
     reminderminute: reminderMinute,
     frequency: frequency,

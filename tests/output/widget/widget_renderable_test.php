@@ -122,43 +122,12 @@ final class widget_renderable_test extends \advanced_testcase {
         $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+        $submitdata = $this->submit_setup($setup);
+        $taxonomy = $submitdata->taxonomy;
         $firsttopic = $taxonomy->children[0];
-        $goals = [
-            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
-            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
-        ];
-        $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
-        $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
-        $this->assertSame("OK", $submission);
 
         // Set reminder to check that it is added to template.
-        $amplifiergoalids = $DB->get_fieldset_select(
-          'amplifier_goals',
-          'id',
-          'userid = :userid',
-          ['userid' => $student->id]
-        );
-        $this->assertSame(2, count($amplifiergoalids));
-        $reminderdata = (object)[
-            'startdate' => 0,
-            'enddate' => 200000,
-            'reminderhour' => 10,
-            'reminderminute' => 10,
-            'frequency' => 0,
-            'amplifiergoalid' => $amplifiergoalids[0],
-        ];
-        $res = save_reminder::execute(
-            $reminderdata->startdate,
-            $reminderdata->enddate,
-            $reminderdata->reminderhour,
-            $reminderdata->reminderminute,
-            $reminderdata->frequency,
-            $reminderdata->amplifiergoalid,
-            $setup->instance->id
-        );
-        $res = external_api::clean_returnvalue(save_reminder::execute_returns(), $res);
-        $this->assertSame("OK", $res);
+        $reminderdata = $this->save_reminder($setup->instance->id);
 
         $renderer = $this->get_renderer();
         $mockrenderable = new widget_renderable($setup->instance->id);

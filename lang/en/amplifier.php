@@ -94,6 +94,7 @@ $string['privacy:metadata:amplifier_reminders:lastnotificationdate'] = 'The date
 $string['privacy:metadata:amplifier_reminders:reminderhour'] = 'The hour at which the reminder should be sent.';
 $string['privacy:metadata:amplifier_reminders:reminderminute'] = 'The minute at which the reminder should be sent.';
 $string['privacy:metadata:amplifier_reminders:startdate'] = 'The date when the reminders should start.';
+$string['privacy:metadata:amplifier_reminders:timezone'] = 'The timezone where the reminder was created.';
 
 $string['search:activity'] = 'amplifier';
 

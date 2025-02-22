@@ -267,7 +267,10 @@ class amplifier {
         $isteacher = !has_capability('mod/amplifier:setupgoals', $contextmodule);
         $context['is_teacher'] = $isteacher;
 
-        $numusergoals = $DB->count_records('amplifier_goals', ['userid' => $USER->id]);
+        $numusergoals = $DB->count_records('amplifier_goals', [
+          'userid' => $USER->id,
+          'amplifierid' => $this->instanceid
+        ]);
         $strings = [];
 
         if ($isteacher) {

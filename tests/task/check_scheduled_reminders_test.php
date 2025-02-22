@@ -28,6 +28,8 @@ use core_privacy\local\request\approved_contextlist;
 use core_privacy\local\request\approved_userlist;
 use core_external\external_api;
 use stdClass;
+use DateTime;
+use DateTimeZone;
 use mod_amplifier\privacy\provider;
 use mod_amplifier\core\amplifier_controller;
 use mod_amplifier\external\submit_setup;
@@ -57,6 +59,7 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
      * @return void
      *
      * @covers \mod_amplifier\task\check_scheduled_reminders::execute
+     * @covers \mod_amplifier\task\check_scheduled_reminders::get_timezoned_date
      * @covers \mod_amplifier\task\check_scheduled_reminders::is_correct_time
      * @covers \mod_amplifier\task\check_scheduled_reminders::is_lastnotificationdate_recent
      * @covers \mod_amplifier\task\check_scheduled_reminders::send_notification
@@ -68,12 +71,13 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
         $task = new check_scheduled_reminders();
         $this->check_messages($task, 0);
 
-        $now = time();
-        $reminderstarttime = $now * 1000;
-        $reminderendtime = ($now + 3600) * 1000;
+        $now = new DateTime();
+        $now->setTimezone(new DateTimeZone('Europe/Oslo'));
+        $reminderstarttime = $now->getTimestamp() * 1000;
+        $reminderendtime = ($now->getTimestamp() + 3600) * 1000;
 
-        $currenthour = (int)date('G', $now);
-        $currentminute = (int)date('i', $now);
+        $currenthour = (int)$now->format('G');
+        $currentminute = (int)$now->format('i');
 
         // Create data for student.
         $student = $this->create_user('student', $setup->course->id, true);
@@ -81,12 +85,13 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
         $reminderdata = (object)[
             'startdate' => $reminderstarttime,
             'enddate' => $reminderendtime,
+            'timezone' => 'Europe/Vienna',
             'reminderhour' => $currenthour,
             'reminderminute' => $currentminute,
             'frequency' => 0,
         ];
         $reminderdata = $this->save_reminder($setup->instance->id, null, $reminderdata);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
 
         $message = $this->check_messages($task, 1)[0];
 
@@ -125,6 +130,15 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
         ]);
 
         // Hour doesn't match.
+        $this->check_messages($task, 0);
+
+        $DB->update_record('amplifier_reminders', [
+          'id' => $reminderid[0],
+          'timezone' => 'WrongTimezone',
+          'lastnotificationdate' => 0,
+          'reminderhour' => $currenthour,
+        ]);
+        // Invalid timezone.
         $this->check_messages($task, 0);
     }
 

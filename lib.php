@@ -24,6 +24,24 @@
 use mod_amplifier\output\widget\widget_renderable;
 
 /**
+ * This function is necessary for the plugin to be classified in the right
+ * activity category
+ *
+ * @param  string $feature feature
+ */
+function amplifier_supports(string $feature) {
+    switch ($feature) {
+        case FEATURE_MOD_PURPOSE:
+            return MOD_PURPOSE_ASSESSMENT;
+        // Enable MOODLE2 backup.
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        default:
+            return null;
+    }
+}
+
+/**
  * Saves a new instance of the mod_amplifier into the database.
  *
  * Given an object containing all the necessary data, (defined by the form

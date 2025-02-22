@@ -48,6 +48,7 @@ class save_reminder extends \core_external\external_api {
             [
                 'startdate' => new external_value(PARAM_INT, ''),
                 'enddate' => new external_value(PARAM_INT, ''),
+                'timezone' => new external_value(PARAM_TEXT, ''),
                 'reminderhour' => new external_value(PARAM_INT, ''),
                 'reminderminute' => new external_value(PARAM_INT, ''),
                 'frequency' => new external_value(PARAM_INT, ''),
@@ -70,6 +71,7 @@ class save_reminder extends \core_external\external_api {
      *
      * @param number $startdate
      * @param number $enddate
+     * @param string $timezone
      * @param number $reminderhour
      * @param number $reminderminute
      * @param number $frequency
@@ -80,6 +82,7 @@ class save_reminder extends \core_external\external_api {
     public static function execute(
         $startdate,
         $enddate,
+        $timezone,
         $reminderhour,
         $reminderminute,
         $frequency,
@@ -94,6 +97,7 @@ class save_reminder extends \core_external\external_api {
             [
                 'startdate' => $startdate,
                 'enddate' => $enddate,
+                'timezone' => $timezone,
                 'reminderhour' => $reminderhour,
                 'reminderminute' => $reminderminute,
                 'frequency' => $frequency,
@@ -109,23 +113,21 @@ class save_reminder extends \core_external\external_api {
         self::validate_context($context);
         require_capability('mod/amplifier:setupgoals', $context);
 
-        // Custom validation: $startdate <= $enddate.
         if ($startdate > $enddate) {
+            // Custom validation: $startdate <= $enddate.
             throw new \invalid_parameter_exception('The start date must be before the end date.');
-        }
-        // Custom validation: 0 <= $reminderhour <= 23.
-        if ($reminderhour < 0 || $reminderhour > 23) {
+        } else if ($reminderhour < 0 || $reminderhour > 23) {
+            // Custom validation: 0 <= $reminderhour <= 23.
             throw new \invalid_parameter_exception('The reminder hour is invalid.');
-        }
-
-        // Custom validation: 0 <= $reminderminute <= 59.
-        if ($reminderminute < 0 || $reminderminute > 59) {
+        } else if ($reminderminute < 0 || $reminderminute > 59) {
+            // Custom validation: 0 <= $reminderminute <= 59.
             throw new \invalid_parameter_exception('The reminder minute is invalid.');
-        }
-
-        // Custom validation: 0 <= $frequency <= 2.
-        if ($frequency < 0 || $frequency > 2) {
+        } else if ($frequency < 0 || $frequency > 2) {
+            // Custom validation: 0 <= $frequency <= 2.
             throw new \invalid_parameter_exception('The frequency is invalid.');
+        } else if (!in_array($timezone, timezone_identifiers_list())) {
+            // Check that timezone is valid.
+            throw new \invalid_parameter_exception('The timezone is invalid.');
         }
 
         // Make sure that instance exists and user has done setup.
@@ -151,6 +153,7 @@ class save_reminder extends \core_external\external_api {
         $update->amplifiergoalid = $amplifiergoalid;
         $update->startdate = $startdate;
         $update->enddate = $enddate;
+        $update->timezone = $timezone;
         $update->reminderhour = $reminderhour;
         $update->reminderminute = $reminderminute;
         $update->frequency = $frequency;

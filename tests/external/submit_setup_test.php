@@ -105,4 +105,34 @@ final class submit_setup_test extends externallib_advanced_testcase {
         $this->expectException(\moodle_exception::class);
         $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
     }
+
+    /**
+     * Test submit_setup by creating two training amplifiers
+     * @return void
+     *
+     * @covers \mod_amplifier\external\submit_setup::execute
+     * @covers \mod_amplifier\external\submit_setup::execute_returns
+     * @covers \mod_amplifier\external\submit_setup::execute_parameters
+     */
+    public function test_submit_setup_different_modules(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit setup.
+        $setupdata = $this->submit_setup($setup);
+
+        // Create new training amplifier.
+        $options = [
+            'course' => $setup->course->id,
+            'name' => 'Training Amplifier',
+            'learninggoalwidgetid' => $setup->lgwinstance->id,
+        ];
+        $newamp = $this->getDataGenerator()->create_module('amplifier', $options);
+        $data = new \stdClass;
+        $data->lgwinstance = new \stdClass;
+        $data->lgwinstance->id = $setup->lgwinstance->id;
+        $data->instance = $newamp;
+        $this->submit_setup($data);
+    }
 }

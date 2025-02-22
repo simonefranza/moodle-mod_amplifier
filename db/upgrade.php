@@ -249,7 +249,25 @@ function xmldb_amplifier_upgrade($oldversion) {
         // Amplifier savepoint reached.
         upgrade_mod_savepoint(true, 2025022005, 'amplifier');
     }
+    if ($oldversion < 2025022200) {
+        upgrade4($dbman);
+
+        // Amplifier savepoint reached.
+        upgrade_mod_savepoint(true, 2025022200, 'amplifier');
+    }
     return true;
+}
+
+/**
+ * upgrade amplifier for oldversion < 2025022200
+ * Add fields for timezone otherwise reminder sent at wrong time
+ *
+ * @param xmldb $dbman
+ * @return void
+ */
+function upgrade4($dbman) {
+    // Add field on amplifier_reminders.timezone.
+    add_field($dbman, 'amplifier_reminders', 'timezone', XMLDB_TYPE_CHAR, '100', XMLDB_NOTNULL, null, 'Europe/Vienna');
 }
 
 /**

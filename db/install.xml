@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/amplifier/db" VERSION="20250220" COMMENT="XMLDB file for Moodle mod/amplifier"
+<XMLDB PATH="mod/amplifier/db" VERSION="20250222" COMMENT="XMLDB file for Moodle mod/amplifier"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -43,6 +43,7 @@
         <FIELD NAME="amplifiergoalid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="startdate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Start timestamp of reminder"/>
         <FIELD NAME="enddate" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="End timestamp of reminder"/>
+        <FIELD NAME="timezone" TYPE="char" LENGTH="100" NOTNULL="true" DEFAULT="Europe/Vienna" SEQUENCE="false" COMMENT="The timezone of the reminder"/>
         <FIELD NAME="reminderhour" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="value between 0 and 23"/>
         <FIELD NAME="reminderminute" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="minute: value between 0 and 59"/>
         <FIELD NAME="frequency" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="0=daily 1=weekly 2=monthly"/>

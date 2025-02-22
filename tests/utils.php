@@ -247,8 +247,8 @@ trait utils {
             $amplifiergoalids = $DB->get_fieldset_select(
               'amplifier_goals',
               'id',
-              'userid = :userid',
-              ['userid' => $USER->id]
+              'userid = :userid AND amplifierid = :amplifierid',
+              ['userid' => $USER->id, 'amplifierid' => $instanceid]
             );
             $amplifiergoalid = $amplifiergoalids[0];
             if ($data) {
@@ -259,6 +259,7 @@ trait utils {
             $data = (object)[
                 'startdate' => 0,
                 'enddate' => 200000,
+                'timezone' => 'Europe/Vienna',
                 'reminderhour' => 10,
                 'reminderminute' => 10,
                 'frequency' => 0,
@@ -268,6 +269,7 @@ trait utils {
         $res = save_reminder::execute(
             $data->startdate,
             $data->enddate,
+            $data->timezone,
             $data->reminderhour,
             $data->reminderminute,
             $data->frequency,
@@ -289,8 +291,8 @@ trait utils {
             $amplifiergoalids = $DB->get_fieldset_select(
               'amplifier_goals',
               'id',
-              'userid = :userid',
-              ['userid' => $USER->id]
+              'userid = :userid AND amplifierid = :amplifierid',
+              ['userid' => $USER->id, 'amplifierid' => $instanceid]
             );
             $data = (object) [
                 'reflection' => "My reflection.",

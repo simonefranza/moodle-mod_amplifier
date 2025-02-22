@@ -90,7 +90,10 @@ class submit_setup extends \core_external\external_api {
         require_capability('mod/amplifier:setupgoals', $context);
 
         // Check if user already did setup.
-        $numexistinggoals = $DB->count_records('amplifier_goals', ['userid' => $userid]);
+        $numexistinggoals = $DB->count_records('amplifier_goals', [
+          'userid' => $userid,
+          'amplifierid' => $instanceid,
+        ]);
         if ($numexistinggoals) {
             // There are already goals setup.
             throw new \moodle_exception('exception:setup_done', 'mod_amplifier',

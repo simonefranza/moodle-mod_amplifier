@@ -94,6 +94,19 @@ final class amplifier_test extends \advanced_testcase {
         $setup = $this->setup_widget(true);
         $this->create_user('student', $setup->course->id, true);
 
+        // Create another activity where user has done setup
+        $options = [
+            'course' => $setup->course->id,
+            'name' => 'Training Amplifier',
+            'learninggoalwidgetid' => $setup->lgwinstance->id,
+        ];
+        $newamp = $this->getDataGenerator()->create_module('amplifier', $options);
+        $data = new \stdClass;
+        $data->lgwinstance = new \stdClass;
+        $data->lgwinstance->id = $setup->lgwinstance->id;
+        $data->instance = $newamp;
+        $this->submit_setup($data);
+
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
         $widget = $amp->render($context);
@@ -101,12 +114,16 @@ final class amplifier_test extends \advanced_testcase {
         $this->assertTrue(!isset($widget['teacher_text']));
 
         // Student strings.
+        $this->assertTrue(isset($widget['amplifier_welcome_headline']));
         $this->assertStringContainsString(
           get_string('template:setup:headline', 'mod_amplifier'), $widget['amplifier_welcome_headline']);
+        $this->assertTrue(isset($widget['amplifier_welcome_text_1']));
         $this->assertStringContainsString(
           get_string('template:setup:text_1', 'mod_amplifier'), $widget['amplifier_welcome_text_1']);
+        $this->assertTrue(isset($widget['amplifier_welcome_text_2']));
         $this->assertStringContainsString(
           get_string('template:setup:text_2', 'mod_amplifier'), $widget['amplifier_welcome_text_2']);
+        $this->assertTrue(isset($widget['predefined_learning_goals']));
         foreach ($setup->taxonomy->children as $topic) {
             $this->assertStringContainsString($topic->name, $widget['predefined_learning_goals']);
             foreach ($topic->children as $goal) {
@@ -135,43 +152,12 @@ final class amplifier_test extends \advanced_testcase {
         $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+        $setupdata = $this->submit_setup($setup);
+        $taxonomy = $setupdata->taxonomy;;
         $firsttopic = $taxonomy->children[0];
-        $goals = [
-            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
-            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
-        ];
-        $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
-        $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
-        $this->assertSame("OK", $submission);
 
         // Set reminder to check that it is added to template.
-        $amplifiergoalids = $DB->get_fieldset_select(
-          'amplifier_goals',
-          'id',
-          'userid = :userid',
-          ['userid' => $student->id]
-        );
-        $this->assertSame(2, count($amplifiergoalids));
-        $reminderdata = (object)[
-            'startdate' => 0,
-            'enddate' => 200000,
-            'reminderhour' => 10,
-            'reminderminute' => 10,
-            'frequency' => 0,
-            'amplifiergoalid' => $amplifiergoalids[0],
-        ];
-        $res = save_reminder::execute(
-            $reminderdata->startdate,
-            $reminderdata->enddate,
-            $reminderdata->reminderhour,
-            $reminderdata->reminderminute,
-            $reminderdata->frequency,
-            $reminderdata->amplifiergoalid,
-            $setup->instance->id
-        );
-        $res = external_api::clean_returnvalue(save_reminder::execute_returns(), $res);
-        $this->assertSame("OK", $res);
+        $reminderdata = $this->save_reminder($setup->instance->id);
 
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
