@@ -117,9 +117,8 @@ final class widget_renderable_test extends \advanced_testcase {
      * @covers \mod_amplifier\output\widget\widget_renderable::export_for_template
      */
     public function test_render_widget_setup_done(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
         $submitdata = $this->submit_setup($setup);

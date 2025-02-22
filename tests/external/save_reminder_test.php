@@ -229,7 +229,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $setupdata = $this->submit_setup($setup);
+        $this->submit_setup($setup);
 
         $amplifiergoalids = $DB->get_fieldset_select(
           'amplifier_goals',

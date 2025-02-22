@@ -94,7 +94,7 @@ final class amplifier_test extends \advanced_testcase {
         $setup = $this->setup_widget(true);
         $this->create_user('student', $setup->course->id, true);
 
-        // Create another activity where user has done setup
+        // Create another activity where user has done setup.
         $options = [
             'course' => $setup->course->id,
             'name' => 'Training Amplifier',
@@ -147,9 +147,8 @@ final class amplifier_test extends \advanced_testcase {
      * @covers \mod_amplifier\external\submit_setup::execute_returns
      */
     public function test_render_student_setup_done(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
         $setupdata = $this->submit_setup($setup);

@@ -269,7 +269,7 @@ class amplifier {
 
         $numusergoals = $DB->count_records('amplifier_goals', [
           'userid' => $USER->id,
-          'amplifierid' => $this->instanceid
+          'amplifierid' => $this->instanceid,
         ]);
         $strings = [];
 

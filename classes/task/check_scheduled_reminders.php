@@ -125,8 +125,8 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
     /**
      * Returns the current date adjusted with the desired timezone
      *
-     * @param stdClass $record
-     * @return bool
+     * @param string $timezone
+     * @return DateTime
      */
     private function get_timezoned_date($timezone) {
         $date = new DateTime();

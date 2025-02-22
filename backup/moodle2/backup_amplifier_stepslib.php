@@ -58,7 +58,6 @@ class backup_amplifier_activity_structure_step extends backup_activity_structure
             'lastnotificationdate',
           ]);
 
-
         $reflections = new backup_nested_element('reflections');
 
         $reflection = new backup_nested_element('reflection', ['id'],

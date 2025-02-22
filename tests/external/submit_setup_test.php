@@ -115,12 +115,11 @@ final class submit_setup_test extends externallib_advanced_testcase {
      * @covers \mod_amplifier\external\submit_setup::execute_parameters
      */
     public function test_submit_setup_different_modules(): void {
-        global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
-        $setupdata = $this->submit_setup($setup);
+        $this->submit_setup($setup);
 
         // Create new training amplifier.
         $options = [
