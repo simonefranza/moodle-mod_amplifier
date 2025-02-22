@@ -48,7 +48,7 @@
  * @param number $courseid
  * @return number
  */
-function get_lgwid_from_course($courseid) {
+function xmldb_amplifier_get_lgwid_from_course($courseid) {
     global $DB;
     // Get LGW instance ID from courseID.
     $stmt = "SELECT lgw.id as lgwid
@@ -73,7 +73,7 @@ function get_lgwid_from_course($courseid) {
  * @param string[] $reffields
  * @return void
  */
-function delete_foreign_key($dbman, $tablename, $name, $fields, $reftable, $reffields) {
+function xmldb_amplifier_delete_foreign_key($dbman, $tablename, $name, $fields, $reftable, $reffields) {
     $table = new xmldb_table($tablename);
     $key = new xmldb_key($name, XMLDB_KEY_FOREIGN, $fields, $reftable, $reffields);
     $dbman->drop_key($table, $key);
@@ -90,7 +90,7 @@ function delete_foreign_key($dbman, $tablename, $name, $fields, $reftable, $reff
  * @param string[] $reffields
  * @return void
  */
-function add_foreign_key($dbman, $tablename, $name, $fields, $reftable, $reffields) {
+function xmldb_amplifier_add_foreign_key($dbman, $tablename, $name, $fields, $reftable, $reffields) {
     $table = new xmldb_table($tablename);
     $key = new xmldb_key($name, XMLDB_KEY_FOREIGN, $fields, $reftable, $reffields);
     $dbman->add_key($table, $key);
@@ -106,7 +106,7 @@ function add_foreign_key($dbman, $tablename, $name, $fields, $reftable, $reffiel
  * @param string[] $fields
  * @return void
  */
-function delete_index($dbman, $tablename, $indexname, $unique, $fields) {
+function xmldb_amplifier_delete_index($dbman, $tablename, $indexname, $unique, $fields) {
     $table = new xmldb_table($tablename);
     $index = new xmldb_index($indexname, $unique, $fields);
 
@@ -125,7 +125,7 @@ function delete_index($dbman, $tablename, $indexname, $unique, $fields) {
  * @param string[] $fields
  * @return void
  */
-function add_index($dbman, $tablename, $indexname, $unique, $fields) {
+function xmldb_amplifier_add_index($dbman, $tablename, $indexname, $unique, $fields) {
     $table = new xmldb_table($tablename);
     $index = new xmldb_index($indexname, $unique, $fields);
 
@@ -147,7 +147,7 @@ function add_index($dbman, $tablename, $indexname, $unique, $fields) {
  * @param * $default
  * @return void
  */
-function add_field($dbman, $tablename, $name, $type, $length, $isnull, $sequence, $default) {
+function xmldb_amplifier_add_field($dbman, $tablename, $name, $type, $length, $isnull, $sequence, $default) {
     $table = new xmldb_table($tablename);
     $field = new xmldb_field($name, $type, $length, null, $isnull, $sequence, $default, null);
 
@@ -164,7 +164,7 @@ function add_field($dbman, $tablename, $name, $type, $length, $isnull, $sequence
  * @param string $newtablename
  * @return void
  */
-function rename_table($dbman, $tablename, $newtablename) {
+function xmldb_amplifier_rename_table($dbman, $tablename, $newtablename) {
     $table = new xmldb_table($tablename);
 
     $dbman->rename_table($table, $newtablename);
@@ -177,7 +177,7 @@ function rename_table($dbman, $tablename, $newtablename) {
  * @param string $tablename
  * @return void
  */
-function drop_table($dbman, $tablename) {
+function xmldb_amplifier_drop_table($dbman, $tablename) {
     $table = new xmldb_table($tablename);
 
     // Conditionally launch drop table for amplifier_setup.
@@ -195,7 +195,7 @@ function drop_table($dbman, $tablename) {
  * @param string $newname
  * @return void
  */
-function rename_field($dbman, $tablename, $field, $newname) {
+function xmldb_amplifier_rename_field($dbman, $tablename, $field, $newname) {
     $table = new xmldb_table($tablename);
     if ($dbman->field_exists($table, $field)) {
         $dbman->rename_field($table, $field, $newname);
@@ -210,7 +210,7 @@ function rename_field($dbman, $tablename, $field, $newname) {
  * @param string $fieldname
  * @return void
  */
-function delete_field($dbman, $tablename, $fieldname) {
+function xmldb_amplifier_delete_field($dbman, $tablename, $fieldname) {
     $table = new xmldb_table($tablename);
     $field = new xmldb_field($fieldname);
 
@@ -232,25 +232,25 @@ function xmldb_amplifier_upgrade($oldversion) {
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
 
     if ($oldversion < 2025021400) {
-        upgrade1($dbman);
+        xmldb_amplifier_upgrade1($dbman);
 
         // Amplifier savepoint reached.
         upgrade_mod_savepoint(true, 2025021400, 'amplifier');
     }
     if ($oldversion < 2025021900) {
-        upgrade2($dbman);
+        xmldb_amplifier_upgrade2($dbman);
 
         // Amplifier savepoint reached.
         upgrade_mod_savepoint(true, 2025021900, 'amplifier');
     }
     if ($oldversion < 2025022005) {
-        upgrade3($dbman);
+        xmldb_amplifier_upgrade3($dbman);
 
         // Amplifier savepoint reached.
         upgrade_mod_savepoint(true, 2025022005, 'amplifier');
     }
     if ($oldversion < 2025022200) {
-        upgrade4($dbman);
+        xmldb_amplifier_upgrade4($dbman);
 
         // Amplifier savepoint reached.
         upgrade_mod_savepoint(true, 2025022200, 'amplifier');
@@ -265,9 +265,9 @@ function xmldb_amplifier_upgrade($oldversion) {
  * @param xmldb $dbman
  * @return void
  */
-function upgrade4($dbman) {
+function xmldb_amplifier_upgrade4($dbman) {
     // Add field on amplifier_reminders.timezone.
-    add_field($dbman, 'amplifier_reminders', 'timezone', XMLDB_TYPE_CHAR, '100', XMLDB_NOTNULL, null, 'Europe/Vienna');
+    xmldb_amplifier_add_field($dbman, 'amplifier_reminders', 'timezone', XMLDB_TYPE_CHAR, '100', XMLDB_NOTNULL, null, 'Europe/Vienna');
 }
 
 /**
@@ -276,13 +276,13 @@ function upgrade4($dbman) {
  * @param xmldb $dbman
  * @return void
  */
-function upgrade3($dbman) {
+function xmldb_amplifier_upgrade3($dbman) {
     // Add index on amplifier.learninggoalwidgetid.
-    add_index($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_INDEX_NOTUNIQUE, ['learninggoalwidgetid']);
+    xmldb_amplifier_add_index($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_INDEX_NOTUNIQUE, ['learninggoalwidgetid']);
     // Add index on amplifier_reminders.startdate.
-    add_index($dbman, 'amplifier_reminders', 'startdate', XMLDB_INDEX_NOTUNIQUE, ['startdate']);
+    xmldb_amplifier_add_index($dbman, 'amplifier_reminders', 'startdate', XMLDB_INDEX_NOTUNIQUE, ['startdate']);
     // Add index on amplifier_reminders.enddate.
-    add_index($dbman, 'amplifier_reminders', 'enddate', XMLDB_INDEX_NOTUNIQUE, ['enddate']);
+    xmldb_amplifier_add_index($dbman, 'amplifier_reminders', 'enddate', XMLDB_INDEX_NOTUNIQUE, ['enddate']);
 }
 
 /**
@@ -291,12 +291,12 @@ function upgrade3($dbman) {
  * @param xmldb $dbman
  * @return void
  */
-function upgrade2($dbman) {
+function xmldb_amplifier_upgrade2($dbman) {
     global $DB;
 
     // Modify amplifier table.
     // Add learninggoalwidget id to amplifier table.
-    add_field($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_TYPE_INTEGER, '10', XMLDB_NOTNULL, null, -1);
+    xmldb_amplifier_add_field($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_TYPE_INTEGER, '10', XMLDB_NOTNULL, null, -1);
     // Update learninggoalwidgetid for existing rows.
     $stmt = "UPDATE {amplifier} amp
                 SET amp.learninggoalwidgetid = (
@@ -311,96 +311,96 @@ function upgrade2($dbman) {
               WHERE amp.learninggoalwidgetid = -1";
     $DB->execute($stmt);
     // Remove course index.
-    delete_index($dbman, 'amplifier', 'course', false, ['course']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier', 'course', false, ['course']);
     // Delete key fk_course and recreate it because renaming is not allowed in production.
-    delete_foreign_key($dbman, 'amplifier', 'fk_course', ['course'], 'course', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier', 'fk_course', ['course'], 'course', ['id']);
     // Add course->course.id.
-    add_foreign_key($dbman, 'amplifier', 'course', ['course'], 'course', ['id'], 'course');
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier', 'course', ['course'], 'course', ['id'], 'course');
     // Add learninggoalwidgetid->learninggoalwidget.id.
-    add_foreign_key($dbman, 'amplifier', 'learninggoalwidgetid', ['learninggoalwidgetid'], 'learninggoalwidget', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier', 'learninggoalwidgetid', ['learninggoalwidgetid'], 'learninggoalwidget', ['id']);
 
     // Remove amplifier_setup_reflection as it has been removed from the setup.
-    drop_table($dbman, 'amplifier_setup_reflection');
+    xmldb_amplifier_drop_table($dbman, 'amplifier_setup_reflection');
 
     // Modify amplifier_reflection table.
     // Delete all keys and indexes.
     // Delete goal index.
-    delete_index($dbman, 'amplifier_reflection', 'goal', false, ['goal']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_reflection', 'goal', false, ['goal']);
     // Delete key fk_goal.
-    delete_foreign_key($dbman, 'amplifier_reflection', 'fk_goal', ['goal'], 'amplifier_setup_goals', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reflection', 'fk_goal', ['goal'], 'amplifier_setup_goals', ['id']);
     // Delete key fk_course.
-    delete_foreign_key($dbman, 'amplifier_reflection', 'fk_course', ['course'], 'course', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reflection', 'fk_course', ['course'], 'course', ['id']);
     // Delete key fk_user.
-    delete_foreign_key($dbman, 'amplifier_reflection', 'fk_user', ['amp_user'], 'user', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reflection', 'fk_user', ['amp_user'], 'user', ['id']);
 
     // Modify amplifier_reminder table.
     // Delete all keys and indexes.
     // Delete goal index.
-    delete_index($dbman, 'amplifier_reminder', 'goal', false, ['goal']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_reminder', 'goal', false, ['goal']);
     // Delete key fk_goal.
-    delete_foreign_key($dbman, 'amplifier_reminder', 'fk_goal', ['goal'], 'amplifier_setup_goals', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reminder', 'fk_goal', ['goal'], 'amplifier_setup_goals', ['id']);
     // Delete key fk_course.
-    delete_foreign_key($dbman, 'amplifier_reminder', 'fk_course', ['course'], 'course', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reminder', 'fk_course', ['course'], 'course', ['id']);
     // Delete key fk_user.
-    delete_foreign_key($dbman, 'amplifier_reminder', 'fk_user', ['amp_user'], 'user', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reminder', 'fk_user', ['amp_user'], 'user', ['id']);
 
     // Modify amplifier_setup_goals table.
     // Delete all keys and indexes.
     // Delete topic index.
-    delete_index($dbman, 'amplifier_setup_goals', 'topic', false, ['topic']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'topic', false, ['topic']);
     // Delete goal index.
-    delete_index($dbman, 'amplifier_setup_goals', 'goal', false, ['goal']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'goal', false, ['goal']);
     // Delete course index.
-    delete_index($dbman, 'amplifier_setup_goals', 'course', false, ['course']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'course', false, ['course']);
     // Delete coursemodule index.
-    delete_index($dbman, 'amplifier_setup_goals', 'coursemodule', false, ['coursemodule']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'coursemodule', false, ['coursemodule']);
     // Delete setup index.
-    delete_index($dbman, 'amplifier_setup_goals', 'setup', false, ['setup']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'setup', false, ['setup']);
     // Delete amp_user index.
-    delete_index($dbman, 'amplifier_setup_goals', 'amp_user', false, ['amp_user']);
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'amp_user', false, ['amp_user']);
 
     // Delete key fk_topic.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
     // Delete key fk_goal.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
     // Delete key fk_course.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_course', ['course'], 'course', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_course', ['course'], 'course', ['id']);
     // Delete key fk_setup.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_setup', ['setup'], 'amplifier_setup', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_setup', ['setup'], 'amplifier_setup', ['id']);
     // Delete key fk_user.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_user', ['amp_user'], 'user', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_user', ['amp_user'], 'user', ['id']);
 
     // Rename instance -> amplifierid.
     $field = new xmldb_field('instance', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', null);
-    rename_field($dbman, 'amplifier_setup_goals', $field, 'amplifierid');
+    xmldb_amplifier_rename_field($dbman, 'amplifier_setup_goals', $field, 'amplifierid');
     // Rename goal -> lgwgoalid (learninggoalwidget goal id).
     $field = new xmldb_field('goal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
-    rename_field($dbman, 'amplifier_setup_goals', $field, 'lgwgoalid');
+    xmldb_amplifier_rename_field($dbman, 'amplifier_setup_goals', $field, 'lgwgoalid');
     // Rename amp_user -> userid.
     $field = new xmldb_field('amp_user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
-    rename_field($dbman, 'amplifier_setup_goals', $field, 'userid');
+    xmldb_amplifier_rename_field($dbman, 'amplifier_setup_goals', $field, 'userid');
 
     // Delete field course.
-    delete_field($dbman, 'amplifier_setup_goals', 'course');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_setup_goals', 'course');
     // Delete field coursemodule.
-    delete_field($dbman, 'amplifier_setup_goals', 'coursemodule');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_setup_goals', 'coursemodule');
     // Delete field topic as goal is already exact.
-    delete_field($dbman, 'amplifier_setup_goals', 'topic');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_setup_goals', 'topic');
     // Delete field setup.
-    delete_field($dbman, 'amplifier_setup_goals', 'setup');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_setup_goals', 'setup');
     // Delete field participantcode.
-    delete_field($dbman, 'amplifier_setup_goals', 'participantcode');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_setup_goals', 'participantcode');
 
     // Add foreign keys.
     // Add amplifierid->amplifier.id.
-    add_foreign_key($dbman, 'amplifier_setup_goals', 'amplifierid', ['amplifierid'], 'amplifier', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'amplifierid', ['amplifierid'], 'amplifier', ['id']);
     // Add userid->user.id.
-    add_foreign_key($dbman, 'amplifier_setup_goals', 'userid', ['userid'], 'user', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'userid', ['userid'], 'user', ['id']);
     // Add lgwgoalid->learninggoalwidget_goals.id.
-    add_foreign_key($dbman, 'amplifier_setup_goals', 'lgwgoalid', ['lgwgoalid'], 'learninggoalwidget_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'lgwgoalid', ['lgwgoalid'], 'learninggoalwidget_goals', ['id']);
 
     // Rename table amplifier_setup_goals->amplifier_goals.
-    rename_table($dbman, 'amplifier_setup_goals', 'amplifier_goals');
+    xmldb_amplifier_rename_table($dbman, 'amplifier_setup_goals', 'amplifier_goals');
 
     // Modify amplifier_reminder.
     // The column goal is said to contain a reference to amplifier_setup_goals.id
@@ -414,25 +414,25 @@ function upgrade2($dbman) {
 
     // Modify amplifier_reminder.
     // Delete field course.
-    delete_field($dbman, 'amplifier_reminder', 'course');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'course');
     // Delete field coursemodule.
-    delete_field($dbman, 'amplifier_reminder', 'coursemodule');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'coursemodule');
     // Delete field instance.
-    delete_field($dbman, 'amplifier_reminder', 'instance');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'instance');
     // Delete field amp_user.
-    delete_field($dbman, 'amplifier_reminder', 'amp_user');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'amp_user');
     // Delete field participantcode.
-    delete_field($dbman, 'amplifier_reminder', 'participantcode');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'participantcode');
 
     // Rename field goal->amplifiergoalid.
     $field = new xmldb_field('goal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
-    rename_field($dbman, 'amplifier_reminder', $field, 'amplifiergoalid');
+    xmldb_amplifier_rename_field($dbman, 'amplifier_reminder', $field, 'amplifiergoalid');
 
     // Add amplifiergoalid->amplifier_goals.id.
-    add_foreign_key($dbman, 'amplifier_reminder', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_reminder', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
 
     // Rename table amplifier_reminder->amplifier_reminders.
-    rename_table($dbman, 'amplifier_reminder', 'amplifier_reminders');
+    xmldb_amplifier_rename_table($dbman, 'amplifier_reminder', 'amplifier_reminders');
 
     // Modify amplfier_reflection.
     // The column goal is said to contain a reference to amplifier_setup_goals.id
@@ -444,31 +444,31 @@ function upgrade2($dbman) {
                 SET ref.goal = goals.id";
     $DB->execute($stmt);
     // Delete field course.
-    delete_field($dbman, 'amplifier_reflection', 'course');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'course');
     // Delete field coursemodule.
-    delete_field($dbman, 'amplifier_reflection', 'coursemodule');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'coursemodule');
     // Delete field instance.
-    delete_field($dbman, 'amplifier_reflection', 'instance');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'instance');
     // Delete field amp_user.
-    delete_field($dbman, 'amplifier_reflection', 'amp_user');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'amp_user');
     // Delete field participantcode.
-    delete_field($dbman, 'amplifier_reflection', 'participantcode');
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'participantcode');
 
     // Rename field goal->amplifiergoalid.
     $field = new xmldb_field('goal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
-    rename_field($dbman, 'amplifier_reflection', $field, 'amplifiergoalid');
+    xmldb_amplifier_rename_field($dbman, 'amplifier_reflection', $field, 'amplifiergoalid');
     // Rename field reflectedat->timecreated.
     $field = new xmldb_field('reflectedat', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
-    rename_field($dbman, 'amplifier_reflection', $field, 'timecreated');
+    xmldb_amplifier_rename_field($dbman, 'amplifier_reflection', $field, 'timecreated');
 
     // Add amplifiergoalid->amplifier_goals.id.
-    add_foreign_key($dbman, 'amplifier_reflection', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_reflection', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
 
     // Rename amplifier_reflection->amplifier_reflections.
-    rename_table($dbman, 'amplifier_reflection', 'amplifier_reflections');
+    xmldb_amplifier_rename_table($dbman, 'amplifier_reflection', 'amplifier_reflections');
 
     // Remove amplifier_setup because its data is not needed.
-    drop_table($dbman, 'amplifier_setup');
+    xmldb_amplifier_drop_table($dbman, 'amplifier_setup');
 }
 
 /**
@@ -477,24 +477,24 @@ function upgrade2($dbman) {
  * @param xmldb $dbman
  * @return void
  */
-function upgrade1($dbman) {
+function xmldb_amplifier_upgrade1($dbman) {
     // Remove foreign keys to learninggoalwidget.
     // Remove amplifier_setup_reflection->fk_topic.
-    delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'], 'learninggoalwidget_topic', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'], 'learninggoalwidget_topic', ['id']);
     // Remove amplifier_setup_reflection->fk_goal.
-    delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'], 'learninggoalwidget_goal', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'], 'learninggoalwidget_goal', ['id']);
     // Remove amplifier_setup_goals->fk_topic.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topic', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topic', ['id']);
     // Remove amplifier_setup_goals->fk_goal.
-    delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_goal', ['goal'], 'learninggoalwidget_goal', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_goal', ['goal'], 'learninggoalwidget_goal', ['id']);
 
     // Add foreign keys to new learninggoalwidget tables.
     // Add amplifier_setup_reflection->fk_topic.
-    add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
     // Add amplifier_setup_reflection->fk_goal.
-    add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
     // Add amplifier_setup_goals->fk_topic.
-    add_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
     // Add amplifier_setup_goals->fk_goal.
-    add_foreign_key($dbman, 'amplifier_setup_goals', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
 }
