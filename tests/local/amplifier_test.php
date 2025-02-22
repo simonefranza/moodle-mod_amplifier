@@ -20,7 +20,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/mod/amplifier/tests/providerhelper.php');
 require_once($CFG->dirroot . '/mod/amplifier/tests/utils.php');
 require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php');
 

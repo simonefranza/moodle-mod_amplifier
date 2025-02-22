@@ -187,14 +187,7 @@ class provider implements
         $data->selectedgoals = [];
         foreach ($selectedusergoals as $selectedgoalrecord) {
             $context = $contextlist->current();
-            $selectedgoal = new \stdClass;
-            $selectedgoal->instance = $selectedgoalrecord->instance;
-            $selectedgoal->userid = $selectedgoalrecord->userid;
-            $selectedgoal->topictitle = $selectedgoalrecord->topictitle;
-            $selectedgoal->goaltitle = $selectedgoalrecord->goaltitle;
-            $selectedgoal->contextid = $selectedgoalrecord->contextid;
-            $selectedgoal->cmid = $selectedgoalrecord->cmid;
-            $data->selectedgoals[] = $selectedgoal;
+            $data->selectedgoals[] = $selectedgoalrecord;
         }
         writer::with_context($context)->export_data(['selectedgoals'], $data);
         $selectedusergoals->close();
@@ -227,20 +220,7 @@ class provider implements
         $data->reminders = [];
         foreach ($reminders as $reminderrecord) {
             $context = $contextlist->current();
-            $reminder = new \stdClass;
-            $reminder->instance = $reminderrecord->instance;
-            $reminder->userid = $reminderrecord->userid;
-            $reminder->topictitle = $reminderrecord->topictitle;
-            $reminder->goaltitle = $reminderrecord->goaltitle;
-            $reminder->startdate = $reminderrecord->startdate;
-            $reminder->enddate = $reminderrecord->enddate;
-            $reminder->reminderhour = $reminderrecord->reminderhour;
-            $reminder->reminderminute = $reminderrecord->reminderminute;
-            $reminder->frequency = $reminderrecord->frequency;
-            $reminder->lastnotificationdate = $reminderrecord->lastnotificationdate;
-            $reminder->contextid = $reminderrecord->contextid;
-            $reminder->cmid = $reminderrecord->cmid;
-            $data->reminders[] = $reminder;
+            $data->reminders[] = $reminderrecord;
         }
         writer::with_context($context)->export_data(['reminders'], $data);
         $reminders->close();
@@ -269,16 +249,7 @@ class provider implements
         $data->reflections = [];
         foreach ($reflections as $reflectionrecord) {
             $context = $contextlist->current();
-            $reflection = new \stdClass;
-            $reflection->instance = $reflectionrecord->instance;
-            $reflection->userid = $reflectionrecord->userid;
-            $reflection->topictitle = $reflectionrecord->topictitle;
-            $reflection->goaltitle = $reflectionrecord->goaltitle;
-            $reflection->reflectiondate = $reflectionrecord->timecreated;
-            $reflection->response = $reflectionrecord->response;
-            $reflection->contextid = $reflectionrecord->contextid;
-            $reflection->cmid = $reflectionrecord->cmid;
-            $data->reflections[] = $reflection;
+            $data->reflections[] = $reflectionrecord;
         }
         writer::with_context($context)->export_data(['reflections'], $data);
         $reflections->close();
@@ -323,8 +294,6 @@ class provider implements
      * @param approved_contextlist $contextlist The approved contexts and user information to delete information for.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        global $DB;
-
         foreach ($contextlist as $context) {
             if ($context->contextlevel != CONTEXT_MODULE) {
                 // Only amplifier module will be handled.
@@ -351,8 +320,6 @@ class provider implements
      * @param approved_userlist $userlist The approved context and user information to delete information for.
      */
     public static function delete_data_for_users(approved_userlist $userlist) {
-        global $DB;
-
         $context = $userlist->get_context();
 
         if ($context->contextlevel != CONTEXT_MODULE) {

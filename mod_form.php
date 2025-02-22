@@ -123,8 +123,8 @@ class mod_amplifier_mod_form extends moodleform_mod {
      *
      * Only available on moodleform_mod.
      *
-     * @param stdClass $data passed by reference
+     * @param stdClass $_data
      */
-    public function data_postprocessing($data) {
+    public function data_postprocessing($_data) {
     }
 }

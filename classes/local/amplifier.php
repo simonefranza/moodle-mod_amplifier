@@ -258,7 +258,7 @@ class amplifier {
      * @param [type] $context
      */
     public function render($context) {
-        global $OUTPUT, $USER, $DB;
+        global $USER, $DB;
 
         // Capability check.
         $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
@@ -298,10 +298,5 @@ class amplifier {
         }
         $this->add_strings($strings, $context);
         return $context;
-
-//        return $OUTPUT->render_from_template(
-//            'mod_amplifier/widget/amplifier-widget',
-//            $context
-//        );
     }
 }

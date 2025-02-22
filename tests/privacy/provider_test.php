@@ -60,7 +60,6 @@ class provider_test extends provider_testcase {
      * @covers \mod_amplifier\privacy\provider::get_contexts_for_userid
      */
     public function test_get_contexts_for_userid() {
-        global $DB;
         $setup = $this->setup_widget(true);
 
         $contextlist = provider::get_contexts_for_userid($setup->user->id);
@@ -89,7 +88,6 @@ class provider_test extends provider_testcase {
      * @covers \mod_amplifier\privacy\provider::get_users_in_context
      */
     public function test_get_users_in_context() {
-        global $DB;
         $setup = $this->setup_widget(true);
 
         $coursemodule = get_coursemodule_from_instance('amplifier', $setup->instance->id);
@@ -128,7 +126,6 @@ class provider_test extends provider_testcase {
      * @covers \mod_amplifier\privacy\provider::export_user_data
      */
     public function test_export_user_data_student() {
-        global $DB;
         $setup = $this->setup_widget(true);
         $student = $this->create_user('student', $setup->course->id, true);
 
@@ -137,7 +134,6 @@ class provider_test extends provider_testcase {
         $cmcontext = \context_module::instance($coursemodule->id);
 
         $submitdata = $this->submit_setup($setup);
-
 
         // Create reminder.
         $reminderdata = $this->save_reminder($setup->instance->id);
@@ -197,32 +193,30 @@ class provider_test extends provider_testcase {
     public function test_delete_data_for_all_users_in_context() {
         global $DB;
         $setup = $this->setup_widget(true);
-        $student = $this->create_user('student', $setup->course->id, true);
+        $this->create_user('student', $setup->course->id, true);
 
         $coursemodule = get_coursemodule_from_instance('amplifier', $setup->instance->id);
-        $coursecontext = \context_course::instance($coursemodule->course);
         $cmcontext = \context_module::instance($coursemodule->id);
 
         $lgwcoursemodule = get_coursemodule_from_instance('learninggoalwidget', $setup->lgwinstance->id);
-        $lgwcoursecontext = \context_course::instance($lgwcoursemodule->course);
         $lgwcmcontext = \context_module::instance($lgwcoursemodule->id);
 
         $syscontext = \context_system::instance();
 
-        // Test with not a module context
+        // Test with not a module context.
         provider::delete_data_for_all_users_in_context($syscontext);
 
-        // Test with LGW module context
+        // Test with LGW module context.
         provider::delete_data_for_all_users_in_context($lgwcmcontext);
 
-        // Try to delete with no data
+        // Try to delete with no data.
         provider::delete_data_for_all_users_in_context($cmcontext);
 
-        $submitdata = $this->submit_setup($setup);
+        $this->submit_setup($setup);
 
         // Create data.
-        $reminderdata = $this->save_reminder($setup->instance->id);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->save_reminder($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
         provider::delete_data_for_all_users_in_context($cmcontext);
 
         // Check all relevant tables.
@@ -247,14 +241,13 @@ class provider_test extends provider_testcase {
         $cmcontext = \context_module::instance($coursemodule->id);
 
         $lgwcoursemodule = get_coursemodule_from_instance('learninggoalwidget', $setup->lgwinstance->id);
-        $lgwcoursecontext = \context_course::instance($lgwcoursemodule->course);
         $lgwcmcontext = \context_module::instance($lgwcoursemodule->id);
 
         // Create data for student1.
         $student = $this->create_user('student', $setup->course->id, true);
-        $submitdata = $this->submit_setup($setup);
-        $reminderdata = $this->save_reminder($setup->instance->id);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->submit_setup($setup);
+        $this->save_reminder($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
 
         // Create data for student2.
         $student2 = $this->create_user('student', $setup->course->id, true);
@@ -310,15 +303,13 @@ class provider_test extends provider_testcase {
         $cmcontext = \context_module::instance($coursemodule->id);
 
         $lgwcoursemodule = get_coursemodule_from_instance('learninggoalwidget', $setup->lgwinstance->id);
-        $lgwcoursecontext = \context_course::instance($lgwcoursemodule->course);
         $lgwcmcontext = \context_module::instance($lgwcoursemodule->id);
-
 
         // Create data for student1.
         $student = $this->create_user('student', $setup->course->id, true);
-        $submitdata = $this->submit_setup($setup);
-        $reminderdata = $this->save_reminder($setup->instance->id);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->submit_setup($setup);
+        $this->save_reminder($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
 
         // Create data for student2.
         $student2 = $this->create_user('student', $setup->course->id, true);

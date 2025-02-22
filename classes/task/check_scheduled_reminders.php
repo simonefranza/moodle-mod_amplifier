@@ -78,28 +78,11 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
         $ampreminderrecords = $DB->get_records_sql($stmt, $params);
 
         foreach ($ampreminderrecords as $record) {
-            $now = new DateTime();
-            // Check if we already sent a reminder.
-            if ($record->lastnotificationdate > 0) {
-                $lastnotificationdate = new DateTime();
-                $lastnotificationdate->setTimestamp($record->lastnotificationdate / 1000);
-                $diff = $now->diff($lastnotificationdate);
-
-                // If last reminder was sent too little ago, skip.
-                if (!($record->frequency == 0 && $diff->d > 0
-                    || $record->frequency == 1 && $diff->d > 6
-                    || $record->frequency == 2 && $diff->m > 0)) {
-                    continue;
-                }
-            }
-
-            $currenthour = (int)$now->format("G");
-            $currentminute = (int)$now->format("i");
-
-            // Check that we match user preference.
-            if (!((int)$record->reminderhour == $currenthour
-                && (int)$record->reminderminute - 2 <= $currentminute
-                && (int)$record->reminderminute + 2 >= $currentminute)) {
+            if ($this->is_lastnotificationdate_recent($record)) {
+                // We sent a reminder recently.
+                continue;
+            } else if (!$this->is_correct_time($record)) {
+                // Reminder time does not match.
                 continue;
             }
             $amplifierreminder = new \stdClass;
@@ -112,6 +95,42 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
             }
             $DB->update_record('amplifier_reminders', $amplifierreminder);
         }
+    }
+
+    /**
+      * Checks whether the last notification was sent recently.
+      *
+      * @param stdClass $record
+      * @return bool
+      */
+    private function is_lastnotificationdate_recent($record) {
+        if ($record->lastnotificationdate <= 0) {
+            return false;
+        }
+        $now = new DateTime();
+        $lastnotificationdate = new DateTime();
+        $lastnotificationdate->setTimestamp($record->lastnotificationdate / 1000);
+        $diff = $now->diff($lastnotificationdate);
+
+        // If last reminder was sent too little ago, skip.
+        return $record->frequency == 0 && $diff->d > 0
+            || $record->frequency == 1 && $diff->d > 6
+            || $record->frequency == 2 && $diff->m > 0;
+    }
+
+    /**
+      * Checks whether it is the correct time to send a notification
+      *
+      * @param stdClass $record
+      * @return bool
+      */
+    private function is_correct_time($record) {
+        $now = time();
+        $currenthour = (int)date('G', $now);
+        $currentminute = (int)date('i', $now);
+        return (int)$record->reminderhour == $currenthour
+            && (int)$record->reminderminute - 2 <= $currentminute
+            && (int)$record->reminderminute + 2 >= $currentminute;
     }
 
     /**

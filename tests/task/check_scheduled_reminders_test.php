@@ -53,6 +53,7 @@ class check_scheduled_reminders_test extends \advanced_testcase {
     /**
      * Test if notifications are sent
      * @covers \mod_amplifier\task\check_scheduled_reminders::execute
+     * @covers \mod_amplifier\task\check_scheduled_reminders::is_correct_time
      * @covers \mod_amplifier\task\check_scheduled_reminders::send_notification
      */
     public function test_execute() {
@@ -106,7 +107,12 @@ class check_scheduled_reminders_test extends \advanced_testcase {
         // Message has been already be sent.
         $this->check_messages($task, 0);
 
-        $reminderid = array_values($DB->get_fieldset('amplifier_reminders', 'id'));
+        $reminderid = $DB->get_fieldset_select(
+          'amplifier_reminders',
+          'id',
+          'amplifiergoalid = :amplifiergoalid',
+          ['amplifiergoalid' => $reminderdata->amplifiergoalid]
+        );
         $DB->update_record('amplifier_reminders', [
           'id' => $reminderid[0],
           'lastnotificationdate' => 0,
@@ -126,7 +132,7 @@ class check_scheduled_reminders_test extends \advanced_testcase {
      */
     private function check_messages($task, $nummessages) {
         $sink = $this->redirectMessages();
-        // Send reminder
+        // Send reminder.
         $task->execute();
         $messages = $sink->get_messages();
         $this->assertEquals($nummessages, count($messages));
