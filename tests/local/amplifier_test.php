@@ -27,9 +27,9 @@ require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php
 use mod_amplifier\local\amplifier_controller;
 use mod_learninggoalwidget\local\taxonomy;
 use mod_amplifier\external\submit_setup;
+use mod_amplifier\external\save_reminder;
 use core_external\external_api;
 use stdClass;
-use mod_amplifier_external;
 
 /**
  * Amplifier Test
@@ -75,11 +75,11 @@ class amplifier_test extends \advanced_testcase {
         $widget = $amp->render($context);
         $this->assertStringContainsString(
           get_string('template:setup:headline', 'mod_amplifier'),
-          $widget
+          $widget['teacher_headline']
         );
         $this->assertStringContainsString(
           get_string('template:setup:teacher', 'mod_amplifier'),
-          $widget
+          $widget['teacher_text']
         );
     }
 
@@ -99,19 +99,19 @@ class amplifier_test extends \advanced_testcase {
         $context['instanceId'] = $setup->instance->id;
         $widget = $amp->render($context);
         // Does not contain teacher string.
-        $this->assertStringNotContainsString(
-          get_string('template:setup:teacher', 'mod_amplifier'), $widget);
+        $this->assertTrue(!isset($widget['teacher_text']));
+
         // Student strings.
         $this->assertStringContainsString(
-          get_string('template:setup:headline', 'mod_amplifier'), $widget);
+          get_string('template:setup:headline', 'mod_amplifier'), $widget['amplifier_welcome_headline']);
         $this->assertStringContainsString(
-          get_string('template:setup:text_1', 'mod_amplifier'), $widget);
+          get_string('template:setup:text_1', 'mod_amplifier'), $widget['amplifier_welcome_text_1']);
         $this->assertStringContainsString(
-          get_string('template:setup:text_2', 'mod_amplifier'), $widget);
+          get_string('template:setup:text_2', 'mod_amplifier'), $widget['amplifier_welcome_text_2']);
         foreach ($setup->taxonomy->children as $topic) {
-            $this->assertStringContainsString($topic->name, $widget);
+            $this->assertStringContainsString($topic->name, $widget['predefined_learning_goals']);
             foreach ($topic->children as $goal) {
-                $this->assertStringContainsString($goal->name, $widget);
+                $this->assertStringContainsString($goal->name, $widget['predefined_learning_goals']);
             }
         }
     }
@@ -131,8 +131,9 @@ class amplifier_test extends \advanced_testcase {
      * @covers \mod_amplifier\external\submit_setup::execute_returns
      */
     public function test_render_student_setup_done(): void {
+        global $DB;
         $setup = $this->setup_widget(true);
-        $this->create_user('student', $setup->course->id, true);
+        $student = $this->create_user('student', $setup->course->id, true);
 
         // Submit setup.
         $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
@@ -145,19 +146,44 @@ class amplifier_test extends \advanced_testcase {
         $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
         $this->assertSame("OK", $submission);
 
+        // Set reminder to check that it is added to template.
+        $amplifiergoalids = $DB->get_fieldset_select(
+          'amplifier_goals',
+          'id',
+          'userid = :userid',
+          ['userid' => $student->id]
+        );
+        $this->assertSame(2, count($amplifiergoalids));
+        $reminderdata = (object)[
+            'startdate' => 0,
+            'enddate' => 200000,
+            'reminderhour' => 10,
+            'reminderminute' => 10,
+            'frequency' => 0,
+            'amplifiergoalid' => $amplifiergoalids[0],
+        ];
+        $res = save_reminder::execute(
+            $reminderdata->startdate,
+            $reminderdata->enddate,
+            $reminderdata->reminderhour,
+            $reminderdata->reminderminute,
+            $reminderdata->frequency,
+            $reminderdata->amplifiergoalid,
+            $setup->instance->id
+        );
+        $res = external_api::clean_returnvalue(save_reminder::execute_returns(), $res);
+        $this->assertSame("OK", $res);
+
         $amp = new amplifier($setup->instance->id);
         $context['instanceId'] = $setup->instance->id;
         $widget = $amp->render($context);
         // Does not contain teacher string.
-        $this->assertStringNotContainsString(
-          get_string('template:setup:teacher', 'mod_amplifier'), $widget);
+        $this->assertTrue(!isset($widget['teacher_headline']));
+        $this->assertTrue(!isset($widget['teacher_text']));
         // Does not contain student setup strings.
-        $this->assertStringNotContainsString(
-          get_string('template:setup:headline', 'mod_amplifier'), $widget);
-        $this->assertStringNotContainsString(
-          get_string('template:setup:text_1', 'mod_amplifier'), $widget);
-        $this->assertStringNotContainsString(
-          get_string('template:setup:text_2', 'mod_amplifier'), $widget);
+        $this->assertTrue(!isset($widget['amplifier_welcome_headline']));
+        $this->assertTrue(!isset($widget['amplifier_welcome_text_1']));
+        $this->assertTrue(!isset($widget['amplifier_welcome_text_2']));
 
         // Contains student strings.
         $contained = [
@@ -175,17 +201,22 @@ class amplifier_test extends \advanced_testcase {
             'template:reflection:placeholder',
         ];
         foreach ($contained as $langstring) {
-            $this->assertStringContainsString(get_string($langstring, 'mod_amplifier'), $widget);
+            $this->assertStringContainsString(get_string($langstring, 'mod_amplifier'), $widget['usergoals']);
         }
 
         foreach ($firsttopic->children as $goal) {
-            $this->assertStringContainsString($goal->name, $widget);
-            $this->assertStringContainsString($firsttopic->name . ' - ' . $goal->name, $widget);
+            $this->assertStringContainsString($goal->name, $widget['usergoals']);
+            $this->assertStringContainsString($firsttopic->name . ' - ' . $goal->name, $widget['usergoals']);
         }
         $secondtopic = $taxonomy->children[1];
         foreach ($secondtopic->children as $goal) {
-            $this->assertStringNotContainsString($goal->name, $widget);
-            $this->assertStringNotContainsString($secondtopic->name . ' - ' . $goal->name, $widget);
+            $this->assertStringNotContainsString($goal->name, $widget['usergoals']);
+            $this->assertStringNotContainsString($secondtopic->name . ' - ' . $goal->name, $widget['usergoals']);
         }
+        $this->assertStringContainsString('data-startdate="' . $reminderdata->startdate . '"', $widget['usergoals']);
+        $this->assertStringContainsString('data-enddate="' . $reminderdata->enddate . '"', $widget['usergoals']);
+        $this->assertStringContainsString('data-reminder-hour="' . $reminderdata->reminderhour . '"', $widget['usergoals']);
+        $this->assertStringContainsString('data-reminder-minute="' . $reminderdata->reminderminute . '"', $widget['usergoals']);
+        $this->assertStringContainsString('data-reminderfrequency="' . $reminderdata->frequency . '"', $widget['usergoals']);
     }
 }

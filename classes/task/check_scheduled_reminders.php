@@ -70,7 +70,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
              INNER JOIN {amplifier_reminders} amprem ON ampgoals.id = amprem.amplifiergoalid
              INNER JOIN {learninggoalwidget_goals} lgwgoals ON ampgoals.lgwgoalid = lgwgoals.id
              INNER JOIN {learninggoalwidget_topics} lgwtopics ON lgwgoals.topicid = lgwtopics.id
-                  WHERE amprem.enddate > :enddate AND amprem.startdate < :startdate";
+                  WHERE amprem.enddate >= :enddate AND amprem.startdate <= :startdate";
         $params = [
             "enddate" => $now,
             "startdate" => $now,
@@ -106,7 +106,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
             $amplifierreminder->id = $record->reminderid;
             $amplifierreminder->lastnotificationdate = $now->getTimestamp() * 1000;
             // If message send failed, skip update.
-            if (!$this->sendnotification($record)) {
+            if (!$this->send_notification($record)) {
                 mtrace('mod_amplifier: Failed to send notification to user ' . $record->userid . '. No update.');
                 continue;
             }
@@ -119,7 +119,7 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
      * @param stdClass $record Record
      * @return bool whether the notification was successful
      */
-    private function sendnotification($record) {
+    private function send_notification($record) {
         global $DB, $CFG;
         // Check if can send notification.
         $provider = 'reflection_reminder';

@@ -106,7 +106,7 @@ jobs:
 
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
-        run: moodle-plugin-ci phpunit --coverage-pcov #--fail-on-warning
+        run: moodle-plugin-ci phpunit --coverage-text #--fail-on-warning
 
       - name: Behat features
         id: behat

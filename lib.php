@@ -21,7 +21,7 @@
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_amplifier\local\amplifier;
+use mod_amplifier\output\widget\widget_renderable;
 
 /**
  * Saves a new instance of the mod_amplifier into the database.
@@ -108,11 +108,22 @@ function amplifier_delete_instance(int $id): bool {
  * @param cm_info $cm Course-module object
  */
 function amplifier_cm_info_view(cm_info $cm) {
-    $amplifiercontroller = new amplifier($cm->instance);
+    global $PAGE;
+    $canview = has_capability(
+        'mod/amplifier:view',
+        context_module::instance($cm->get_course_module_record()->id)
+    );
 
-    $templatecontext['instanceId'] = $cm->instance;
+    if (!$canview) {
+        if (isguestuser()) {
+            $cm->set_content(get_string('guestaccess', 'mod_amplifier'), false);
+        } else {
+            $cm->set_content(get_string('noaccess', 'mod_amplifier'), false);
+        }
+        return;
+    }
 
-    $amplifierwidget = $amplifiercontroller->render($templatecontext);
-
-    $cm->set_content($amplifierwidget, true);
+    $renderable = new widget_renderable($cm->instance);
+    $widgetrenderer = $PAGE->get_renderer('mod_amplifier', 'widget');
+    $cm->set_content($widgetrenderer->render($renderable), true);
 }

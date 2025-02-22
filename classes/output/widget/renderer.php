@@ -41,7 +41,7 @@ class renderer extends plugin_renderer_base {
      * @param widget_renderable $main
      * @return void
      */
-    public function render_widget_renderable(widget_renderable $main) {
+    public function render_widget(widget_renderable $main) {
         return $this->render_from_template('mod_amplifier/widget/amplifier-widget',
         $main->export_for_template($this));
     }

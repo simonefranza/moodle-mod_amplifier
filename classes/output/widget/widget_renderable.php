@@ -19,6 +19,7 @@ namespace mod_amplifier\output\widget;
 use renderable;
 use renderer_base;
 use templatable;
+use mod_amplifier\local\amplifier;
 
 /**
  * Training Amplifier Widget Renderable
@@ -51,7 +52,9 @@ class widget_renderable implements renderable, templatable {
      * @return array Context variables for the template
      */
     public function export_for_template(renderer_base $output) {
-        $contextvariables = ["instanceId" => $this->instanceid];
-        return $contextvariables;
+        $amplifier = new amplifier($this->instanceid);
+        $context = ['instanceId' => $this->instanceid];
+
+        return $amplifier->render($context);
     }
 }

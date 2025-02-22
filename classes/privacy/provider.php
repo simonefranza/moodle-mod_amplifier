@@ -168,7 +168,7 @@ class provider implements
         // Selected goals.
         $sql = "SELECT ampgoals.amplifierid AS instance,
                        ampgoals.userid AS userid,
-                       lgwtopic.title AS topictitle,
+                       lgwtopics.title AS topictitle,
                        lgwgoals.title AS goaltitle,
                        c.id AS contextid,
                        cm.id AS cmid
@@ -274,7 +274,7 @@ class provider implements
             $reflection->userid = $reflectionrecord->userid;
             $reflection->topictitle = $reflectionrecord->topictitle;
             $reflection->goaltitle = $reflectionrecord->goaltitle;
-            $reflection->reflectiondate = $reflectionrecord->reflectiondate;
+            $reflection->reflectiondate = $reflectionrecord->timecreated;
             $reflection->response = $reflectionrecord->response;
             $reflection->contextid = $reflectionrecord->contextid;
             $reflection->cmid = $reflectionrecord->cmid;

@@ -33,6 +33,9 @@ require_once($CFG->dirroot . '/mod/learninggoalwidget/classes/local/taxonomy.php
 use core_external\external_api;
 use mod_amplifier\local\amplifier;
 use mod_learninggoalwidget\local\taxonomy;
+use mod_amplifier\external\save_reminder;
+use mod_amplifier\external\submit_setup;
+use mod_amplifier\external\submit_reflections;
 
 /**
  * Training Amplifier Test Utils
@@ -210,4 +213,98 @@ trait utils {
         $this->assertTrue(isset($goal->goalid) && is_int($goal->goalid));
     }
 
+    /**
+      * Function to submit setup for the current user and return the data.
+      * @param stdClass $setup
+      * @return stdClass
+      */
+    protected function submit_setup($setup) {
+      $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+      $firsttopic = $taxonomy->children[0];
+      $goals = [
+          (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
+          (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
+      ];
+      $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
+      $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
+      $this->assertSame("OK", $submission);
+      return (object) [
+        "taxonomy" => $taxonomy,
+        "goals" => $goals,
+      ];
+    }
+
+    /**
+      * Saves a reminder for the active user and returns the set data
+      * @param int $instanceid ID of instance
+      * @param int | null $amplifiergoalid ID of amplifier_goals
+      * @param stdClass | null $data Data of the reminder
+      * @return stdClass
+      */
+    protected function save_reminder($instanceid, $amplifiergoalid = null, ?object $data = null) {
+        global $USER, $DB;
+        if ($amplifiergoalid == null) {
+            $amplifiergoalids = $DB->get_fieldset_select(
+              'amplifier_goals',
+              'id',
+              'userid = :userid',
+              ['userid' => $USER->id]
+            );
+            $amplifiergoalid = $amplifiergoalids[0];
+            if ($data) {
+                $data->amplifiergoalid = $amplifiergoalid;
+            }
+        }
+        if ($data == null) {
+          $data = (object)[
+              'startdate' => 0,
+              'enddate' => 200000,
+              'reminderhour' => 10,
+              'reminderminute' => 10,
+              'frequency' => 0,
+              'amplifiergoalid' => $amplifiergoalid,
+          ];
+        }
+        $res = save_reminder::execute(
+            $data->startdate,
+            $data->enddate,
+            $data->reminderhour,
+            $data->reminderminute,
+            $data->frequency,
+            $data->amplifiergoalid,
+            $instanceid
+        );
+        $res = external_api::clean_returnvalue(save_reminder::execute_returns(), $res);
+        return $data;
+    }
+    /**
+      * Submits a reflection for the active user and returns the set data
+      * @param int $instanceid ID of instance
+      * @param stdClass | null $data Data of the reminder
+      * @return stdClass
+      */
+    protected function submit_reflections($instanceid, $data = null) {
+        global $USER, $DB;
+        if ($data == null) {
+            $amplifiergoalids = $DB->get_fieldset_select(
+              'amplifier_goals',
+              'id',
+              'userid = :userid',
+              ['userid' => $USER->id]
+            );
+            $data = (object) [
+                'reflection' => "My reflection.",
+                'amplifiergoalid' => $amplifiergoalids[0],
+                'instanceid' => $instanceid,
+            ];
+        }
+
+        $res = submit_reflections::execute(
+            $data->reflection,
+            $data->amplifiergoalid,
+            $data->instanceid,
+        );
+        $res = external_api::clean_returnvalue(submit_reflections::execute_returns(), $res);
+        return $data;
+    }
 }

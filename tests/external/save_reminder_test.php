@@ -161,7 +161,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 19, 22, 0, -1, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 10, 10, -1, 0, $setup->instance->id);
     }
 
     /**
@@ -178,7 +178,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now, $now + 2000, 19, 22, 0, 3, $setup->instance->id);
+        save_reminder::execute($now, $now + 2000, 10, 10, 3, 0, $setup->instance->id);
     }
 
     /**

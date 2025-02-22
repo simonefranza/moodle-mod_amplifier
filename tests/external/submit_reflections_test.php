@@ -112,17 +112,17 @@ final class submit_reflections_test extends externallib_advanced_testcase {
         $this->assertSame(2, count($amplifiergoalids));
 
         $res = submit_reflections::execute('', $amplifiergoalids[0], $setup->instance->id);
-        $res = external_api::clean_returnvalue(submit_setup::execute_returns(), $res);
+        $res = external_api::clean_returnvalue(submit_reflections::execute_returns(), $res);
         $this->assertSame("Reflection is empty, ignored.", $res);
 
         $reflections = ["Test 1", "Test 2"];
         foreach ($reflections as $reflection) {
             $res = submit_reflections::execute($reflection, $amplifiergoalids[0], $setup->instance->id);
-            $res = external_api::clean_returnvalue(submit_setup::execute_returns(), $res);
+            $res = external_api::clean_returnvalue(submit_reflections::execute_returns(), $res);
             $this->assertSame("OK", $res);
         }
         $res = submit_reflections::execute("Test 3", $amplifiergoalids[1], $setup->instance->id);
-        $res = external_api::clean_returnvalue(submit_setup::execute_returns(), $res);
+        $res = external_api::clean_returnvalue(submit_reflections::execute_returns(), $res);
         $this->assertSame("OK", $res);
 
         $data2 = array_values($DB->get_records('amplifier_reflections', ['amplifiergoalid' => $amplifiergoalids[0]]));

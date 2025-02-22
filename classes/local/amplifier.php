@@ -297,10 +297,11 @@ class amplifier {
             $context['usergoals'] = $this->render_setup_done();
         }
         $this->add_strings($strings, $context);
+        return $context;
 
-        return $OUTPUT->render_from_template(
-            'mod_amplifier/widget/amplifier-widget',
-            $context
-        );
+//        return $OUTPUT->render_from_template(
+//            'mod_amplifier/widget/amplifier-widget',
+//            $context
+//        );
     }
 }
