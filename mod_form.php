@@ -122,7 +122,10 @@ class mod_amplifier_mod_form extends moodleform_mod {
      * This method is also called in the bulk activity completion form.
      *
      * Only available on moodleform_mod.
+     *
+     * @param stdClass $data passed by reference
      */
-    public function data_postprocessing() {
+    public function data_postprocessing($data) {
+        unset($data);
     }
 }

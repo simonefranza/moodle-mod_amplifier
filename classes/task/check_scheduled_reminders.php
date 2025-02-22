@@ -114,9 +114,9 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
         $diff = $now->diff($lastnotificationdate);
 
         // If last reminder was sent too little ago, skip.
-        return $record->frequency == 0 && $diff->d > 0
+        return !($record->frequency == 0 && $diff->d > 0
             || $record->frequency == 1 && $diff->d > 6
-            || $record->frequency == 2 && $diff->m > 0;
+            || $record->frequency == 2 && $diff->m > 0);
     }
 
     /**
@@ -141,10 +141,6 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
      */
     private function send_notification($record) {
         global $DB, $CFG;
-        // Check if can send notification.
-        $provider = 'reflection_reminder';
-        $component = 'mod_amplifier';
-
         $user = $DB->get_record('user', ['id' => $record->userid]);
         $course = $DB->get_record('course', ["id" => $record->course]);
 

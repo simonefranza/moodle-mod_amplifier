@@ -263,9 +263,9 @@ class provider_test extends provider_testcase {
 
         // Create data for student2.
         $student2 = $this->create_user('student', $setup->course->id, true);
-        $submitdata = $this->submit_setup($setup);
-        $reminderdata = $this->save_reminder($setup->instance->id);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->submit_setup($setup);
+        $this->save_reminder($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
 
         // Delete students's data.
         $approvedlist = new approved_contextlist(
@@ -327,9 +327,9 @@ class provider_test extends provider_testcase {
 
         // Create data for student2.
         $student2 = $this->create_user('student', $setup->course->id, true);
-        $submitdata = $this->submit_setup($setup);
-        $reminderdata = $this->save_reminder($setup->instance->id);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->submit_setup($setup);
+        $this->save_reminder($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
 
         // Create data for student3.
         $student3 = $this->create_user('student', $setup->course->id, true);
