@@ -51,8 +51,12 @@ class amplifier {
         $this->instanceid = $instanceid;
         $res = $DB->get_record('amplifier', ['id' => $instanceid], 'learninggoalwidgetid');
         if ($res !== false) {
-            $this->learninggoalwidgetid = $res->learninggoalwidgetid;
+            if ($DB->record_exists('learninggoalwidget', ['id' => $res->learninggoalwidgetid])) {
+                $this->learninggoalwidgetid = $res->learninggoalwidgetid;
+                return;
+            }
         }
+        $this->learninggoalwidgetid = null;
     }
 
     /**
@@ -264,6 +268,18 @@ class amplifier {
         $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
         $contextmodule = \context_module::instance($cm->id);
         require_capability('mod/amplifier:view', $contextmodule);
+        if ($this->learninggoalwidgetid == null) {
+            // LGW Instance does not exist.
+            $context['data_missing'] = 1;
+            $strings = [
+                'amplifier_welcome_headline' => 'template:setup:headline',
+                'amplifier_lgw_missing' => 'template:setup:lgw_missing',
+            ];
+            $this->add_strings($strings, $context);
+            return $context;
+        }
+        $context['data_missing'] = 0;
+
         $isteacher = !has_capability('mod/amplifier:setupgoals', $contextmodule);
         $context['is_teacher'] = $isteacher;
 

@@ -26,6 +26,9 @@
     * [data-instance-id="1"] a course module instance identifier
 
     Context variables required for this template:
+    * data_missing
+    * amplifier_welcome_headline
+    * amplifier_lgw_missing
     * is_teacher
     * teacher_headline
     * teacher_text
@@ -35,6 +38,9 @@
 
     Example context (json):
     {
+        "data_missing": "false",
+        "amplifier_welcome_headline": "Welcome to the Training Amplifier",
+        "amplifier_lgw_missing": "Sorry, the LGW could not be found.",
         "is_teacher": "false",
         "teacher_headline": "Welcome to the Training Amplifier",
         "teacher_text": "Please change your role to student to try out the Training Amplifier.",
@@ -45,20 +51,29 @@
 }}
 <div id="amplifier-widget-{{{instanceId}}}"
     data-instance-id="{{{instanceId}}}" class="mod_amplifier">
-    {{#is_teacher}}
-      <h3 class="fs-subtitle">{{{teacher_headline}}}</h3>
+    {{#data_missing}}
+      <h3 class="fs-subtitle">{{{amplifier_welcome_headline}}}</h3>
 
       <div class="form-group text-left">
-        <label class="col-form-label d-inline ">{{{teacher_text}}}</label>
+        <label class="col-form-label d-inline ">{{{amplifier_lgw_missing}}}</label>
       </div>
-    {{/is_teacher}}
+    {{/data_missing}}
+    {{^data_missing}}
+      {{#is_teacher}}
+        <h3 class="fs-subtitle">{{{teacher_headline}}}</h3>
 
-    {{^is_teacher}}
-    {{> mod_amplifier/widget/amplifier-setup }}
+        <div class="form-group text-left">
+          <label class="col-form-label d-inline ">{{{teacher_text}}}</label>
+        </div>
+      {{/is_teacher}}
 
-    <!-- List of goals with buttons to set reminder or reflect -->
-    {{{usergoals}}}
-    {{/is_teacher}}
+      {{^is_teacher}}
+        {{> mod_amplifier/widget/amplifier-setup }}
+
+        <!-- List of goals with buttons to set reminder or reflect -->
+        {{{usergoals}}}
+      {{/is_teacher}}
+    {{/data_missing}}
 </div>
 
 {{#js}}

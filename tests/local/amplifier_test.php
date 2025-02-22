@@ -61,6 +61,35 @@ final class amplifier_test extends \advanced_testcase {
     }
 
     /**
+     * Render the widget with invalid lgw instance
+     * @return void
+     *
+     * @covers \mod_amplifier\local\amplifier::render
+     * @covers \mod_amplifier\local\amplifier::add_strings
+     */
+    public function test_render_invalid_lgw(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $DB->update_record('amplifier', [
+          'id' => $setup->instance->id,
+          'learninggoalwidgetid' => $setup->lgwinstance->id - 200,
+        ]);
+
+        $amp = new amplifier($setup->instance->id);
+        $context['instanceId'] = $setup->instance->id;
+        $widget = $amp->render($context);
+        $this->assertSame(1, $widget['data_missing']);
+        $this->assertStringContainsString(
+          get_string('template:setup:headline', 'mod_amplifier'),
+          $widget['amplifier_welcome_headline']
+        );
+        $this->assertStringContainsString(
+          get_string('template:setup:lgw_missing', 'mod_amplifier'),
+          $widget['amplifier_lgw_missing']
+        );
+    }
+
+    /**
      * Render the widget for a teacher
      * @return void
      *
@@ -80,6 +109,9 @@ final class amplifier_test extends \advanced_testcase {
           get_string('template:setup:teacher', 'mod_amplifier'),
           $widget['teacher_text']
         );
+        // Does not contain lgw missing errors.
+        $this->assertSame(0, $widget['data_missing']);
+        $this->assertTrue(!isset($widget['amplifier_lgw_missing']));
     }
 
     /**
@@ -112,6 +144,9 @@ final class amplifier_test extends \advanced_testcase {
         $widget = $amp->render($context);
         // Does not contain teacher string.
         $this->assertTrue(!isset($widget['teacher_text']));
+        // Does not contain lgw missing errors.
+        $this->assertSame(0, $widget['data_missing']);
+        $this->assertTrue(!isset($widget['amplifier_lgw_missing']));
 
         // Student strings.
         $this->assertTrue(isset($widget['amplifier_welcome_headline']));
@@ -168,6 +203,9 @@ final class amplifier_test extends \advanced_testcase {
         $this->assertTrue(!isset($widget['amplifier_welcome_headline']));
         $this->assertTrue(!isset($widget['amplifier_welcome_text_1']));
         $this->assertTrue(!isset($widget['amplifier_welcome_text_2']));
+        // Does not contain lgw missing errors.
+        $this->assertSame(0, $widget['data_missing']);
+        $this->assertTrue(!isset($widget['amplifier_lgw_missing']));
 
         // Contains student strings.
         $contained = [
