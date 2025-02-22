@@ -150,7 +150,7 @@ class amplifier {
         }
         $context['monthOptions'] = [];
         for ($i = 1; $i <= 12; $i++) {
-            $monthstrname = "template:reminder:month:" . $i;
+            $monthstrname = "template:reminder:month:" . sprintf('%02d', $i);
             $context['monthOptions'][] = [
                 "value" => $i,
                 "label" => get_string($monthstrname, 'mod_amplifier'),

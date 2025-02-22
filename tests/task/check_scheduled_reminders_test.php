@@ -48,7 +48,7 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
      *
      * @covers \mod_amplifier\task\check_scheduled_reminders::get_name
      */
-    public function test_get_name() {
+    public function test_get_name(): void {
         $task = new check_scheduled_reminders();
         $this->assertEquals($task->get_name(), get_string('task:reminder', 'mod_amplifier'));
     }
@@ -58,9 +58,10 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
      *
      * @covers \mod_amplifier\task\check_scheduled_reminders::execute
      * @covers \mod_amplifier\task\check_scheduled_reminders::is_correct_time
+     * @covers \mod_amplifier\task\check_scheduled_reminders::is_lastnotificationdate_recent
      * @covers \mod_amplifier\task\check_scheduled_reminders::send_notification
      */
-    public function test_execute() {
+    public function test_execute(): void {
         global $DB, $CFG;
         $setup = $this->setup_widget(true);
 

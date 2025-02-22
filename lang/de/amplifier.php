@@ -37,9 +37,6 @@ $string['exception:setup_done'] = 'Sie haben den Training Amplifier Setup schon 
 
 $string['guestaccess'] = 'Dafür müssen sie angemeldet sein';
 
-$string['messageprovider:reflection_reminder'] = 'Erinnerung über ein Lernziel zu reflektieren';
-
-$string['message:reminder:subject'] = 'Training Amplifier - Lernziel Reflexion';
 $string['message:reminder:html'] = '
 <h3>Training Amplifier - Kurs {$a->coursetitle}</h3>
 <p>
@@ -54,6 +51,7 @@ Um die Reflexion zu beginnen, klicken Sie beim Lernziel <b>{$a->topicname} - {$a
 <p>
 Viel Erfolg!
 </p>';
+$string['message:reminder:subject'] = 'Training Amplifier - Lernziel Reflexion';
 $string['message:reminder:text'] = '
 Training Amplifier - Kurs {$a->coursetitle}
 
@@ -65,6 +63,8 @@ Mit diesem Link gelangen Sie zur Kursübersichtsseite:
 {$a->url}
 
 Viel Erfolg!';
+
+$string['messageprovider:reflection_reminder'] = 'Erinnerung über ein Lernziel zu reflektieren';
 
 $string['modform:selectlearninggoalwidget'] = 'Lernziele Widget';
 
@@ -78,6 +78,11 @@ $string['pluginname'] = 'Training Amplifier Widget';
 
 $string['privacy:metadata'] = '';
 
+$string['privacy:metadata:amplifier_goals'] = 'Informationen über die ausgewählten Lernziele eines Nutzers.';
+$string['privacy:metadata:amplifier_goals:amplifierid'] = 'Die ID einer Instanz des Training Amplifier.';
+$string['privacy:metadata:amplifier_goals:lgwgoalid'] = 'Die ID des Ziels, das der Nutzer für Erinnerungen und Reflexionen ausgewählt hat.';
+$string['privacy:metadata:amplifier_goals:userid'] = 'Die ID des Nutzers.';
+
 $string['privacy:metadata:amplifier_reflections'] = 'Information über eine einzelne Reflexion eines Nutzers zu einem spezifischen Lernziel.';
 $string['privacy:metadata:amplifier_reflections:amplifiergoalid'] = 'Die ID eines Eintrags in amplifier_goals.';
 $string['privacy:metadata:amplifier_reflections:response'] = 'Die textuelle Darstellung der Reflexion des Nutzers.';
@@ -85,17 +90,11 @@ $string['privacy:metadata:amplifier_reflections:timecreated'] = 'Der Zeitstempel
 
 $string['privacy:metadata:amplifier_reminders'] = 'Informationen über eine Erinnerungseinstellung eines Nutzers für ein spezifisches Lernziel.';
 $string['privacy:metadata:amplifier_reminders:amplifiergoalid'] = 'Die ID eines Eintrags in amplifier_goals.';
-$string['privacy:metadata:amplifier_reminders:startdate'] = 'Das Datum, an dem die Erinnerungen beginnen sollen.';
 $string['privacy:metadata:amplifier_reminders:enddate'] = 'Das Datum, an dem die Erinnerungen enden sollen.';
+$string['privacy:metadata:amplifier_reminders:lastnotificationdate'] = 'Das Datum, an dem die letzte Erinnerung gesendet wurde.';
 $string['privacy:metadata:amplifier_reminders:reminderhour'] = 'Die Stunde, zu der die Erinnerung gesendet werden soll.';
 $string['privacy:metadata:amplifier_reminders:reminderminute'] = 'Die Minute, zu der die Erinnerung gesendet werden soll.';
-$string['privacy:metadata:amplifier_reminders:lastnotificationdate'] = 'Das Datum, an dem die letzte Erinnerung gesendet wurde.';
-
-$string['privacy:metadata:amplifier_goals'] = 'Informationen über die ausgewählten Lernziele eines Nutzers.';
-$string['privacy:metadata:amplifier_goals:amplifierid'] = 'Die ID einer Instanz des Training Amplifier.';
-$string['privacy:metadata:amplifier_goals:userid'] = 'Die ID des Nutzers.';
-$string['privacy:metadata:amplifier_goals:lgwgoalid'] = 'Die ID des Ziels, das der Nutzer für Erinnerungen und Reflexionen ausgewählt hat.';
-
+$string['privacy:metadata:amplifier_reminders:startdate'] = 'Das Datum, an dem die Erinnerungen beginnen sollen.';
 
 $string['search:activity'] = 'amplifier';
 
@@ -105,25 +104,25 @@ $string['template:general:save'] = 'Speichern';
 $string['template:general:submit'] = 'Übernehmen';
 
 $string['template:reflection:headline'] = "Reflexion";
-$string["template:reflection:text_1"] = "Bitte reflektieren Sie über das folgende Lernziel.";
 $string['template:reflection:placeholder'] = 'Meine Gedanken...';
+$string["template:reflection:text_1"] = "Bitte reflektieren Sie über das folgende Lernziel.";
 
 $string["template:reminder:date:end"] = "Enddatum";
 $string["template:reminder:date:start"] = "Startdatum";
 $string["template:reminder:frequency:daily"] = "Täglich";
-$string["template:reminder:frequency:weekly"] = "Wöchentlich";
 $string["template:reminder:frequency:monthly"] = "Monatlich";
+$string["template:reminder:frequency:weekly"] = "Wöchentlich";
 $string["template:reminder:headline"] = "Erinnerungseinstellungen";
 $string["template:reminder:label:time"] = "Erinnnerungszeit";
-$string["template:reminder:month:1"] = "Jänner";
-$string["template:reminder:month:2"] = "Februar";
-$string["template:reminder:month:3"] = "März";
-$string["template:reminder:month:4"] = "April";
-$string["template:reminder:month:5"] = "Mai";
-$string["template:reminder:month:6"] = "Juni";
-$string["template:reminder:month:7"] = "Juli";
-$string["template:reminder:month:8"] = "August";
-$string["template:reminder:month:9"] = "September";
+$string["template:reminder:month:01"] = "Jänner";
+$string["template:reminder:month:02"] = "Februar";
+$string["template:reminder:month:03"] = "März";
+$string["template:reminder:month:04"] = "April";
+$string["template:reminder:month:05"] = "Mai";
+$string["template:reminder:month:06"] = "Juni";
+$string["template:reminder:month:07"] = "Juli";
+$string["template:reminder:month:08"] = "August";
+$string["template:reminder:month:09"] = "September";
 $string["template:reminder:month:10"] = "Oktober";
 $string["template:reminder:month:11"] = "November";
 $string["template:reminder:month:12"] = "Dezember";

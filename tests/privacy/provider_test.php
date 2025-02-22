@@ -39,7 +39,7 @@ use core_external\external_api;
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider_test extends provider_testcase {
+final class provider_test extends provider_testcase {
     use \mod_amplifier\utils;
     /**
      * Test for provider::get_metadata().
@@ -47,7 +47,7 @@ class provider_test extends provider_testcase {
      *
      * @covers \mod_amplifier\privacy\provider::get_metadata
      */
-    public function test_get_metadata() {
+    public function test_get_metadata(): void {
         $collection = new \core_privacy\local\metadata\collection('amplifier');
         $newcollection = provider::get_metadata($collection);
         $itemcollection = $newcollection->get_collection();
@@ -63,7 +63,7 @@ class provider_test extends provider_testcase {
      *
      * @covers \mod_amplifier\privacy\provider::get_contexts_for_userid
      */
-    public function test_get_contexts_for_userid() {
+    public function test_get_contexts_for_userid(): void {
         $setup = $this->setup_widget(true);
 
         $contextlist = provider::get_contexts_for_userid($setup->user->id);
@@ -93,7 +93,7 @@ class provider_test extends provider_testcase {
      *
      * @covers \mod_amplifier\privacy\provider::get_users_in_context
      */
-    public function test_get_users_in_context() {
+    public function test_get_users_in_context(): void {
         $setup = $this->setup_widget(true);
 
         $coursemodule = get_coursemodule_from_instance('amplifier', $setup->instance->id);
@@ -133,7 +133,7 @@ class provider_test extends provider_testcase {
      *
      * @covers \mod_amplifier\privacy\provider::export_user_data
      */
-    public function test_export_user_data_student() {
+    public function test_export_user_data_student(): void {
         $setup = $this->setup_widget(true);
         $student = $this->create_user('student', $setup->course->id, true);
 
@@ -200,7 +200,7 @@ class provider_test extends provider_testcase {
      *
      * @covers \mod_amplifier\privacy\provider::delete_data_for_all_users_in_context
      */
-    public function test_delete_data_for_all_users_in_context() {
+    public function test_delete_data_for_all_users_in_context(): void {
         global $DB;
         $setup = $this->setup_widget(true);
         $this->create_user('student', $setup->course->id, true);
@@ -244,7 +244,7 @@ class provider_test extends provider_testcase {
      *
      * @covers \mod_amplifier\privacy\provider::delete_data_for_user
      */
-    public function test_delete_data_for_user() {
+    public function test_delete_data_for_user(): void {
         global $DB;
         $setup = $this->setup_widget(true);
 
@@ -306,7 +306,7 @@ class provider_test extends provider_testcase {
      * @covers \mod_amplifier\privacy\provider::delete_data_for_users
      * @covers \mod_amplifier\privacy\provider::delete_data_for_user_int
      */
-    public function test_delete_data_for_users() {
+    public function test_delete_data_for_users(): void {
         global $DB;
         $setup = $this->setup_widget(true);
 
@@ -333,9 +333,9 @@ class provider_test extends provider_testcase {
 
         // Create data for student3.
         $student3 = $this->create_user('student', $setup->course->id, true);
-        $submitdata = $this->submit_setup($setup);
-        $reminderdata = $this->save_reminder($setup->instance->id);
-        $reflectiondata = $this->submit_reflections($setup->instance->id);
+        $this->submit_setup($setup);
+        $this->save_reminder($setup->instance->id);
+        $this->submit_reflections($setup->instance->id);
 
         // Create student4 but without data.
         $student4 = $this->create_user('student', $setup->course->id, true);
