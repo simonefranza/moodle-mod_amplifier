@@ -301,7 +301,7 @@ function xmldb_amplifier_upgrade2($dbman) {
     $stmt = "UPDATE {amplifier} amp
                 SET amp.learninggoalwidgetid = (
      SELECT COALESCE((
-                    lgw.id
+             SELECT lgw.id
                FROM {course_modules} cm
                JOIN {modules} m ON cm.module = m.id
                JOIN {learninggoalwidget} lgw ON cm.instance = lgw.id
