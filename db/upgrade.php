@@ -300,13 +300,15 @@ function xmldb_amplifier_upgrade2($dbman) {
     // Update learninggoalwidgetid for existing rows.
     $stmt = "UPDATE {amplifier} amp
                 SET amp.learninggoalwidgetid = (
-             SELECT lgw.id
+     SELECT COALESCE((
+                    lgw.id
                FROM {course_modules} cm
                JOIN {modules} m ON cm.module = m.id
                JOIN {learninggoalwidget} lgw ON cm.instance = lgw.id
               WHERE m.name = 'learninggoalwidget'
                 AND cm.course = amp.course
               LIMIT 1
+                    ), -1)
                     )
               WHERE amp.learninggoalwidgetid = -1";
     $DB->execute($stmt);
@@ -409,7 +411,7 @@ function xmldb_amplifier_upgrade2($dbman) {
                JOIN {amplifier_goals} goals
                  ON rem.goal = goals.goal
                 AND rem.amp_user = goals.amp_user
-                SET rem.goal = goals.id";
+                SET rem.goal = COALESCE(goals.id, rem.goal)";
     $DB->execute($stmt);
 
     // Modify amplifier_reminder.
@@ -441,7 +443,7 @@ function xmldb_amplifier_upgrade2($dbman) {
                JOIN {amplifier_goals} goals
                  ON ref.goal = goals.goal
                 AND ref.amp_user = goals.amp_user
-                SET ref.goal = goals.id";
+                SET ref.goal = COALESCE(goals.id, ref.goal)";
     $DB->execute($stmt);
     // Delete field course.
     xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'course');
