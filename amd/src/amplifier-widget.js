@@ -27,30 +27,24 @@
 import Controller from "mod_amplifier/controller";
 
 /**
- * The course module instance identifier
- */
-var instanceid;
-
-/**
  * Intialise the content widget
  *
- * @param {object} instanceId The course module instance identifier
+ * @param {number} instanceId The course module instance identifier
  */
 var init = function(instanceId) {
   const amplifier = document.querySelector(`#amplifier-widget-${instanceId}`);
-  instanceid = instanceId;
 
   amplifier.querySelectorAll(".topic-card").forEach((el) => {
     const reminderBtn = el.querySelector(".reminder-dropdown-toggle");
     const reflectionBtn = el.querySelector(".reflection-dropdown-toggle");
-    reminderBtn.addEventListener("click", () => toggleView(reminderBtn, reflectionBtn));
-    reflectionBtn.addEventListener("click", () => toggleView(reflectionBtn, reminderBtn));
+    reminderBtn.addEventListener("click", () => toggleView(el, reminderBtn, reflectionBtn));
+    reflectionBtn.addEventListener("click", () => toggleView(el, reflectionBtn, reminderBtn));
 
     // Monitor input to enable/disable submit button
     const reflectionSubmitBtn = el.querySelector(".submit.action-button.reflection-submit");
     el.querySelector('textarea').addEventListener('input', (e) => checkInput(e, reflectionSubmitBtn));
     const reflectionBlock = el.querySelector('.user-goal-reflection');
-    reflectionSubmitBtn.addEventListener('click', (e) => submitReflection(e, reflectionBlock));
+    reflectionSubmitBtn.addEventListener('click', (e) => submitReflection(instanceId, e, reflectionBlock));
 
     // Setup reminder view
     const reminderBlock = el.querySelector('.user-goal-reminder');
@@ -59,18 +53,19 @@ var init = function(instanceId) {
     addDateChecker(reminderBlock);
     // Handle submit button
     el.querySelector(".user-goal-reminder-save")
-      .addEventListener("click", (e) => submitReminder(e, reminderBlock));
+      .addEventListener("click", (e) => submitReminder(instanceId, e, reminderBlock));
   });
 };
 
 /**
  * Toggles one of the two views (reflection or reminder) and closes the other
+ * @param {HTMLElement} card LearningGoal Card
  * @param {HTMLElement} toToggle Element to toggle
  * @param {HTMLElement} toClose Element to close
  */
-const toggleView = (toToggle, toClose) => {
-  document.querySelector('#' + toToggle.dataset.target).classList.toggle('d-none');
-  document.querySelector('#' + toClose.dataset.target).classList.add('d-none');
+const toggleView = (card, toToggle, toClose) => {
+  card.querySelector('#' + toToggle.dataset.target).classList.toggle('d-none');
+  card.querySelector('#' + toClose.dataset.target).classList.add('d-none');
 };
 
 /**
@@ -86,10 +81,11 @@ const checkInput = (e, btn) => {
 
 /**
  * Reminder submit button handler
+ * @param {number} instanceid ID of the instance of the Training Amplifier
  * @param {Event} e Click event
  * @param {HTMLElement} el Root reminder element
  */
-const submitReminder = (e, el) => {
+const submitReminder = (instanceid, e, el) => {
   const amplifierGoalId = e.target.dataset.goalid;
 
   el.parentElement.classList.add('d-none');
@@ -133,10 +129,11 @@ const submitReminder = (e, el) => {
 
 /**
  * Reflection submit button handler
+ * @param {number} instanceid ID of the instance of the Training Amplifier
  * @param {Event} e Click event
  * @param {HTMLElement} el Root reflection element
  */
-const submitReflection = (e, el) => {
+const submitReflection = (instanceid, e, el) => {
   const textarea = el.querySelector('textarea');
   const reflection = textarea.value.trim();
   if (reflection === '') {

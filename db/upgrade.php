@@ -131,6 +131,8 @@ function xmldb_amplifier_add_index($dbman, $tablename, $indexname, $unique, $fie
 
     if (!$dbman->index_exists($table, $index)) {
         $dbman->add_index($table, $index);
+    } else {
+        throw new Exception("Index '" . $indexname . "' exists already in '" . $tablename);
     }
 }
 
@@ -153,6 +155,8 @@ function xmldb_amplifier_add_field($dbman, $tablename, $name, $type, $length, $i
 
     if (!$dbman->field_exists($table, $field)) {
         $dbman->add_field($table, $field);
+    } else {
+        throw new Exception("Field '" . $name . "' does already exist in '" . $tablename);
     }
 }
 
@@ -183,6 +187,8 @@ function xmldb_amplifier_drop_table($dbman, $tablename) {
     // Conditionally launch drop table for amplifier_setup.
     if ($dbman->table_exists($table)) {
         $dbman->drop_table($table);
+    } else {
+        throw new Exception("Cannot drop table '" . $tablename . "'. It does not exist");
     }
 }
 
@@ -199,6 +205,8 @@ function xmldb_amplifier_rename_field($dbman, $tablename, $field, $newname) {
     $table = new xmldb_table($tablename);
     if ($dbman->field_exists($table, $field)) {
         $dbman->rename_field($table, $field, $newname);
+    } else {
+        throw new Exception("Could not rename field to '" . $newname . "' in '" . $tablename . "'. Old field does not exist.");
     }
 }
 
@@ -216,6 +224,8 @@ function xmldb_amplifier_delete_field($dbman, $tablename, $fieldname) {
 
     if ($dbman->field_exists($table, $field)) {
         $dbman->drop_field($table, $field);
+    } else {
+        throw new Exception("Field '" . $fieldname . "' does not exist in '" . $tablename . "'");
     }
 }
 
@@ -230,30 +240,50 @@ function xmldb_amplifier_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // Loads ddl manager and xmldb classes.
+    $transaction = null;
+    try {
+        if ($oldversion < 2025021400) {
+            $transaction = $DB->start_delegated_transaction();
+            xmldb_amplifier_upgrade1($dbman);
+            $transaction->allow_commit();
+            $transaction = null;
 
-    if ($oldversion < 2025021400) {
-        xmldb_amplifier_upgrade1($dbman);
+            // Amplifier savepoint reached.
+            upgrade_mod_savepoint(true, 2025021400, 'amplifier');
+        }
+        if ($oldversion < 2025021900) {
+            $transaction = $DB->start_delegated_transaction();
+            xmldb_amplifier_upgrade2($dbman);
+            $transaction->allow_commit();
+            $transaction = null;
 
-        // Amplifier savepoint reached.
-        upgrade_mod_savepoint(true, 2025021400, 'amplifier');
-    }
-    if ($oldversion < 2025021900) {
-        xmldb_amplifier_upgrade2($dbman);
+            // Amplifier savepoint reached.
+            upgrade_mod_savepoint(true, 2025021900, 'amplifier');
+        }
+        if ($oldversion < 2025022005) {
+            $transaction = $DB->start_delegated_transaction();
+            xmldb_amplifier_upgrade3($dbman);
+            $transaction->allow_commit();
+            $transaction = null;
 
-        // Amplifier savepoint reached.
-        upgrade_mod_savepoint(true, 2025021900, 'amplifier');
-    }
-    if ($oldversion < 2025022005) {
-        xmldb_amplifier_upgrade3($dbman);
+            // Amplifier savepoint reached.
+            upgrade_mod_savepoint(true, 2025022005, 'amplifier');
+        }
+        if ($oldversion < 2025022200) {
+            $transaction = $DB->start_delegated_transaction();
+            xmldb_amplifier_upgrade4($dbman);
+            $transaction->allow_commit();
+            $transaction = null;
 
-        // Amplifier savepoint reached.
-        upgrade_mod_savepoint(true, 2025022005, 'amplifier');
-    }
-    if ($oldversion < 2025022200) {
-        xmldb_amplifier_upgrade4($dbman);
-
-        // Amplifier savepoint reached.
-        upgrade_mod_savepoint(true, 2025022200, 'amplifier');
+            // Amplifier savepoint reached.
+            upgrade_mod_savepoint(true, 2025022200, 'amplifier');
+        }
+    } catch (Exception $e) {
+        if ($transaction) {
+            // Roll back the transaction in case of an error.
+            $transaction->rollback($e);
+        }
+        throw $e;
     }
     return true;
 }
@@ -277,8 +307,6 @@ function xmldb_amplifier_upgrade4($dbman) {
  * @return void
  */
 function xmldb_amplifier_upgrade3($dbman) {
-    // Add index on amplifier.learninggoalwidgetid.
-    xmldb_amplifier_add_index($dbman, 'amplifier', 'learninggoalwidgetid', XMLDB_INDEX_NOTUNIQUE, ['learninggoalwidgetid']);
     // Add index on amplifier_reminders.startdate.
     xmldb_amplifier_add_index($dbman, 'amplifier_reminders', 'startdate', XMLDB_INDEX_NOTUNIQUE, ['startdate']);
     // Add index on amplifier_reminders.enddate.
@@ -333,7 +361,7 @@ function xmldb_amplifier_upgrade2($dbman) {
     // Delete key fk_course.
     xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reflection', 'fk_course', ['course'], 'course', ['id']);
     // Delete key fk_user.
-    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reflection', 'fk_user', ['amp_user'], 'user', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reflection', 'fk_user', ['user'], 'user', ['id']);
 
     // Modify amplifier_reminder table.
     // Delete all keys and indexes.
@@ -344,7 +372,7 @@ function xmldb_amplifier_upgrade2($dbman) {
     // Delete key fk_course.
     xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reminder', 'fk_course', ['course'], 'course', ['id']);
     // Delete key fk_user.
-    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reminder', 'fk_user', ['amp_user'], 'user', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_reminder', 'fk_user', ['user'], 'user', ['id']);
 
     // Modify amplifier_setup_goals table.
     // Delete all keys and indexes.
@@ -358,8 +386,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'coursemodule', false, ['coursemodule']);
     // Delete setup index.
     xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'setup', false, ['setup']);
-    // Delete amp_user index.
-    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'amp_user', false, ['amp_user']);
+    // Delete user index.
+    xmldb_amplifier_delete_index($dbman, 'amplifier_setup_goals', 'user', false, ['user']);
 
     // Delete key fk_topic.
     xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
@@ -370,7 +398,7 @@ function xmldb_amplifier_upgrade2($dbman) {
     // Delete key fk_setup.
     xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_setup', ['setup'], 'amplifier_setup', ['id']);
     // Delete key fk_user.
-    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_user', ['amp_user'], 'user', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_user', ['user'], 'user', ['id']);
 
     // Rename instance -> amplifierid.
     $field = new xmldb_field('instance', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', null);
@@ -378,8 +406,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     // Rename goal -> lgwgoalid (learninggoalwidget goal id).
     $field = new xmldb_field('goal', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
     xmldb_amplifier_rename_field($dbman, 'amplifier_setup_goals', $field, 'lgwgoalid');
-    // Rename amp_user -> userid.
-    $field = new xmldb_field('amp_user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
+    // Rename user -> userid.
+    $field = new xmldb_field('user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', null);
     xmldb_amplifier_rename_field($dbman, 'amplifier_setup_goals', $field, 'userid');
 
     // Delete field course.
@@ -409,8 +437,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     // But actually has a reference to learninggoalwidget_goals.id.
     $stmt = "UPDATE {amplifier_reminder} rem
                JOIN {amplifier_goals} goals
-                 ON rem.goal = goals.goal
-                AND rem.amp_user = goals.amp_user
+                 ON rem.goal = goals.lgwgoalid
+                AND rem.user = goals.userid
                 SET rem.goal = COALESCE(goals.id, rem.goal)";
     $DB->execute($stmt);
 
@@ -421,8 +449,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'coursemodule');
     // Delete field instance.
     xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'instance');
-    // Delete field amp_user.
-    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'amp_user');
+    // Delete field user.
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'user');
     // Delete field participantcode.
     xmldb_amplifier_delete_field($dbman, 'amplifier_reminder', 'participantcode');
 
@@ -441,8 +469,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     // But actually has a reference to learninggoalwidget_goals.id.
     $stmt = "UPDATE {amplifier_reflection} ref
                JOIN {amplifier_goals} goals
-                 ON ref.goal = goals.goal
-                AND ref.amp_user = goals.amp_user
+                 ON ref.goal = goals.lgwgoalid
+                AND ref.user = goals.userid
                 SET ref.goal = COALESCE(goals.id, ref.goal)";
     $DB->execute($stmt);
     // Delete field course.
@@ -451,8 +479,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'coursemodule');
     // Delete field instance.
     xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'instance');
-    // Delete field amp_user.
-    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'amp_user');
+    // Delete field user.
+    xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'user');
     // Delete field participantcode.
     xmldb_amplifier_delete_field($dbman, 'amplifier_reflection', 'participantcode');
 

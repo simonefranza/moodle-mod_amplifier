@@ -24,51 +24,56 @@
 import Controller from 'mod_amplifier/controller';
 
 /**
- * course module instance
- */
-let instanceId;
-
-/**
- * The submit button
- */
-let submitButton;
-
-/**
- * Wheter the submission is valid
- */
-let submitEnabled = false;
-
-/**
- * All chekboxes in the widget
- */
-let checkboxes;
-
-/**
- * Number of checked checkboxes
- */
-let checkedCount = 0;
-
-/**
  * Initialising the setup of the amplifier widget
  *
- * @param {object} paramInstanceId The course module instance identifier
+ * @param {object} instanceId The course module instance identifier
  */
-const init = (paramInstanceId) => {
-  instanceId = paramInstanceId;
-
+const init = (instanceId) => {
   const rootElement = document.querySelector(`#amplifier-widget-${instanceId}`);
 
-  submitButton = rootElement.querySelector(".amplifier-setup .amplifier-submit-setup");
+  const submitButton = rootElement.querySelector(".amplifier-setup .amplifier-submit-setup");
   submitButton.addEventListener('click', handleSubmitButtonClick);
 
-  checkboxes = rootElement.querySelectorAll(".amplifier-setup .predefined-learning-goal-check");
-  checkboxes.forEach((el) => el.addEventListener('change', handleLearningGoalClick));
+  const checkboxes = rootElement.querySelectorAll(".amplifier-setup .predefined-learning-goal-check");
+  checkboxes.forEach((el) => el.addEventListener('change', parseCheckboxes));
 };
 
 /**
  * Amplifier setup submit button handler
+ * @param {Event} e Click event
  */
-const handleSubmitButtonClick = async() => {
+const handleSubmitButtonClick = async(e) => {
+  const {learningGoals, submitEnabled} = parseCheckboxes(e);
+
+  if (!submitEnabled) {
+    // Submit is disabled
+    return;
+  }
+
+  const rootElement = e.target.closest('.mod_amplifier');
+
+  // Submit the settings and trigger loading landing page of amplifier widget
+  try {
+    await Controller.submitSetup({
+      instanceid: rootElement.dataset.instanceId,
+      learninggoals: JSON.stringify(learningGoals)
+    });
+    location.reload();
+  } catch (e) {
+    throw new Error(e);
+  }
+};
+
+/**
+ * Parses the selected checkboxes and returns the learningGoals
+ * @param {Event} e Click event
+ * @returns {object} Object with selected learningGoals and whether submission is possible
+ */
+const parseCheckboxes = (e) => {
+  const rootElement = e.target.closest('.mod_amplifier');
+  const submitButton = rootElement.querySelector(".amplifier-setup .amplifier-submit-setup");
+  const checkboxes = rootElement.querySelectorAll(".amplifier-setup .predefined-learning-goal-check");
+
   let learningGoals = [];
   checkboxes.forEach((checkbox) => {
     if (!checkbox.checked) {
@@ -79,47 +84,28 @@ const handleSubmitButtonClick = async() => {
       goalid: parseInt(checkbox.dataset.goalid),
     });
   });
-  handleNewCount(learningGoals.length);
-  if (!submitEnabled) {
-    return;
-  }
-
-  // Submit the settings and trigger loading landing page of amplifier widget
-  try {
-    await Controller.submitSetup({
-      instanceid: instanceId,
-      learninggoals: JSON.stringify(learningGoals)
-    });
-    location.reload();
-  } catch (e) {
-    throw new Error(e);
-  }
-};
-
-/**
- * Learning goal check box selection handler
- * @param {*} e Changed event
- */
-const handleLearningGoalClick = (e) => {
-  handleNewCount(checkedCount + (e.target.checked ? 1 : -1));
+  const submitEnabled = handleNewCount(submitButton, learningGoals.length);
+  return {learningGoals, submitEnabled};
 };
 
 /**
  * Handle a new count of checked checkboxes
+ * @param {HTMLElement} submitButton Button to enable/disable
  * @param {Int} newCount New count
+ * @returns {Bool} submitEnabled Whether the submit button is enabled or not
  */
-const handleNewCount = (newCount) => {
-  checkedCount = newCount;
-  submitEnabled = checkedCount > 0 && checkedCount <= 5;
+const handleNewCount = (submitButton, newCount) => {
+  const submitEnabled = newCount > 0 && newCount <= 5;
+
   if (submitEnabled) {
     submitButton.removeAttribute('disabled');
   } else {
     submitButton.setAttribute('disabled', true);
   }
+
+  return submitEnabled;
 };
 
 export default {
   init: init
 };
-
-
