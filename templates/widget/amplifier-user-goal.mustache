@@ -134,7 +134,7 @@
 
                     {{! Data }}
                     <div class="d-flex flex-row flex-grow-1 ml-2 topic-data">
-                        <span class="text-wrap topic-title h3">{{{topictitle}}} - {{{goaltitle}}}</span>
+                        <span class="text-wrap topic-title h6">{{{topictitle}}} - {{{goaltitle}}}</span>
                     </div>
 
                     {{! Actions }}
@@ -153,14 +153,10 @@
         </div>
     </div>
 
-    <div id="user-goal-reminder-{{{amplifiergoalid}}}-{{{topicid}}}-{{{goalid}}}" class="d-none">
-
+    <div id="user-goal-reminder-{{{amplifiergoalid}}}-{{{topicid}}}-{{{goalid}}}" class="d-none" style="padding-inline: 2.5rem;">
         {{> mod_amplifier/widget/amplifier-user-goal-reminder }}
-
     </div>
-    <div id="user-goal-reflection-{{{amplifiergoalid}}}-{{{topicid}}}-{{{goalid}}}" class="d-none">
-
+    <div id="user-goal-reflection-{{{amplifiergoalid}}}-{{{topicid}}}-{{{goalid}}}" class="d-none" style="padding-inline: 2.5rem;">
         {{> mod_amplifier/widget/amplifier-user-goal-reflection }}
-
     </div>
 </div>

@@ -36,6 +36,9 @@ function amplifier_supports(string $feature) {
         // Enable MOODLE2 backup.
         case FEATURE_BACKUP_MOODLE2:
             return true;
+        // Disable links on course and course index.
+        case FEATURE_NO_VIEW_LINK:
+            return true;
         default:
             return null;
     }

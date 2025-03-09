@@ -268,6 +268,9 @@ class amplifier {
         $cm = get_coursemodule_from_instance('amplifier', $this->instanceid, 0, false, MUST_EXIST);
         $contextmodule = \context_module::instance($cm->id);
         require_capability('mod/amplifier:view', $contextmodule);
+        $instancename = $DB->get_field('amplifier', 'name', ['id' => $this->instanceid]);
+        $context['instancename'] = $instancename;
+
         if ($this->learninggoalwidgetid == null) {
             // LGW Instance does not exist.
             $context['data_missing'] = 1;

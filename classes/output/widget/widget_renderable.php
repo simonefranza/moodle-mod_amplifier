@@ -52,9 +52,9 @@ class widget_renderable implements renderable, templatable {
      * @return array Context variables for the template
      */
     public function export_for_template(renderer_base $output) {
-        unset($output);
         $amplifier = new amplifier($this->instanceid);
         $context = ['instanceId' => $this->instanceid];
+        $context['logothumbnail'] = $output->image_url('icon', 'amplifier');
 
         return $amplifier->render($context);
     }
