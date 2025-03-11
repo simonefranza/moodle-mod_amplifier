@@ -76,7 +76,7 @@ final class save_reminder_test extends externallib_advanced_testcase {
         // Submit reflection.
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
-        save_reminder::execute($now + 2000, $now, 0, 'Europe/Vienna', 0, 0, 0, $setup->instance->id);
+        save_reminder::execute($now + 2000, $now, 'Europe/Vienna', 0, 0, 0, 0, $setup->instance->id);
     }
 
     /**
@@ -213,6 +213,56 @@ final class save_reminder_test extends externallib_advanced_testcase {
         $now = time() * 1000;
         $this->expectException(\invalid_parameter_exception::class);
         save_reminder::execute($now, $now + 2000, 'NonExistingTimezone', 19, 25, 0, 0, $setup->instance->id);
+    }
+
+    /**
+     * Test save_reminder no LGW exception
+     * @return void
+     *
+     * @covers \mod_amplifier\external\save_reminder::execute
+     * @covers \mod_amplifier\external\save_reminder::execute_parameters
+     * @covers \mod_amplifier\local\amplifier::__construct
+     * @covers \mod_amplifier\local\amplifier::is_lgw_valid
+     */
+    public function test_save_reminder_no_lgw_exc(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit setup.
+        $this->submit_setup($setup);
+
+        $amplifiergoalids = $DB->get_fieldset_select(
+          'amplifier_goals',
+          'id',
+          'userid = :userid',
+          ['userid' => $student->id]
+        );
+
+        $testdata = (object)[
+            'startdate' => 0,
+            'enddate' => 200000,
+            'timezone' => 'Europe/Paris',
+            'reminderhour' => 10,
+            'reminderminute' => 10,
+            'frequency' => 0,
+            'amplifiergoalid' => $amplifiergoalids[0],
+        ];
+
+        // Delete LGW.
+        $this->mark_lgw_deleted($setup->lgwinstance->id);
+
+        $this->expectException(\moodle_exception::class);
+        save_reminder::execute(
+            $testdata->startdate,
+            $testdata->enddate,
+            $testdata->timezone,
+            $testdata->reminderhour,
+            $testdata->reminderminute,
+            $testdata->frequency,
+            $testdata->amplifiergoalid,
+            $setup->instance->id
+        );
     }
 
     /**

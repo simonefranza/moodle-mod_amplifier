@@ -31,6 +31,7 @@ $string['amplifiertext'] = 'Training Amplifier Widget Text';
 
 $string['exception:change_lgw'] = 'Das Lernziele Widget kann nicht geändert werden. Bitte löschen Sie die Training Amplifier Instanz und erstellen Sie eine neue.';
 $string['exception:instance_not_found'] = 'Die zu aktualisierende Instanz wurde nicht gefunden.';
+$string['exception:lgw_missing'] = 'Das Lernziele Widget wurde nicht gefunden.';
 $string['exception:requiredactivitymissing'] = 'Ein Lernziele Widget muss im Kurs vorhanden sein, bevor diese Aktivität hinzugefügt werden kann.';
 $string['exception:requiredactivitypluginmissing'] = 'Das Lernziele Widget ist nicht installiert.';
 $string['exception:setup_done'] = 'Sie haben den Training Amplifier Setup schon erledigt.';

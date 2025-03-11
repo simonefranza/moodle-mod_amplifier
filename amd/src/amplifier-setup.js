@@ -22,6 +22,7 @@
  */
 
 import Controller from 'mod_amplifier/controller';
+import Notification from "core/notification";
 
 /**
  * Initialising the setup of the amplifier widget
@@ -60,7 +61,8 @@ const handleSubmitButtonClick = async(e) => {
     });
     location.reload();
   } catch (e) {
-    throw new Error(e);
+    Notification.exception(e)
+    .then(() => location.reload());
   }
 };
 

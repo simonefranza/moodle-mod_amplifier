@@ -30,6 +30,7 @@ $string['amplifiertext'] = 'Training Amplifier Widget Text';
 
 $string['exception:change_lgw'] = 'The target Learning Goal Widget cannot be changed. Please delete the Training Amplifier instance and create a new one.';
 $string['exception:instance_not_found'] = 'The instance to update was not found.';
+$string['exception:lgw_missing'] = 'The Learning Goal Widget cannot be found.';
 $string['exception:requiredactivitymissing'] = 'A Learning Goal Widget must be present in the course before adding this activity.';
 $string['exception:requiredactivitypluginmissing'] = 'The Learning Goal Widget is not installed.';
 $string['exception:setup_done'] = 'You already setup the Training Amplifier.';

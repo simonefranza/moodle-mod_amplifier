@@ -44,6 +44,7 @@ final class amplifier_test extends \advanced_testcase {
      * @return void
      *
      * @covers \mod_amplifier\local\amplifier::__construct
+     * @covers \mod_amplifier\local\amplifier::is_lgw_valid
      */
     public function test_creation(): void {
         global $DB;
@@ -58,14 +59,17 @@ final class amplifier_test extends \advanced_testcase {
         $this->assertSame($record->learninggoalwidgetid, $setup->lgwinstance->id);
         $amp = new amplifier($setup->instance->id);
         $this->assertNotNull($amp);
+        $this->assertTrue($amp->is_lgw_valid());
     }
 
     /**
      * Render the widget with invalid lgw instance
      * @return void
      *
+     * @covers \mod_amplifier\local\amplifier::__construct
      * @covers \mod_amplifier\local\amplifier::render
      * @covers \mod_amplifier\local\amplifier::add_strings
+     * @covers \mod_amplifier\local\amplifier::is_lgw_valid
      */
     public function test_render_invalid_lgw(): void {
         global $DB;
@@ -76,6 +80,7 @@ final class amplifier_test extends \advanced_testcase {
         ]);
 
         $amp = new amplifier($setup->instance->id);
+        $this->assertFalse($amp->is_lgw_valid());
         $context['instanceId'] = $setup->instance->id;
         $widget = $amp->render($context);
         $this->assertSame(1, $widget['data_missing']);

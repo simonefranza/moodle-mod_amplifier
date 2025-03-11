@@ -76,7 +76,14 @@ class mod_amplifier_mod_form extends moodleform_mod {
             $mform->addElement('hidden', 'learninggoalwidgetid', $lgwinstance->id);
             $mform->setType('learninggoalwidgetid', PARAM_INT);
         } else {
-            $lgwinstances = $DB->get_records('learninggoalwidget', ['course' => $courseid], '', 'id, name');
+            $stmt = "SELECT lgw.id, lgw.name
+                       FROM {course_modules} cm
+                       JOIN {modules} m ON cm.module = m.id
+                       JOIN {learninggoalwidget} lgw ON cm.instance = lgw.id
+                      WHERE m.name = \"learninggoalwidget\"
+                        AND cm.course = :courseid
+                        AND cm.deletioninprogress = 0";
+            $lgwinstances = $DB->get_records_sql($stmt, ['courseid' => $courseid]);
 
             // Prepare options for the dropdown.
             $options = [];

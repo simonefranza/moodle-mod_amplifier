@@ -309,4 +309,25 @@ trait utils {
         $res = external_api::clean_returnvalue(submit_reflections::execute_returns(), $res);
         return $data;
     }
+
+    /**
+     * Submits a reflection for the active user and returns the set data
+     * @param int $instanceid ID of the lgw instance
+     * @return stdClass
+     */
+    protected function mark_lgw_deleted($instanceid) {
+        global $DB;
+        $this->assertTrue($DB->record_exists('learninggoalwidget', ['id' => $instanceid]));
+        $stmt = "SELECT cm.id
+                   FROM {course_modules} cm
+                   JOIN {modules} m ON cm.module = m.id
+                  WHERE m.name = 'learninggoalwidget'
+                    AND cm.instance = :instanceid";
+        $cmid = $DB->get_field_sql($stmt, ['instanceid' => $instanceid]);
+        $update = (object)[
+          'id' => $cmid,
+          'deletioninprogress' => 1
+        ];
+        $DB->update_record('course_modules', $update);
+    }
 }

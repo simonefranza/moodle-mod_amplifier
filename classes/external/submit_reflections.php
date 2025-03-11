@@ -29,6 +29,7 @@ use core_external\external_function_parameters;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
 use core_external\external_value;
+use mod_amplifier\local\amplifier;
 
 /**
  * Class for the external service submit_reflections.
@@ -92,6 +93,13 @@ class submit_reflections extends \core_external\external_api {
         $context = \context_module::instance($cm->id);
         self::validate_context($context);
         require_capability('mod/amplifier:setupgoals', $context);
+
+        // Check if LGW is valid.
+        $amp = new amplifier($instanceid);
+        if (!$amp->is_lgw_valid()) {
+          throw new \moodle_exception('exception:lgw_missing', 'mod_amplifier',
+              new \moodle_url('/course/view.php', ['id' => $cm->course]));
+        }
 
         // Ignore empty reflections.
         if ($reflection === '') {

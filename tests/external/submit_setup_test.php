@@ -134,4 +134,24 @@ final class submit_setup_test extends externallib_advanced_testcase {
         $data->instance = $newamp;
         $this->submit_setup($data);
     }
+    /**
+     * Test submit_setup by triggering the exception once LGW is removed.
+     * @return void
+     *
+     * @covers \mod_amplifier\external\submit_setup::execute
+     * @covers \mod_amplifier\external\submit_setup::execute_parameters
+     * @covers \mod_amplifier\local\amplifier::__construct
+     * @covers \mod_amplifier\local\amplifier::is_lgw_valid
+     */
+    public function test_submit_setup_no_lgw_exc(): void {
+        $setup = $this->setup_widget(true);
+        $this->create_user('student', $setup->course->id, true);
+
+        // Delete LGW.
+        $this->mark_lgw_deleted($setup->lgwinstance->id);
+
+        // Submit setup.
+        $this->expectException(\moodle_exception::class);
+        $this->submit_setup($setup);
+    }
 }

@@ -79,6 +79,47 @@ final class submit_reflections_test extends externallib_advanced_testcase {
     }
 
     /**
+     * Test submit_reflections no LGW exception
+     * @return void
+     *
+     * @covers \mod_amplifier\external\submit_reflections::execute
+     * @covers \mod_amplifier\external\submit_reflections::execute_parameters
+     * @covers \mod_amplifier\local\amplifier::__construct
+     * @covers \mod_amplifier\local\amplifier::is_lgw_valid
+     */
+    public function test_submit_reflections_no_lgw_exc(): void {
+        global $DB;
+        $setup = $this->setup_widget(true);
+        $student = $this->create_user('student', $setup->course->id, true);
+
+        // Submit setup.
+        $taxonomy = $this->get_taxonomy($setup->lgwinstance->id);
+        $firsttopic = $taxonomy->children[0];
+        $goals = [
+            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[0]->goalid],
+            (object)['topicid' => $firsttopic->topicid, 'goalid' => $firsttopic->children[1]->goalid],
+        ];
+        $submission = submit_setup::execute($setup->instance->id, json_encode($goals));
+        $submission = external_api::clean_returnvalue(submit_setup::execute_returns(), $submission);
+        $this->assertSame("OK", $submission);
+
+        $amplifiergoalids = $DB->get_fieldset_select(
+          'amplifier_goals',
+          'id',
+          'userid = :userid',
+          ['userid' => $student->id]
+        );
+
+        $this->assertSame(2, count($amplifiergoalids));
+
+        // Delete LGW.
+        $this->mark_lgw_deleted($setup->lgwinstance->id);
+
+        $this->expectException(\moodle_exception::class);
+        submit_reflections::execute('', $amplifiergoalids[0], $setup->instance->id);
+    }
+
+    /**
      * Test submit_reflections
      * @return void
      *

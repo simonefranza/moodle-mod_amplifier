@@ -25,6 +25,7 @@
 /* eslint no-bitwise: 0 */
 
 import Controller from "mod_amplifier/controller";
+import Notification from "core/notification";
 
 /**
  * Intialise the content widget
@@ -85,7 +86,7 @@ const checkInput = (e, btn) => {
  * @param {Event} e Click event
  * @param {HTMLElement} el Root reminder element
  */
-const submitReminder = (instanceid, e, el) => {
+const submitReminder = async (instanceid, e, el) => {
   const amplifierGoalId = e.target.dataset.goalid;
 
   el.parentElement.classList.add('d-none');
@@ -115,16 +116,21 @@ const submitReminder = (instanceid, e, el) => {
   let reminderHour = parseInt(el.querySelector(`${prefix}hour ${postfix}`).value);
   let reminderMinute = parseInt(el.querySelector(`${prefix}minute ${postfix}`).value);
 
-  Controller.saveReminder({
-    startdate: startDate.getTime(),
-    enddate: endDate.getTime(),
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    reminderhour: reminderHour,
-    reminderminute: reminderMinute,
-    frequency: frequency,
-    amplifiergoalid: amplifierGoalId,
-    instanceid: instanceid,
-  });
+  try {
+    await Controller.saveReminder({
+      startdate: startDate.getTime(),
+      enddate: endDate.getTime(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      reminderhour: reminderHour,
+      reminderminute: reminderMinute,
+      frequency: frequency,
+      amplifiergoalid: amplifierGoalId,
+      instanceid: instanceid,
+    });
+  } catch (e) {
+    Notification.exception(e)
+    .then(() => location.reload());
+  }
 };
 
 /**
@@ -133,7 +139,7 @@ const submitReminder = (instanceid, e, el) => {
  * @param {Event} e Click event
  * @param {HTMLElement} el Root reflection element
  */
-const submitReflection = (instanceid, e, el) => {
+const submitReflection = async (instanceid, e, el) => {
   const textarea = el.querySelector('textarea');
   const reflection = textarea.value.trim();
   if (reflection === '') {
@@ -142,11 +148,17 @@ const submitReflection = (instanceid, e, el) => {
 
   el.parentElement.classList.add('d-none');
 
-  Controller.submitReflections({
-    reflection: reflection,
-    amplifiergoalid: e.target.dataset.amplifiergoalid,
-    instanceid: instanceid,
-  });
+  try {
+    await Controller.submitReflections({
+      reflection: reflection,
+      amplifiergoalid: e.target.dataset.amplifiergoalid,
+      instanceid: instanceid,
+    });
+    textarea.value = '';
+  } catch (e) {
+    Notification.exception(e)
+    .then(() => location.reload());
+  }
 };
 
 /**

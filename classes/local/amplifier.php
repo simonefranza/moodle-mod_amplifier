@@ -52,11 +52,32 @@ class amplifier {
         $res = $DB->get_record('amplifier', ['id' => $instanceid], 'learninggoalwidgetid');
         if ($res !== false) {
             if ($DB->record_exists('learninggoalwidget', ['id' => $res->learninggoalwidgetid])) {
-                $this->learninggoalwidgetid = $res->learninggoalwidgetid;
-                return;
+                // Check if LGW is being deleted.
+                $stmt = "SELECT deletioninprogress
+                           FROM {course_modules}
+                          WHERE instance = :id
+                            AND module = (
+                         SELECT id
+                           FROM {modules}
+                          WHERE name = \"learninggoalwidget\")";
+                $deletioninprogress = $DB->get_field_sql($stmt, ['id' => $res->learninggoalwidgetid]);
+                if ($deletioninprogress !== false && is_numeric($deletioninprogress) &&
+                  intval($deletioninprogress) !== 1) {
+                    $this->learninggoalwidgetid = $res->learninggoalwidgetid;
+                    return;
+                }
             }
         }
         $this->learninggoalwidgetid = null;
+    }
+
+    /**
+     * Returns whether the selected learninggoalwidget instance is valid
+     *
+     * @return bool
+     */
+    public function is_lgw_valid() {
+        return $this->learninggoalwidgetid !== null;
     }
 
     /**
