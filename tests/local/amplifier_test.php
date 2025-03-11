@@ -36,6 +36,8 @@ use stdClass;
  * @package   mod_amplifier
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @runTestsInSeparateProcesses
  */
 final class amplifier_test extends \advanced_testcase {
     use \mod_amplifier\utils;

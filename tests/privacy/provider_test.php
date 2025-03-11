@@ -38,6 +38,8 @@ use core_external\external_api;
  * @package   mod_amplifier
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @runTestsInSeparateProcesses
  */
 final class provider_test extends provider_testcase {
     use \mod_amplifier\utils;

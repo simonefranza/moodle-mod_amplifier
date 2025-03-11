@@ -326,7 +326,7 @@ trait utils {
         $cmid = $DB->get_field_sql($stmt, ['instanceid' => $instanceid]);
         $update = (object)[
           'id' => $cmid,
-          'deletioninprogress' => 1
+          'deletioninprogress' => 1,
         ];
         $DB->update_record('course_modules', $update);
     }

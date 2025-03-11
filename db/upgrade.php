@@ -298,7 +298,8 @@ function xmldb_amplifier_upgrade($oldversion) {
  */
 function xmldb_amplifier_upgrade5($dbman) {
     // Add field on amplifier_reminders.timezone.
-    xmldb_amplifier_add_field($dbman, 'amplifier_reminders', 'timezone', XMLDB_TYPE_CHAR, '100', XMLDB_NOTNULL, null, 'Europe/Vienna');
+    xmldb_amplifier_add_field($dbman, 'amplifier_reminders', 'timezone', XMLDB_TYPE_CHAR,
+      '100', XMLDB_NOTNULL, null, 'Europe/Vienna');
 }
 
 /**
@@ -338,7 +339,8 @@ function xmldb_amplifier_upgrade3($dbman) {
     // Add userid->user.id.
     xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'userid', ['userid'], 'user', ['id']);
     // Add lgwgoalid->learninggoalwidget_goals.id.
-    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'lgwgoalid', ['lgwgoalid'], 'learninggoalwidget_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_goals', 'lgwgoalid',
+      ['lgwgoalid'], 'learninggoalwidget_goals', ['id']);
 
     // Rename table amplifier_setup_goals->amplifier_goals.
     xmldb_amplifier_rename_table($dbman, 'amplifier_setup_goals', 'amplifier_goals');
@@ -370,7 +372,8 @@ function xmldb_amplifier_upgrade3($dbman) {
     xmldb_amplifier_rename_field($dbman, 'amplifier_reminder', $field, 'amplifiergoalid');
 
     // Add amplifiergoalid->amplifier_goals.id.
-    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_reminder', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_reminder', 'amplifiergoalid',
+      ['amplifiergoalid'], 'amplifier_goals', ['id']);
 
     // Rename table amplifier_reminder->amplifier_reminders.
     xmldb_amplifier_rename_table($dbman, 'amplifier_reminder', 'amplifier_reminders');
@@ -403,7 +406,8 @@ function xmldb_amplifier_upgrade3($dbman) {
     xmldb_amplifier_rename_field($dbman, 'amplifier_reflection', $field, 'timecreated');
 
     // Add amplifiergoalid->amplifier_goals.id.
-    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_reflection', 'amplifiergoalid', ['amplifiergoalid'], 'amplifier_goals', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_reflection', 'amplifiergoalid',
+      ['amplifiergoalid'], 'amplifier_goals', ['id']);
 
     // Rename amplifier_reflection->amplifier_reflections.
     xmldb_amplifier_rename_table($dbman, 'amplifier_reflection', 'amplifier_reflections');
@@ -446,7 +450,8 @@ function xmldb_amplifier_upgrade2($dbman) {
     // Add course->course.id.
     xmldb_amplifier_add_foreign_key($dbman, 'amplifier', 'course', ['course'], 'course', ['id'], 'course');
     // Add learninggoalwidgetid->learninggoalwidget.id.
-    xmldb_amplifier_add_foreign_key($dbman, 'amplifier', 'learninggoalwidgetid', ['learninggoalwidgetid'], 'learninggoalwidget', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier', 'learninggoalwidgetid',
+      ['learninggoalwidgetid'], 'learninggoalwidget', ['id']);
 
     // Remove amplifier_setup_reflection as it has been removed from the setup.
     xmldb_amplifier_drop_table($dbman, 'amplifier_setup_reflection');
@@ -523,9 +528,11 @@ function xmldb_amplifier_upgrade2($dbman) {
 function xmldb_amplifier_upgrade1($dbman) {
     // Remove foreign keys to learninggoalwidget.
     // Remove amplifier_setup_reflection->fk_topic.
-    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'], 'learninggoalwidget_topic', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'],
+      'learninggoalwidget_topic', ['id']);
     // Remove amplifier_setup_reflection->fk_goal.
-    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'], 'learninggoalwidget_goal', ['id']);
+    xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'],
+      'learninggoalwidget_goal', ['id']);
     // Remove amplifier_setup_goals->fk_topic.
     xmldb_amplifier_delete_foreign_key($dbman, 'amplifier_setup_goals', 'fk_topic', ['topic'], 'learninggoalwidget_topic', ['id']);
     // Remove amplifier_setup_goals->fk_goal.
@@ -533,7 +540,8 @@ function xmldb_amplifier_upgrade1($dbman) {
 
     // Add foreign keys to new learninggoalwidget tables.
     // Add amplifier_setup_reflection->fk_topic.
-    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic', ['topic'], 'learninggoalwidget_topics', ['id']);
+    xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_topic',
+      ['topic'], 'learninggoalwidget_topics', ['id']);
     // Add amplifier_setup_reflection->fk_goal.
     xmldb_amplifier_add_foreign_key($dbman, 'amplifier_setup_reflection', 'fk_goal', ['goal'], 'learninggoalwidget_goals', ['id']);
     // Add amplifier_setup_goals->fk_topic.

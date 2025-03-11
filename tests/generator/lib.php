@@ -21,6 +21,8 @@
  * @category test
  * @copyright 2021 Know Center GmbH
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @runTestsInSeparateProcesses
  */
 class mod_amplifier_generator extends testing_module_generator {
 

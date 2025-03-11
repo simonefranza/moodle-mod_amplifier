@@ -93,7 +93,7 @@ class submit_setup extends \core_external\external_api {
         // Check if LGW is valid.
         $amp = new amplifier($instanceid);
         if (!$amp->is_lgw_valid()) {
-          throw new \moodle_exception('exception:lgw_missing', 'mod_amplifier',
+            throw new \moodle_exception('exception:lgw_missing', 'mod_amplifier',
               new \moodle_url('/course/view.php', ['id' => $cm->course]));
         }
 

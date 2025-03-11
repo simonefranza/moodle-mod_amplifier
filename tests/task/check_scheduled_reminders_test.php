@@ -41,6 +41,8 @@ use mod_amplifier\task\check_scheduled_reminders;
  * @package   mod_amplifier
  * @copyright 2021 Know Center GmbH
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ *
+ * @runTestsInSeparateProcesses
  */
 final class check_scheduled_reminders_test extends \advanced_testcase {
     use \mod_amplifier\utils;
@@ -54,6 +56,60 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
         $task = new check_scheduled_reminders();
         $this->assertEquals($task->get_name(), get_string('task:reminder', 'mod_amplifier'));
     }
+
+    /**
+     * Test not sending notification because of invalid user id
+     * @return void
+     *
+     * @covers \mod_amplifier\task\check_scheduled_reminders::execute
+     * @covers \mod_amplifier\task\check_scheduled_reminders::get_timezoned_date
+     * @covers \mod_amplifier\task\check_scheduled_reminders::is_correct_time
+     * @covers \mod_amplifier\task\check_scheduled_reminders::is_lastnotificationdate_recent
+     * @covers \mod_amplifier\task\check_scheduled_reminders::send_notification
+     */
+    public function test_execute_skip(): void {
+        global $DB, $CFG, $USER;
+        $setup = $this->setup_widget(true);
+
+        $task = new check_scheduled_reminders();
+
+        $now = new DateTime();
+        $now->setTimezone(new DateTimeZone('Europe/Oslo'));
+        $reminderstarttime = $now->getTimestamp() * 1000;
+        $reminderendtime = ($now->getTimestamp() + 3600) * 1000;
+
+        $currenthour = (int)$now->format('G');
+        $currentminute = (int)$now->format('i');
+
+        // Create data for student.
+        $student = $this->create_user('student', $setup->course->id, true);
+        $submitdata = $this->submit_setup($setup);
+        $reminderdata = (object)[
+            'startdate' => $reminderstarttime,
+            'enddate' => $reminderendtime,
+            'timezone' => 'Europe/Vienna',
+            'reminderhour' => $currenthour,
+            'reminderminute' => $currentminute,
+            'frequency' => 0,
+        ];
+        $reminderdata = $this->save_reminder($setup->instance->id, null, $reminderdata);
+
+        // Change user id to something else
+        $DB->update_record('amplifier_goals', [
+                       'id' => $reminderdata->amplifiergoalid,
+                       'userid' => $USER->id + 1000,
+                       ]);
+        $sink = $this->redirectMessages();
+        // Send reminder.
+        $task->execute();
+        $this->assertDebuggingCalled();
+        $messages = $sink->get_messages();
+        $this->assertEquals(0, count($messages));
+        $lastnotification = $DB->get_field('amplifier_reminders', 'lastnotificationdate',
+          ['amplifiergoalid' => $reminderdata->amplifiergoalid]);
+        $this->assertSame((int)$lastnotification, 0);
+    }
+
     /**
      * Test if notifications are sent
      * @return void
