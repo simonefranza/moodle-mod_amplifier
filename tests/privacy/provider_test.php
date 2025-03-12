@@ -315,8 +315,6 @@ final class provider_test extends provider_testcase {
         $coursemodule = get_coursemodule_from_instance('amplifier', $setup->instance->id);
         $coursecontext = \context_course::instance($coursemodule->course);
         $cmcontext = \context_module::instance($coursemodule->id);
-        $coursecontext = \context_course::instance($coursemodule->course);
-        $cmcontext = \context_module::instance($coursemodule->id);
 
         $lgwcoursemodule = get_coursemodule_from_instance('learninggoalwidget', $setup->lgwinstance->id);
         $lgwcmcontext = \context_module::instance($lgwcoursemodule->id);
