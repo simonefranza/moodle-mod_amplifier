@@ -68,7 +68,7 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
      * @covers \mod_amplifier\task\check_scheduled_reminders::send_notification
      */
     public function test_execute_skip(): void {
-        global $DB, $CFG, $USER;
+        global $DB, $USER;
         $setup = $this->setup_widget(true);
 
         $task = new check_scheduled_reminders();
@@ -82,8 +82,8 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
         $currentminute = (int)$now->format('i');
 
         // Create data for student.
-        $student = $this->create_user('student', $setup->course->id, true);
-        $submitdata = $this->submit_setup($setup);
+        $this->create_user('student', $setup->course->id, true);
+        $this->submit_setup($setup);
         $reminderdata = (object)[
             'startdate' => $reminderstarttime,
             'enddate' => $reminderendtime,

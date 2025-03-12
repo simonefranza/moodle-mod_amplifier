@@ -59,8 +59,11 @@ class amplifier {
                             AND module = (
                          SELECT id
                            FROM {modules}
-                          WHERE name = \"learninggoalwidget\")";
-                $deletioninprogress = $DB->get_field_sql($stmt, ['id' => $res->learninggoalwidgetid]);
+                          WHERE name = :activityname)";
+                $deletioninprogress = $DB->get_field_sql($stmt, [
+                  'id' => $res->learninggoalwidgetid,
+                  'activityname' => 'learninggoalwidget',
+                ]);
                 if ($deletioninprogress !== false && is_numeric($deletioninprogress) &&
                   intval($deletioninprogress) !== 1) {
                     $this->learninggoalwidgetid = $res->learninggoalwidgetid;
