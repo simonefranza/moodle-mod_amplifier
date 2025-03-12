@@ -94,7 +94,7 @@ final class check_scheduled_reminders_test extends \advanced_testcase {
         ];
         $reminderdata = $this->save_reminder($setup->instance->id, null, $reminderdata);
 
-        // Change user id to something else
+        // Change user id to something else.
         $DB->update_record('amplifier_goals', [
                        'id' => $reminderdata->amplifiergoalid,
                        'userid' => $USER->id + 1000,

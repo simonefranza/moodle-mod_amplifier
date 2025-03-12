@@ -93,7 +93,6 @@ class check_scheduled_reminders extends \core\task\scheduled_task {
             $amplifierreminder->lastnotificationdate = $date->getTimestamp() * 1000;
             // If message send failed, skip update.
             if (!$this->send_notification($record)) {
-                //mtrace('mod_amplifier: Failed to send notification to user ' . $record->userid . '. No update.');
                 continue;
             }
             $DB->update_record('amplifier_reminders', $amplifierreminder);
